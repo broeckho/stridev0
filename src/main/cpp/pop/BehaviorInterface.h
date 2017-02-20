@@ -8,11 +8,15 @@
 #ifndef SRC_MAIN_CPP_POP_BEHAVIORINTERFACE_H_
 #define SRC_MAIN_CPP_POP_BEHAVIORINTERFACE_H_
 
+#include <memory>
+
 namespace stride {
+
+class Person;
 
 class BehaviorInterface {
 public:
-	virtual ~BehaviorInterface() = 0;
+	virtual ~BehaviorInterface() {}
 
 	/// Check whether a person practices a certain behavior
 	virtual bool PracticesBehavior() const = 0;
@@ -24,7 +28,7 @@ public:
 	virtual void Update(int num_infected) = 0; //TODO more general 'global' info?
 
 	/// Update behavior based on local information
-	virtual void Update(shared_ptr<Person>& other_person) = 0;
+	virtual void Update(std::shared_ptr<Person>& other_person) = 0;
 
 };
 

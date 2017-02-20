@@ -20,6 +20,8 @@
  * Header file for the Person class.
  */
 
+#include "BehaviorInterface.h"
+#include "NoBehavior.h"
 #include "core/Health.h"
 
 #include <cstddef>
@@ -46,7 +48,10 @@ public:
 		  m_work_id(work_id), m_home_district_id(home_district_id), m_day_district_id(day_district_id),
 		  m_in_household(true), m_in_home_district(true), m_in_day_cluster(true), m_in_day_district(true),
 		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-		  m_is_participant(false) {}
+		  m_is_participant(false)
+	{
+		m_behavior = std::make_shared<NoBehavior>();
+	}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }
@@ -82,24 +87,25 @@ public:
 	void Update(bool is_work_off, bool is_school_off);
 
 private:
-	unsigned int    m_id;                    ///< The id.
-	double          m_age;                   ///< The age.
-	char            m_gender;                ///< The gender.
+	unsigned int    					m_id;                    ///< The id.
+	double          					m_age;                   ///< The age.
+	char            					m_gender;                ///< The gender.
 
-	unsigned int    m_household_id;          ///< The household id.
-	unsigned int    m_school_id;             ///< The school cluster id
-	unsigned int    m_work_id;               ///< The work cluster id
-	unsigned int    m_home_district_id;   	 ///< The home district id
-	unsigned int    m_day_district_id;       ///< The day district id
+	unsigned int    					m_household_id;          ///< The household id.
+	unsigned int    					m_school_id;             ///< The school cluster id
+	unsigned int    					m_work_id;               ///< The work cluster id
+	unsigned int    					m_home_district_id;   	 ///< The home district id
+	unsigned int    					m_day_district_id;       ///< The day district id
 
-	bool            m_in_household;          ///< Is person present in household today?
-	bool            m_in_home_district;      ///< Is person present in home_district today?
-	bool            m_in_day_cluster;        ///< Is person present in day_cluster today?
-	bool            m_in_day_district;       ///< Is person present in day_district today?
+	bool            					m_in_household;          ///< Is person present in household today?
+	bool            					m_in_home_district;      ///< Is person present in home_district today?
+	bool            					m_in_day_cluster;        ///< Is person present in day_cluster today?
+	bool            					m_in_day_district;       ///< Is person present in day_district today?
 
-	Health          m_health;                ///< Health info for this person.
+	Health          					m_health;                ///< Health info for this person.
+	std::shared_ptr<BehaviorInterface> 	m_behavior;				 ///< Info on health / preventive behaviors
 
-	bool            m_is_participant;        ///< Is participating in the social contact study
+	bool            					m_is_participant;        ///< Is participating in the social contact study
 };
 
 } // end_of_namespace
