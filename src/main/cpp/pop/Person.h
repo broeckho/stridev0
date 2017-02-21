@@ -20,8 +20,6 @@
  * Header file for the Person class.
  */
 
-#include "BehaviorInterface.h"
-#include "NoBehavior.h"
 #include "core/Health.h"
 
 #include <cstddef>
@@ -49,9 +47,7 @@ public:
 		  m_in_household(true), m_in_home_district(true), m_in_day_cluster(true), m_in_day_district(true),
 		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
 		  m_is_participant(false)
-	{
-		m_behavior = std::make_shared<NoBehavior>();
-	}
+	{}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }
@@ -103,7 +99,6 @@ private:
 	bool            					m_in_day_district;       ///< Is person present in day_district today?
 
 	Health          					m_health;                ///< Health info for this person.
-	std::shared_ptr<BehaviorInterface> 	m_behavior;				 ///< Info on health / preventive behaviors
 
 	bool            					m_is_participant;        ///< Is participating in the social contact study
 };
