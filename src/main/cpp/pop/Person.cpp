@@ -31,7 +31,8 @@ namespace stride {
 
 using namespace std;
 
-unsigned int Person::GetClusterId(ClusterType cluster_type) const
+template<class BehaviorPolicy, class BeliefPolicy>
+unsigned int Person<BehaviorPolicy, BeliefPolicy>::GetClusterId(ClusterType cluster_type) const
 {
         switch (cluster_type) {
                 case ClusterType::Household:        return m_household_id;
@@ -43,7 +44,8 @@ unsigned int Person::GetClusterId(ClusterType cluster_type) const
         }
 }
 
-bool Person::IsInCluster(ClusterType c) const
+template<class BehaviorPolicy, class BeliefPolicy>
+bool Person<BehaviorPolicy, BeliefPolicy>::IsInCluster(ClusterType c) const
 {
         switch(c) {
                 case ClusterType::Household:         return m_in_household;
@@ -55,7 +57,8 @@ bool Person::IsInCluster(ClusterType c) const
         }
 }
 
-void Person::Update(bool is_work_off, bool is_school_off)
+template<class BehaviorPolicy, class BeliefPolicy>
+void Person<BehaviorPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_school_off)
 {
         m_health.Update();
 
@@ -70,5 +73,10 @@ void Person::Update(bool is_work_off, bool is_school_off)
                 m_in_home_district = false;
         }
 }
+
+//--------------------------------------------------------------------------
+// All explicit instantiations.
+//--------------------------------------------------------------------------
+template class Person<NoBelief, NoBehavior>;
 
 } // end_of_namespace

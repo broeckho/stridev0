@@ -21,8 +21,8 @@
 #include "PopulationBuilder.h"
 
 #include "core/Health.h"
-#include "pop/Person.h"
 #include "pop/Population.h"
+#include "pop/Person.h"
 #include "util/InstallDirs.h"
 #include "util/Random.h"
 #include "util/StringUtils.h"
@@ -100,7 +100,7 @@ shared_ptr<Population> PopulationBuilder::Build(
                 const auto time_infectious      = Sample(rng, distrib_time_infectious);
                 const auto time_symptomatic     = Sample(rng, distrib_time_symptomatic);
                 const auto values = StringUtils::Split(line, ",");
-                population.emplace_back(Person(person_id,
+                population.emplace_back(Simulator::PersonType(person_id,
                         StringUtils::FromString<unsigned int>(values[0]),
                         StringUtils::FromString<unsigned int>(values[1]),
                         StringUtils::FromString<unsigned int>(values[2]),
@@ -133,7 +133,7 @@ shared_ptr<Population> PopulationBuilder::Build(
                 unsigned int num_samples = 0;
                 const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
                 while(num_samples < num_participants){
-                        Person& p = population[rng(max_population_index)];
+                	Simulator::PersonType& p = population[rng(max_population_index)];
                         if ( !p.IsParticipatingInSurvey() ) {
                                 p.ParticipateInSurvey();
                                 logger->info("[PART] {} {} {}", p.GetId(), p.GetAge(), p.GetGender());
@@ -147,7 +147,7 @@ shared_ptr<Population> PopulationBuilder::Build(
         //------------------------------------------------
         unsigned int num_immune = floor(static_cast<double>(population.size()) * immunity_rate);
         while (num_immune > 0) {
-                Person& p = population[rng(max_population_index)];
+        	Simulator::PersonType& p = population[rng(max_population_index)];
                 if (p.GetHealth().IsSusceptible()) {
                         p.GetHealth().SetImmune();
                         num_immune--;
@@ -159,7 +159,7 @@ shared_ptr<Population> PopulationBuilder::Build(
         //------------------------------------------------
         unsigned int num_infected = floor(static_cast<double> (population.size()) * seeding_rate);
         while (num_infected > 0) {
-                Person& p = population[rng(max_population_index)];
+        	Simulator::PersonType& p = population[rng(max_population_index)];
                 if (p.GetHealth().IsSusceptible()) {
                         p.GetHealth().StartInfection();
                         num_infected--;

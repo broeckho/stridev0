@@ -24,6 +24,8 @@
 #include "core/ContactProfile.h"
 #include "core/LogMode.h"
 #include "pop/Person.h"
+#include "pop/PopulationBuilder.h"
+#include "sim/Simulator.h"
 
 #include <array>
 #include <cstddef>
@@ -48,7 +50,7 @@ public:
         //Cluster(const Cluster& rhs);
 
 	/// Add the given Person to the Cluster.
-	void AddPerson(Person* p);
+	void AddPerson(Simulator::PersonType* p);
 
 	/// Return number of persons in this cluster.
 	std::size_t GetSize() const { return m_members.size(); }
@@ -57,7 +59,7 @@ public:
 	ClusterType GetClusterType() const { return m_cluster_type; }
 
 	/// Get basic contact rate in this cluster.
-	double GetContactRate(const Person* p) const
+	double GetContactRate(const Simulator::PersonType* p) const
 	{
 		return g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())] / m_members.size();;
 	}
@@ -81,7 +83,7 @@ private:
 	std::size_t                               m_cluster_id;     ///< The ID of the Cluster (for logging purposes).
 	ClusterType                               m_cluster_type;   ///< The type of the Cluster (for logging purposes).
 	std::size_t                               m_index_immune;   ///< Index of the first immune member in the Cluster.
-	std::vector<std::pair<Person*, bool>>     m_members;        ///< Container with pointers to Cluster members.
+	std::vector<std::pair<Simulator::PersonType*, bool>>     m_members;        ///< Container with pointers to Cluster members.
 	const ContactProfile&                     m_profile;
 private:
 	static std::array<ContactProfile, NumOfClusterTypes()> g_profiles;

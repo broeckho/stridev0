@@ -20,10 +20,12 @@
  * Header for the Simulator class.
  */
 
-#include "core/Cluster.h"
+//#include "core/Cluster.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
 #include "core/RngHandler.h"
+
+#include "pop/Person.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <memory>
@@ -34,13 +36,16 @@ namespace stride {
 
 class Population;
 class Calendar;
+class Cluster;
 
 /**
  * Main class that contains and direct the virtual world.
  */
 class Simulator
 {
+
 public:
+	using PersonType = Person<NoBelief, NoBehavior>;
         // Default constructor for empty Simulator.
         Simulator();
 

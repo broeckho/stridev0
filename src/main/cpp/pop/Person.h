@@ -20,6 +20,9 @@
  * Header file for the Person class.
  */
 
+#include "behavior/beliefs/NoBelief.h"
+#include "behavior/behaviors/NoBehavior.h"
+
 #include "core/Health.h"
 
 #include <cstddef>
@@ -34,6 +37,7 @@ enum class ClusterType;
 /**
  * Store and handle person data.
  */
+template <class BeliefPolicy, class BehaviorPolicy>
 class Person
 {
 public:
@@ -102,6 +106,9 @@ private:
 
 	bool            					m_is_participant;        ///< Is participating in the social contact study
 };
+
+/// Explicit instantiations in .cpp file
+extern template class Person<NoBelief, NoBehavior>;
 
 } // end_of_namespace
 

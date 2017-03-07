@@ -43,7 +43,7 @@ template<bool track_index_case = false>
 class R0_POLICY
 {
 public:
-        static void Execute(Person* p) {}
+        static void Execute(Simulator::PersonType* p) {}
 };
 
 /**
@@ -53,7 +53,7 @@ template<>
 class R0_POLICY<true>
 {
 public:
-        static void Execute(Person* p) { p->GetHealth().StopInfection(); }
+        static void Execute(Simulator::PersonType* p) { p->GetHealth().StopInfection(); }
 };
 
 /**
@@ -63,7 +63,7 @@ template<LogMode log_level = LogMode::None>
 class LOG_POLICY
 {
 public:
-        static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
+        static void Execute(shared_ptr<spdlog::logger> logger, Simulator::PersonType* p1, Simulator::PersonType* p2,
                 ClusterType cluster_type, shared_ptr<const Calendar> environ)
         {}
 };
@@ -75,7 +75,7 @@ template<>
 class LOG_POLICY<LogMode::Transmissions>
 {
 public:
-        static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
+        static void Execute(shared_ptr<spdlog::logger> logger, Simulator::PersonType* p1, Simulator::PersonType* p2,
                 ClusterType cluster_type, shared_ptr<const Calendar> environ)
         {
                 logger->info("[TRAN] {} {} {} {}",
@@ -90,7 +90,7 @@ template<>
 class LOG_POLICY<LogMode::Contacts>
 {
 public:
-        static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
+        static void Execute(shared_ptr<spdlog::logger> logger, Simulator::PersonType* p1, Simulator::PersonType* p2,
                 ClusterType cluster_type, shared_ptr<const Calendar> calendar)
         {
                 unsigned int home   = (cluster_type == ClusterType::Household);

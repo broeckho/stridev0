@@ -1,5 +1,5 @@
-#ifndef POPULATION_H_INCLUDED
-#define POPULATION_H_INCLUDED
+#ifndef NOBELIEF_H_INCLUDED
+#define NOBELIEF_H_INCLUDED
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -17,37 +17,11 @@
 
 /**
  * @file
- * Header file for the core Population class
  */
 
-#include "Person.h"
-#include "core/Health.h"
-#include "sim/Simulator.h"
 
-#include <numeric>
-#include <vector>
-
-namespace stride {
-
-/**
- * Container for persons in population.
- */
-class Population : public std::vector<Simulator::PersonType >
-{
-public:
-	/// Get the cumulative number of cases.
-	unsigned int GetInfectedCount() const
-	{
-	        unsigned int total {0U};
-		for (const auto& p : *this) {
-		        const auto& h = p.GetHealth();
-		        total += h.IsInfected() || h.IsRecovered();
-		}
-		return total;
-	}
+class NoBelief {
 
 };
 
-} // end_of_namespace
-
-#endif // end of include guard
+#endif // include-guard
