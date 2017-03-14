@@ -20,14 +20,13 @@
  * Header file for the Person class.
  */
 
-#include "behavior/beliefs/NoBelief.h"
-#include "behavior/behaviors/NoBehavior.h"
-
 #include "core/Health.h"
 
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include "../behavior/behavior_policies/NoBehavior.h"
+#include "../behavior/belief_policies/NoBelief.h"
 
 namespace stride {
 
@@ -62,7 +61,7 @@ public:
 	/// Get cluster ID of cluster_type
 	unsigned int GetClusterId(ClusterType cluster_type) const;
 
-        /// Return person's gender.
+    /// Return person's gender.
 	char GetGender() const { return m_gender; }
 
   	/// Return person's health status.
@@ -72,10 +71,10 @@ public:
 	const Health& GetHealth() const { return m_health; }
 
 	/// Get the id.
-        unsigned int GetId() const { return m_id; }
+    unsigned int GetId() const { return m_id; }
 
-        /// Check if a person is present today in a given cluster
-        bool IsInCluster(ClusterType c) const;
+    /// Check if a person is present today in a given cluster
+    bool IsInCluster(ClusterType c) const;
 
 	/// Does this person participates in the social contact study?
 	bool IsParticipatingInSurvey() const { return m_is_participant; }
@@ -103,6 +102,7 @@ private:
 	bool            					m_in_day_district;       ///< Is person present in day_district today?
 
 	Health          					m_health;                ///< Health info for this person.
+	typename BeliefPolicy::Data			m_belief_data;			 ///< Info w.r.t. this Person's health beliefs
 
 	bool            					m_is_participant;        ///< Is participating in the social contact study
 };

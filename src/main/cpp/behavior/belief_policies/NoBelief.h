@@ -19,9 +19,11 @@
  * @file
  */
 
+#include "behavior/belief_data/Nothing.h"
 
 class NoBelief {
-
+public:
+	using Data = Nothing;
 };
 
 #endif // include-guard
