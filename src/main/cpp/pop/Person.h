@@ -25,6 +25,8 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include "../behavior/behavior_policies/NoBehavior.h"
+#include "../behavior/belief_policies/NoBelief.h"
 
 namespace stride {
 
@@ -34,6 +36,7 @@ enum class ClusterType;
 /**
  * Store and handle person data.
  */
+template <class BeliefPolicy, class BehaviorPolicy>
 class Person
 {
 public:
@@ -46,7 +49,8 @@ public:
 		  m_work_id(work_id), m_primary_community_id(primary_community_id), m_secondary_community_id(secondary_community_id),
 		  m_at_household(true), m_at_school(true),m_at_work(true),m_at_primary_community(true), m_at_secondary_community(true),
 		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-		  m_is_participant(false) {}
+		  m_is_participant(false)
+	{}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }
@@ -67,7 +71,7 @@ public:
 	const Health& GetHealth() const { return m_health; }
 
 	/// Get the id.
-        unsigned int GetId() const { return m_id; }
+    unsigned int GetId() const { return m_id; }
 
     /// Check if a person is present today in a given cluster
     bool IsInCluster(ClusterType c) const;
@@ -98,10 +102,14 @@ private:
 	bool            m_at_primary_community;   ///< Is person present at primary_community today?
 	bool            m_at_secondary_community;  ///< Is person present at secundary_community today?
 
-	Health          m_health;                ///< Health info for this person.
+	Health          					m_health;                ///< Health info for this person.
+	typename BeliefPolicy::Data			m_belief_data;			 ///< Info w.r.t. this Person's health beliefs
 
-	bool            m_is_participant;        ///< Is participating in the social contact study
+	bool            					m_is_participant;        ///< Is participating in the social contact study
 };
+
+/// Explicit instantiations in .cpp file
+extern template class Person<NoBelief, NoBehavior>;
 
 } // end_of_namespace
 
