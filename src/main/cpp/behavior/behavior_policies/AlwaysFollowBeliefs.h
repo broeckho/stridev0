@@ -1,10 +1,3 @@
-/*
- * AlwaysFollowBeliefs.h
- *
- *  Created on: Mar 7, 2017
- *      Author: elise
- */
-
 #ifndef SRC_MAIN_CPP_BEHAVIOR_BEHAVIOR_POLICIES_ALWAYSFOLLOWBELIEFS_H_
 #define SRC_MAIN_CPP_BEHAVIOR_BEHAVIOR_POLICIES_ALWAYSFOLLOWBELIEFS_H_
 

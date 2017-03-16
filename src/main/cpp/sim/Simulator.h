@@ -43,9 +43,10 @@ class Cluster;
  */
 class Simulator
 {
-
 public:
 	using PersonType = Person<NoBelief, NoBehavior>;
+
+public:
         // Default constructor for empty Simulator.
         Simulator();
 
@@ -68,16 +69,16 @@ private:
 
 private:
 	unsigned int                        m_num_threads;          ///< The number of (OpenMP) threads.
-    std::vector<RngHandler>             m_rng_handler;          ///< Pointer to the RngHandlers.
-    LogMode                             m_log_level;            ///< Specifies logging mode.
-    std::shared_ptr<Calendar>           m_calendar;             ///< Management of calendar.
+        std::vector<RngHandler>             m_rng_handler;          ///< Pointer to the RngHandlers.
+        LogMode                             m_log_level;            ///< Specifies logging mode.
+        std::shared_ptr<Calendar>           m_calendar;             ///< Management of calendar.
 
 private:
-    std::shared_ptr<Population>         m_population;           ///< Pointer to the Population.
+        std::shared_ptr<Population>         m_population;           ///< Pointer to the Population.
 
 	std::vector<Cluster>                m_households;           ///< Container with household Clusters.
-    std::vector<Cluster>                m_school_clusters;      ///< Container with school Clusters.
-    std::vector<Cluster>                m_work_clusters;        ///< Container with work Clusters.
+        std::vector<Cluster>                m_school_clusters;      ///< Container with school Clusters.
+        std::vector<Cluster>                m_work_clusters;        ///< Container with work Clusters.
 	std::vector<Cluster>                m_primary_community;    ///< Container with primary community Clusters.
 	std::vector<Cluster>                m_secondary_community;  ///< Container with secondary community  Clusters.
 
