@@ -79,6 +79,6 @@ void Person<BehaviorPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_scho
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Person<NoBelief, NoBehavior>;
+template class Person<NoBehavior, NoBelief>;
 
 } // end_of_namespace

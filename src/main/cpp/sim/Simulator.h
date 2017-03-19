@@ -45,7 +45,7 @@ class Simulator
 {
 
 public:
-	using PersonType = Person<NoBelief, NoBehavior>;
+	using PersonType = Person<NoBehavior, NoBelief>;
         // Default constructor for empty Simulator.
         Simulator();
 

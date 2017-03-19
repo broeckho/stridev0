@@ -36,7 +36,7 @@ enum class ClusterType;
 /**
  * Store and handle person data.
  */
-template <class BeliefPolicy, class BehaviorPolicy>
+template <class BehaviorPolicy, class BeliefPolicy>
 class Person
 {
 public:
@@ -109,7 +109,7 @@ private:
 };
 
 /// Explicit instantiations in .cpp file
-extern template class Person<NoBelief, NoBehavior>;
+extern template class Person<NoBehavior, NoBelief>;
 
 } // end_of_namespace
 
