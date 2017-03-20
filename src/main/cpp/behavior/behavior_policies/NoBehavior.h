@@ -22,6 +22,11 @@
 
 class NoBehavior {
 
+public:
+	static bool PracticesBehavior(bool believes_in) {
+		return false;
+	}
+
 };
 
 #endif // include-guard
