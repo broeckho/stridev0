@@ -46,6 +46,11 @@ public:
 		return total;
 	}
 
+	double GetFractionInfected() const
+	{
+		return GetInfectedCount() / this->size();
+	}
+
 };
 
 } // end_of_namespace

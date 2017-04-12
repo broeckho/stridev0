@@ -44,9 +44,8 @@ class Cluster;
 class Simulator
 {
 public:
-	using PersonType = Person<NoBelief, NoBehavior>;
+	using PersonType = Person<NoBehavior, NoBelief>;
 
-public:
         // Default constructor for empty Simulator.
         Simulator();
 
