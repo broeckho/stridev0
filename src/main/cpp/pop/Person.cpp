@@ -63,9 +63,9 @@ void Person<BehaviorPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_scho
         m_health.Update();
 
         // Vaccination behavior //TODO multiple behaviors
-        if (BehaviorPolicy::PracticesBehavior(BeliefPolicy::BelievesIn(m_belief_data))) {
+        /*if (BehaviorPolicy::PracticesBehavior(BeliefPolicy::BelievesIn(m_belief_data))) {
         	m_health.SetImmune();
-        }
+        }*/
 
         // Update presence in clusters.
         if (is_work_off || (m_age <= MinAdultAge() && is_school_off)) {
