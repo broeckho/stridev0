@@ -86,6 +86,9 @@ public:
 	/// Update the health status and presence in clusters.
 	void Update(bool is_work_off, bool is_school_off);
 
+	/// Update belief & behaviour upon meeting another Person
+	void Update(const Person& p);
+
 private:
 	unsigned int    m_id;                     ///< The id.
 	double          m_age;                    ///< The age.

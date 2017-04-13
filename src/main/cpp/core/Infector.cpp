@@ -109,8 +109,8 @@ public:
 // LogMode::None & LogMode::Transmissions, both with
 // track_index_case false and true..
 //--------------------------------------------------------------------------
-template<LogMode log_level, bool track_index_case>
-void Infector<log_level, track_index_case>::Execute(
+template<LogMode log_level, bool track_index_case, InformationPolicy information_policy>
+void Infector<log_level, track_index_case, information_policy>::Execute(
         Cluster& cluster, DiseaseProfile disease_profile,
         RngHandler& contact_handler, shared_ptr<const Calendar> calendar)
 {
@@ -157,8 +157,8 @@ void Infector<log_level, track_index_case>::Execute(
 //--------------------------------------------------------------------------
 // Definition of partial specialization for LogMode::Contacts.
 //--------------------------------------------------------------------------
-template<bool track_index_case>
-void Infector<LogMode::Contacts, track_index_case>::Execute(
+template<bool track_index_case, InformationPolicy information_policy>
+void Infector<LogMode::Contacts, track_index_case, information_policy>::Execute(
         Cluster& cluster, DiseaseProfile disease_profile,
         RngHandler& contact_handler, shared_ptr<const Calendar> calendar)
 {
@@ -205,16 +205,16 @@ void Infector<LogMode::Contacts, track_index_case>::Execute(
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Infector<LogMode::None, false>;
+template class Infector<LogMode::None, false, InformationPolicy::None>;
 
-template class Infector<LogMode::None, true>;
+template class Infector<LogMode::None, true, InformationPolicy::None>;
 
-template class Infector<LogMode::Transmissions, false>;
+template class Infector<LogMode::Transmissions, false, InformationPolicy::None>;
 
-template class Infector<LogMode::Transmissions, true>;
+template class Infector<LogMode::Transmissions, true, InformationPolicy::None>;
 
-template class Infector<LogMode::Contacts, false>;
+template class Infector<LogMode::Contacts, false, InformationPolicy::None>;
 
-template class Infector<LogMode::Contacts, true>;
+template class Infector<LogMode::Contacts, true, InformationPolicy::None>;
 
 } // end_of_namespace

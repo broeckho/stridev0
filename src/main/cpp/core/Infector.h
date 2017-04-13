@@ -20,6 +20,7 @@
  * Header for the Infector class.
  */
 
+#include "behaviour/InformationPolicy.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
 
@@ -34,7 +35,7 @@ class Calendar;
 /**
  * Actual contacts and transmission in cluster (primary template).
  */
-template<LogMode log_level, bool track_index_case>
+template<LogMode log_level, bool track_index_case, InformationPolicy information_policy>
 class Infector
 {
 public:
@@ -46,8 +47,8 @@ public:
 /**
  * Actual contacts and transmission in cluster (specialisation for logging all contacts).
  */
-template<bool track_index_case>
-class Infector<LogMode::Contacts, track_index_case>
+template<bool track_index_case, InformationPolicy information_policy>
+class Infector<LogMode::Contacts, track_index_case, information_policy>
 {
 public:
         ///
@@ -56,22 +57,22 @@ public:
 };
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::None, false>;
+extern template class Infector<LogMode::None, false, InformationPolicy::None>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::None, true>;
+extern template class Infector<LogMode::None, true, InformationPolicy::None>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Transmissions, false>;
+extern template class Infector<LogMode::Transmissions, false, InformationPolicy::None>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Transmissions, true>;
+extern template class Infector<LogMode::Transmissions, true, InformationPolicy::None>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Contacts, false>;
+extern template class Infector<LogMode::Contacts, false, InformationPolicy::None>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Contacts, true>;
+extern template class Infector<LogMode::Contacts, true, InformationPolicy::None>;
 
 } // end_of_namespace
 
