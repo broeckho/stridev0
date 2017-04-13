@@ -75,6 +75,9 @@ private:
 private:
         std::shared_ptr<Population>         m_population;           ///< Pointer to the Population.
 
+        bool		m_global_information;
+        bool		m_local_information;
+
 	std::vector<Cluster>                m_households;           ///< Container with household Clusters.
         std::vector<Cluster>                m_school_clusters;      ///< Container with school Clusters.
         std::vector<Cluster>                m_work_clusters;        ///< Container with work Clusters.

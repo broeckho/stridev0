@@ -168,6 +168,7 @@ void Infector<LogMode::Contacts, track_index_case>::Execute(
         auto logger            = spdlog::get("contact_logger");
         const auto c_type      = cluster.m_cluster_type;
         const auto& c_members  = cluster.m_members;
+        const auto transmission_rate = disease_profile.GetTransmissionRate();
         //const auto c_size      = cluster.GetSize();
 
         // check all contacts
@@ -182,23 +183,17 @@ void Infector<LogMode::Contacts, track_index_case>::Execute(
                                         auto p2 = c_members[i_person2].first;
                                         // check for contact
                                         if (contact_handler.HasContact(contact_rate)) {
-                                                // TODO ContactHandler doesn't have a separate transmission function anymore to
-                                                // check for transmission when contact has already been checked.
-                                                // check for transmission
-                                                /*bool transmission = contact_handler->transmission(age1, p2->GetAge());
-                                                unsigned int infecter = 0;
-                                                if (transmission) {
-                                                        if (p1->IsInfectious() && p2->IsSusceptible()) {
-                                                                infecter = 1;
-                                                                p2->StartInfection();
-                                                                R0_POLICY<track_index_case>::Execute(p2);
-                                                        }
-                                                        else if (p2->IsInfectious() && p1->IsSusceptible()) {
-                                                                infecter = 2;
-                                                                p1->StartInfection();
-                                                                R0_POLICY<track_index_case>::Execute(p1);
-                                                        }
-                                                }*/
+                                        		bool transmission = contact_handler.HasTransmission(1, transmission_rate);
+                                        		if (transmission) {
+                                        			if (p1->GetHealth().IsInfectious() && p2->GetHealth().IsSusceptible()) {
+                                        				p2->GetHealth().StartInfection();
+                                        				R0_POLICY<track_index_case>::Execute(p2);
+                                        			} else if (p2->GetHealth().IsInfectious() && p1->GetHealth().IsSusceptible()) {
+                                        				p1->GetHealth().StartInfection();
+                                        				R0_POLICY<track_index_case>::Execute(p1);
+                                        			}
+                                        		}
+
                                                 LOG_POLICY<LogMode::Contacts>::Execute(logger, p1, p2, c_type, calendar);
                                         }
                                 }
