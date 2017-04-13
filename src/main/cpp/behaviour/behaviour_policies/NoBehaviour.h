@@ -1,5 +1,5 @@
-#ifndef NOBELIEF_H_INCLUDED
-#define NOBELIEF_H_INCLUDED
+#ifndef NOBEHAVIOR_H_INCLUDED
+#define NOBEHAVIOR_H_INCLUDED
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -19,15 +19,14 @@
  * @file
  */
 
-#include "behavior/belief_data/Nothing.h"
 
-class NoBelief {
+class NoBehaviour {
+
 public:
-	using Data = Nothing;
-
-	static bool BelievesIn(Data belief_data) {
+	static bool PracticesBehaviour(bool believes_in) {
 		return false;
 	}
+
 };
 
 #endif // include-guard

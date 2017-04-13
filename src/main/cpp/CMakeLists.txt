@@ -20,6 +20,8 @@
 #============================================================================
 set(LIB_SRC
 #---
+	behaviour/InformationPolicy.cpp
+#---
     calendar/Calendar.cpp
 #---
     core/Cluster.cpp

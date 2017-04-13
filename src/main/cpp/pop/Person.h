@@ -25,8 +25,9 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
-#include "../behavior/behavior_policies/NoBehavior.h"
-#include "../behavior/belief_policies/NoBelief.h"
+
+#include "../behaviour/behaviour_policies/NoBehaviour.h"
+#include "../behaviour/belief_policies/NoBelief.h"
 
 namespace stride {
 
@@ -36,7 +37,7 @@ enum class ClusterType;
 /**
  * Store and handle person data.
  */
-template <class BehaviorPolicy, class BeliefPolicy>
+template <class BehaviourPolicy, class BeliefPolicy>
 class Person
 {
 public:
@@ -109,7 +110,7 @@ private:
 };
 
 /// Explicit instantiations in .cpp file
-extern template class Person<NoBehavior, NoBelief>;
+extern template class Person<NoBehaviour, NoBelief>;
 
 } // end_of_namespace
 

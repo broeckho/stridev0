@@ -20,6 +20,7 @@
  * Header for the Simulator class.
  */
 
+#include "behaviour/InformationPolicy.h"
 //#include "core/Cluster.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
@@ -44,7 +45,7 @@ class Cluster;
 class Simulator
 {
 public:
-	using PersonType = Person<NoBehavior, NoBelief>;
+	using PersonType = Person<NoBehaviour, NoBelief>;
 
         // Default constructor for empty Simulator.
         Simulator();
@@ -70,13 +71,11 @@ private:
 	unsigned int                        m_num_threads;          ///< The number of (OpenMP) threads.
         std::vector<RngHandler>             m_rng_handler;          ///< Pointer to the RngHandlers.
         LogMode                             m_log_level;            ///< Specifies logging mode.
+        InformationPolicy					m_information_policy;
         std::shared_ptr<Calendar>           m_calendar;             ///< Management of calendar.
 
 private:
         std::shared_ptr<Population>         m_population;           ///< Pointer to the Population.
-
-        bool		m_global_information;
-        bool		m_local_information;
 
 	std::vector<Cluster>                m_households;           ///< Container with household Clusters.
         std::vector<Cluster>                m_school_clusters;      ///< Container with school Clusters.

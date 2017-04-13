@@ -31,8 +31,8 @@ namespace stride {
 
 using namespace std;
 
-template<class BehaviorPolicy, class BeliefPolicy>
-unsigned int Person<BehaviorPolicy, BeliefPolicy>::GetClusterId(ClusterType cluster_type) const
+template<class BehaviourPolicy, class BeliefPolicy>
+unsigned int Person<BehaviourPolicy, BeliefPolicy>::GetClusterId(ClusterType cluster_type) const
 {
         switch (cluster_type) {
                 case ClusterType::Household:          return m_household_id;
@@ -44,8 +44,8 @@ unsigned int Person<BehaviorPolicy, BeliefPolicy>::GetClusterId(ClusterType clus
         }
 }
 
-template<class BehaviorPolicy, class BeliefPolicy>
-bool Person<BehaviorPolicy, BeliefPolicy>::IsInCluster(ClusterType c) const
+template<class BehaviourPolicy, class BeliefPolicy>
+bool Person<BehaviourPolicy, BeliefPolicy>::IsInCluster(ClusterType c) const
 {
         switch(c) {
                 case ClusterType::Household:           return m_at_household;
@@ -57,8 +57,8 @@ bool Person<BehaviorPolicy, BeliefPolicy>::IsInCluster(ClusterType c) const
         }
 }
 
-template<class BehaviorPolicy, class BeliefPolicy>
-void Person<BehaviorPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_school_off)
+template<class BehaviourPolicy, class BeliefPolicy>
+void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_school_off)
 {
         m_health.Update();
 
@@ -84,6 +84,6 @@ void Person<BehaviorPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_scho
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Person<NoBehavior, NoBelief>;
+template class Person<NoBehaviour, NoBelief>;
 
 } // end_of_namespace

@@ -5,11 +5,11 @@
  *      Author: elise
  */
 
-#ifndef SRC_MAIN_CPP_BEHAVIOR_BELIEF_POLICIES_THRESHOLDINFECTED_H_
-#define SRC_MAIN_CPP_BEHAVIOR_BELIEF_POLICIES_THRESHOLDINFECTED_H_
+#ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLDINFECTED_H_
+#define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLDINFECTED_H_
 
 
-#include "behavior/belief_data/Threshold.h"
+#include "../../behaviour/belief_data/Threshold.h"
 
 
 class ThresholdInfected {
@@ -20,4 +20,4 @@ class ThresholdInfected {
 	}
 };
 
-#endif /* SRC_MAIN_CPP_BEHAVIOR_BELIEF_POLICIES_THRESHOLDINFECTED_H_ */
+#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLDINFECTED_H_ */

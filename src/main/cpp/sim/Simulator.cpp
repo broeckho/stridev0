@@ -40,7 +40,6 @@ using namespace stride::util;
 
 Simulator::Simulator()
         : m_config_pt(), m_num_threads(1U), m_log_level(LogMode::Null), m_population(nullptr),
-		  m_global_information(false), m_local_information(false),
           m_disease_profile(), m_track_index_case(false)
 {
 }
