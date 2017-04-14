@@ -102,32 +102,68 @@ void Simulator::TimeStep()
         const bool is_work_off {days_off->IsWorkOff() };
         const bool is_school_off { days_off->IsSchoolOff() };
 
+        double fraction_infected = m_population->GetFractionInfected();
+
         for (auto& p : *m_population) {
-                p.Update(is_work_off, is_school_off);
+                p.Update(is_work_off, is_school_off, fraction_infected);
         }
 
         if (m_track_index_case) {
-                switch (m_log_level) {
-                        case LogMode::Contacts:
-                                UpdateClusters<LogMode::Contacts, true, InformationPolicy::None>(); break;
-                        case LogMode::Transmissions:
-                                UpdateClusters<LogMode::Transmissions, true, InformationPolicy::None>(); break;
-                        case LogMode::None:
-                                UpdateClusters<LogMode::None, true, InformationPolicy::None>(); break;
-                        default:
-                                throw runtime_error(std::string(__func__) + "Log mode screwed up!");
-                }
+        	switch (m_information_policy) {
+        	case InformationPolicy::Global:
+        		switch (m_log_level) {
+        		case LogMode::Contacts:
+        			UpdateClusters<LogMode::Contacts, true, InformationPolicy::Global>(); break;
+        		case LogMode::Transmissions:
+        			UpdateClusters<LogMode::Transmissions, true, InformationPolicy::Global>(); break;
+        		case LogMode::None:
+        			UpdateClusters<LogMode::None, true, InformationPolicy::Global>(); break;
+        		default:
+        			throw runtime_error(std::string(__func__) + "Log mode screwed up!");
+        	} break;
+        	case InformationPolicy::Local:
+        		switch (m_log_level) {
+        		case LogMode::Contacts:
+        			UpdateClusters<LogMode::Contacts, true, InformationPolicy::Local>(); break;
+        		case LogMode::Transmissions:
+        			UpdateClusters<LogMode::Transmissions, true, InformationPolicy::Local>(); break;
+        		case LogMode::None:
+        			UpdateClusters<LogMode::None, true, InformationPolicy::Local>(); break;
+        		default:
+        			throw runtime_error(std::string(__func__) + "Log mode screwed up!");
+        		} break;
+        	default:
+        		throw runtime_error(std::string(__func__) + "Information policy screwed up!");
+        	}
         } else {
-                switch (m_log_level) {
-                        case LogMode::Contacts:
-                                UpdateClusters<LogMode::Contacts, false, InformationPolicy::None>(); break;
-                        case LogMode::Transmissions:
-                                UpdateClusters<LogMode::Transmissions, false, InformationPolicy::None>();  break;
-                        case LogMode::None:
-                                UpdateClusters<LogMode::None, false, InformationPolicy::None>(); break;
-                        default:
-                                throw runtime_error(std::string(__func__) + "Log mode screwed up!");
-                }
+        	switch (m_information_policy) {
+        	case InformationPolicy::Global:
+        		switch (m_log_level) {
+        		case LogMode::Contacts:
+        			UpdateClusters<LogMode::Contacts, false, InformationPolicy::Global>(); break;
+        		case LogMode::Transmissions:
+        			UpdateClusters<LogMode::Transmissions, false, InformationPolicy::Global>(); break;
+        		case LogMode::None:
+        			UpdateClusters<LogMode::None, false, InformationPolicy::Global>(); break;
+        		default:
+        			throw runtime_error(std::string(__func__) + "Log mode screwed up!");
+        		}
+        		break;
+        	case InformationPolicy::Local:
+        		switch (m_log_level) {
+        		case LogMode::Contacts:
+        			UpdateClusters<LogMode::Contacts, false, InformationPolicy::Local>(); break;
+        		case LogMode::Transmissions:
+        			UpdateClusters<LogMode::Transmissions, false, InformationPolicy::Local>(); break;
+        		case LogMode::None:
+        			UpdateClusters<LogMode::None, false, InformationPolicy::Local>(); break;
+        		default:
+        			throw runtime_error(std::string(__func__) + "Log mode screwed up!");
+        		}
+        		break;
+        		default:
+        			throw runtime_error(std::string(__func__) + "Information policy screwed up!");
+        	}
         }
 
         m_calendar->AdvanceDay();

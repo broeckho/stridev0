@@ -31,18 +31,14 @@ using boost::to_upper;
 using namespace std;
 
 map<InformationPolicy, string> g_information_policy_name {
-                make_pair(InformationPolicy::None,             	"None"),
                 make_pair(InformationPolicy::Global,    		"Global"),
                 make_pair(InformationPolicy::Local,         	"Local"),
-                make_pair(InformationPolicy::GlobalAndLocal,    "GlobalAndLocal"),
 				make_pair(InformationPolicy::Null, 				"Null")
 };
 
 map<string, InformationPolicy> g_name_information_policy {
-                make_pair("NONE",            		InformationPolicy::None),
                 make_pair("GLOBAL",   				InformationPolicy::Global),
                 make_pair("LOCAL",        			InformationPolicy::Local),
-                make_pair("GLOBALANDLOCAL",         InformationPolicy::GlobalAndLocal),
 				make_pair("NULL",					InformationPolicy::Null)
 };
 

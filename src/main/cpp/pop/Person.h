@@ -84,10 +84,10 @@ public:
 	void ParticipateInSurvey() { m_is_participant = true; }
 
 	/// Update the health status and presence in clusters.
-	void Update(bool is_work_off, bool is_school_off);
+	void Update(bool is_work_off, bool is_school_off, double fraction_infected);
 
 	/// Update belief & behaviour upon meeting another Person
-	void Update(const Person& p);
+	void Update(const Person* p);
 
 private:
 	unsigned int    m_id;                     ///< The id.

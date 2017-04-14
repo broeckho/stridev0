@@ -61,7 +61,7 @@ public:
 
 private:
         /// Update the contacts in the given clusters.
-	template<LogMode log_level, bool track_index_case = false, InformationPolicy information_policy = InformationPolicy::None>
+	template<LogMode log_level, bool track_index_case = false, InformationPolicy information_policy = InformationPolicy::Global>
         void UpdateClusters();
 
 private:

@@ -15,7 +15,7 @@ namespace stride {
 /**
 * Enum specifiying the information policy used for behaviour
 */
-enum class InformationPolicy {None = 0U, Global = 1U, Local = 2U, GlobalAndLocal = 3U, Null};
+enum class InformationPolicy {Global = 0U, Local = 1U, Null};
 
 /// Converts an InformationPolicy value to corresponding name.
 std::string ToString(InformationPolicy w);

@@ -155,10 +155,65 @@ void Infector<log_level, track_index_case, information_policy>::Execute(
 
 
 //--------------------------------------------------------------------------
-// Definition of partial specialization for LogMode::Contacts.
+// Definition of partial specialization for InformationPolicy::Local.
 //--------------------------------------------------------------------------
-template<bool track_index_case, InformationPolicy information_policy>
-void Infector<LogMode::Contacts, track_index_case, information_policy>::Execute(
+template<LogMode log_level, bool track_index_case>
+void Infector<log_level, track_index_case, InformationPolicy::Local>::Execute(
+        Cluster& cluster, DiseaseProfile disease_profile,
+        RngHandler& contact_handler, shared_ptr<const Calendar> calendar)
+{
+        cluster.UpdateMemberPresence();
+
+        // set up some stuff
+        auto logger            = spdlog::get("contact_logger");
+        const auto c_type      = cluster.m_cluster_type;
+        const auto& c_members  = cluster.m_members;
+        const auto transmission_rate = disease_profile.GetTransmissionRate();
+        //const auto c_size      = cluster.GetSize();
+
+        // check all contacts
+        for (size_t i_person1 = 0; i_person1 < cluster.m_members.size(); i_person1++) {
+                // check if member participates in the social contact survey && member is present today
+                if (c_members[i_person1].second && c_members[i_person1].first->IsParticipatingInSurvey()) {
+                        auto p1 = c_members[i_person1].first;
+                        const double contact_rate = cluster.GetContactRate(p1);
+                        for (size_t i_person2 = 0; i_person2 < c_members.size(); i_person2++) {
+                                // check if member is present today
+                                if ((i_person1 != i_person2) && c_members[i_person2].second) {
+                                        auto p2 = c_members[i_person2].first;
+                                        // check for contact
+                                        if (contact_handler.HasContact(contact_rate)) {
+                                        	// let contacts influence each other's beliefs
+                                        	p1->Update(p2);
+                                        	p2->Update(p1);
+
+                                        	bool transmission = contact_handler.HasTransmission(1, transmission_rate);
+                                        	if (transmission) {
+                                        		if (p1->GetHealth().IsInfectious() && p2->GetHealth().IsSusceptible()) {
+                                        			p2->GetHealth().StartInfection();
+                                        			R0_POLICY<track_index_case>::Execute(p2);
+                                        		} else if (p2->GetHealth().IsInfectious() && p1->GetHealth().IsSusceptible()) {
+                                        			p1->GetHealth().StartInfection();
+                                        			R0_POLICY<track_index_case>::Execute(p1);
+                                        		}
+                                        	}
+
+                                        	LOG_POLICY<log_level>::Execute(logger, p1, p2, c_type, calendar);
+
+                                        }
+                                }
+                        }
+                }
+        }
+}
+
+
+// TODO find a solution for this AWFUL case of code duplication
+//-------------------------------------------------------------------------------------------
+// Definition of partial specialization for InformationPolicy::Global and LogMode::Contacts.
+//-------------------------------------------------------------------------------------------
+template<bool track_index_case>
+void Infector<LogMode::Contacts, track_index_case, InformationPolicy::Global>::Execute(
         Cluster& cluster, DiseaseProfile disease_profile,
         RngHandler& contact_handler, shared_ptr<const Calendar> calendar)
 {
@@ -205,16 +260,23 @@ void Infector<LogMode::Contacts, track_index_case, information_policy>::Execute(
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Infector<LogMode::None, false, InformationPolicy::None>;
+template class Infector<LogMode::None, false, InformationPolicy::Global>;
+template class Infector<LogMode::None, false, InformationPolicy::Local>;
 
-template class Infector<LogMode::None, true, InformationPolicy::None>;
+template class Infector<LogMode::None, true, InformationPolicy::Global>;
+template class Infector<LogMode::None, true, InformationPolicy::Local>;
 
-template class Infector<LogMode::Transmissions, false, InformationPolicy::None>;
+template class Infector<LogMode::Transmissions, false, InformationPolicy::Global>;
+template class Infector<LogMode::Transmissions, false, InformationPolicy::Local>;
 
-template class Infector<LogMode::Transmissions, true, InformationPolicy::None>;
+template class Infector<LogMode::Transmissions, true, InformationPolicy::Global>;
+template class Infector<LogMode::Transmissions, true, InformationPolicy::Local>;
 
-template class Infector<LogMode::Contacts, false, InformationPolicy::None>;
+template class Infector<LogMode::Contacts, false, InformationPolicy::Global>;
+template class Infector<LogMode::Contacts, false, InformationPolicy::Local>;
 
-template class Infector<LogMode::Contacts, true, InformationPolicy::None>;
+template class Infector<LogMode::Contacts, true, InformationPolicy::Global>;
+template class Infector<LogMode::Contacts, true, InformationPolicy::Local>;
+
 
 } // end_of_namespace
