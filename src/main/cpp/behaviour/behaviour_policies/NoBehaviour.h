@@ -19,6 +19,7 @@
  * @file
  */
 
+namespace stride {
 
 class NoBehaviour {
 
@@ -28,5 +29,7 @@ public:
 	}
 
 };
+
+} /* namespace stride */
 
 #endif // include-guard

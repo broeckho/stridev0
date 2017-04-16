@@ -91,4 +91,6 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p) {
 //--------------------------------------------------------------------------
 template class Person<NoBehaviour, NoBelief>;
 
+template class Person<AlwaysFollowBeliefs, BeliefTransmission>;
+
 } // end_of_namespace

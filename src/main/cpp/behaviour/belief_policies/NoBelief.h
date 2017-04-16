@@ -21,6 +21,8 @@
 
 #include "../../behaviour/belief_data/Nothing.h"
 
+namespace stride {
+
 class NoBelief {
 public:
 	using Data = Nothing;
@@ -29,5 +31,7 @@ public:
 		return false;
 	}
 };
+
+} /* namespace stride */
 
 #endif // include-guard

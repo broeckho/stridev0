@@ -27,7 +27,10 @@
 #include <memory>
 
 #include "../behaviour/behaviour_policies/NoBehaviour.h"
+#include "../behaviour/behaviour_policies/AlwaysFollowBeliefs.h"
+
 #include "../behaviour/belief_policies/NoBelief.h"
+#include "../behaviour/belief_policies/BeliefTransmission.h"
 
 namespace stride {
 
@@ -70,6 +73,9 @@ public:
 
 	/// Return person's health status.
 	const Health& GetHealth() const { return m_health; }
+
+	/// Return person's belief status.
+	typename BeliefPolicy::Data GetBeliefData() const { return m_belief_data; }
 
 	/// Get the id.
     unsigned int GetId() const { return m_id; }
@@ -114,6 +120,8 @@ private:
 
 /// Explicit instantiations in .cpp file
 extern template class Person<NoBehaviour, NoBelief>;
+
+extern template class Person<AlwaysFollowBeliefs, BeliefTransmission>;
 
 } // end_of_namespace
 
