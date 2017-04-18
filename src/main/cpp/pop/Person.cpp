@@ -79,11 +79,13 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
                 m_at_secondary_community = true;
                 m_at_primary_community  = false;
         }
+
+        BeliefPolicy::Update(m_belief_data, m_health);
 }
 
 template<class BehaviourPolicy, class BeliefPolicy>
 void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p) {
-	// TODO update BeliefData
+	BeliefPolicy::Update(m_belief_data, p->GetBeliefData(), p->GetHealth());
 }
 
 //--------------------------------------------------------------------------

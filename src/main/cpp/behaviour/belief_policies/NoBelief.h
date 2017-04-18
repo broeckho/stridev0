@@ -19,7 +19,7 @@
  * @file
  */
 
-#include "../../behaviour/belief_data/Nothing.h"
+#include "behaviour/belief_data/Nothing.h"
 
 namespace stride {
 
@@ -27,9 +27,9 @@ class NoBelief {
 public:
 	using Data = Nothing;
 
-	static bool BelievesIn(Data belief_data) {
-		return false;
-	}
+	static void Update(Data& belief_data, Health& health_data) {}
+
+	static void Update(Data& belief_data, const Data& p2_beliefs, const Health& p2_health) {}
 };
 
 } /* namespace stride */

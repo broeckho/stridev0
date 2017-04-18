@@ -8,12 +8,14 @@
 #ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_BELIEFTRANSMISSIONDATA_H_
 #define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_BELIEFTRANSMISSIONDATA_H_
 
+#include <iostream>
+
 namespace stride {
 
 class BeliefTransmissionData {
 public:
 	BeliefTransmissionData(): m_num_contacts_adopted(0), m_num_contacts_infected(0), m_num_contacts(0),
-				m_threshold_adopted(100), m_threshold_infected(100), m_aware(false), m_adopted(false)
+				m_threshold_adopted(0.40), m_threshold_infected(0.40), m_aware(false), m_adopted(false)
 	{}
 
 	virtual ~BeliefTransmissionData() {}
@@ -28,6 +30,34 @@ public:
 
 	bool HasAdopted() const {
 		return m_adopted;
+	}
+
+	void SetAdopted() {
+		m_adopted = true;
+	}
+
+	double GetFractionContactsAdopted() const {
+		if (m_num_contacts == 0) {
+			return 0;
+		}
+
+		return m_num_contacts_adopted / m_num_contacts;
+	}
+
+	double GetFractionContactsInfected() const {
+		if (m_num_contacts == 0) {
+			return 0;
+		}
+
+		return m_num_contacts_infected / m_num_contacts;
+	}
+
+	double GetThresholdAdopted() const {
+		return m_threshold_adopted;
+	}
+
+	double GetThresholdInfected() const {
+		return m_threshold_infected;
 	}
 
 	void MeetAdopted() {

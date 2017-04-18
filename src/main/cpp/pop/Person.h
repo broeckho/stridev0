@@ -75,7 +75,7 @@ public:
 	const Health& GetHealth() const { return m_health; }
 
 	/// Return person's belief status.
-	typename BeliefPolicy::Data GetBeliefData() const { return m_belief_data; }
+	const typename BeliefPolicy::Data& GetBeliefData() const { return m_belief_data; }
 
 	/// Get the id.
     unsigned int GetId() const { return m_id; }

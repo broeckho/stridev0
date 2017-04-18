@@ -140,7 +140,7 @@ void Infector<log_level, track_index_case, information_policy>::Execute(
                                                 // check if member is present today
                                                 if (c_members[i_contact].second) {
                                                         auto p2 = c_members[i_contact].first;
-                                                        if (contact_handler.HasTransmission(contact_rate, transmission_rate)) {
+                                                        if (contact_handler.HasContactAndTransmission(contact_rate, transmission_rate)) {
                                                                 LOG_POLICY<log_level>::Execute(logger, p1, p2, c_type, calendar);
                                                                 p2->GetHealth().StartInfection();
                                                                 R0_POLICY<track_index_case>::Execute(p2);
@@ -174,7 +174,7 @@ void Infector<log_level, track_index_case, InformationPolicy::Local>::Execute(
         // check all contacts
         for (size_t i_person1 = 0; i_person1 < cluster.m_members.size(); i_person1++) {
                 // check if member participates in the social contact survey && member is present today
-                if (c_members[i_person1].second && c_members[i_person1].first->IsParticipatingInSurvey()) {
+                if (c_members[i_person1].second) {
                         auto p1 = c_members[i_person1].first;
                         const double contact_rate = cluster.GetContactRate(p1);
                         for (size_t i_person2 = 0; i_person2 < c_members.size(); i_person2++) {
@@ -187,7 +187,7 @@ void Infector<log_level, track_index_case, InformationPolicy::Local>::Execute(
                                         	p1->Update(p2);
                                         	p2->Update(p1);
 
-                                        	bool transmission = contact_handler.HasTransmission(1, transmission_rate);
+                                        	bool transmission = contact_handler.HasTransmission(transmission_rate);
                                         	if (transmission) {
                                         		if (p1->GetHealth().IsInfectious() && p2->GetHealth().IsSusceptible()) {
                                         			p2->GetHealth().StartInfection();
@@ -238,7 +238,7 @@ void Infector<LogMode::Contacts, track_index_case, InformationPolicy::Global>::E
                                         auto p2 = c_members[i_person2].first;
                                         // check for contact
                                         if (contact_handler.HasContact(contact_rate)) {
-                                        		bool transmission = contact_handler.HasTransmission(1, transmission_rate);
+                                        		bool transmission = contact_handler.HasTransmission(transmission_rate);
                                         		if (transmission) {
                                         			if (p1->GetHealth().IsInfectious() && p2->GetHealth().IsSusceptible()) {
                                         				p2->GetHealth().StartInfection();
