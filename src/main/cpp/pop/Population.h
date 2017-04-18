@@ -51,6 +51,16 @@ public:
 		return GetInfectedCount() / this->size();
 	}
 
+	unsigned int GetAdoptedCount() const
+	{
+		unsigned int total {0U};
+		for (const auto& p: *this) {
+			const auto& b = p.GetBeliefData();
+			total += b.HasAdopted();
+		}
+		return total;
+	}
+
 };
 
 } // end_of_namespace
