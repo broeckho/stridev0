@@ -85,7 +85,8 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 
 template<class BehaviourPolicy, class BeliefPolicy>
 void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p) {
-	BeliefPolicy::Update(m_belief_data, p->GetBeliefData(), p->GetHealth());
+	//BeliefPolicy::Update(m_belief_data, p->GetBeliefData(), p->GetHealth());
+	BeliefPolicy::Update(m_belief_data, p);
 }
 
 //--------------------------------------------------------------------------

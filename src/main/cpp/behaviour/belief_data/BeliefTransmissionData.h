@@ -8,8 +8,6 @@
 #ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_BELIEFTRANSMISSIONDATA_H_
 #define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_BELIEFTRANSMISSIONDATA_H_
 
-#include <iostream>
-
 namespace stride {
 
 class BeliefTransmissionData {

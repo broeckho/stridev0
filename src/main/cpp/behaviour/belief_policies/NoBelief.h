@@ -23,13 +23,17 @@
 
 namespace stride {
 
+template<typename BehaviourPolicy, typename BeliefPolicy>
+class Person;
+
 class NoBelief {
 public:
 	using Data = Nothing;
 
 	static void Update(Data& belief_data, Health& health_data) {}
 
-	static void Update(Data& belief_data, const Data& p2_beliefs, const Health& p2_health) {}
+	template<typename BehaviourPolicy>
+	static void Update(Data& belief_data, const Person<BehaviourPolicy, NoBelief>* p) {}
 };
 
 } /* namespace stride */

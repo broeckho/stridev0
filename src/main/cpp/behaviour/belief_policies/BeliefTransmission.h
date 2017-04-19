@@ -12,6 +12,9 @@
 
 namespace stride {
 
+template<typename BehaviourPolicy, typename BeliefPolicy>
+class Person;
+
 class BeliefTransmission {
 public:
 
@@ -33,10 +36,12 @@ public:
 		}
 	}
 
-	static void Update(Data& belief_data, const Data& p2_beliefs, const Health& p2_health) {
+	template<typename BehaviourPolicy>
+	static void Update(Data& belief_data, const Person<BehaviourPolicy, BeliefTransmission>* p) {
 		if (belief_data.IsAware()) {
-			bool other_infected = p2_health.IsSymptomatic();
-			bool other_adopted = p2_beliefs.HasAdopted();
+			bool other_infected = p->GetHealth().IsSymptomatic();
+			bool other_adopted = p->GetBeliefData().HasAdopted();
+
 			if (other_infected && other_adopted) {
 				belief_data.MeetInfectedAndAdopted();
 			} else if (other_infected) {
@@ -44,10 +49,12 @@ public:
 			} else if (other_adopted) {
 				belief_data.MeetAdopted();
 			}
+
 		} else {
-			if (p2_beliefs.IsAware()) {
+			if (p->GetBeliefData().IsAware()) {
 				belief_data.SetAware();
 			}
+
 		}
 	}
 };
