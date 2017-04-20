@@ -20,6 +20,7 @@
 #============================================================================
 set(LIB_SRC
 #---
+	behaviour/belief_policies/BeliefTransmission.cpp
 	behaviour/InformationPolicy.cpp
 #---
     calendar/Calendar.cpp

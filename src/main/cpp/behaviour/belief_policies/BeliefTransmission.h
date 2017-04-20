@@ -9,6 +9,9 @@
 #define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_BELIEFTRANSMISSION_H_
 
 #include "behaviour/belief_data/BeliefTransmissionData.h"
+#include "core/Health.h"
+#include "util/RNG.h"
+
 
 namespace stride {
 
@@ -52,11 +55,16 @@ public:
 
 		} else {
 			if (p->GetBeliefData().IsAware()) {
-				belief_data.SetAware();
+				if (RNG::GetInstance().NextDouble() < m_p_discussion) {
+					belief_data.SetAware();
+				}
 			}
 
 		}
 	}
+
+private:
+	static double 					 m_p_discussion;			///< The probability that an aware individual discusses disease
 };
 
 } /* namespace stride */
