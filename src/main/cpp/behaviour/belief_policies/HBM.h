@@ -50,11 +50,11 @@ public:
 	}
 
 private:
-	static const double m_odds_ratio_0;
-	static const double m_odds_ratio_severity;
-	static const double m_odds_ratio_susceptibility;
-	static const double m_odds_ratio_benefit;
-	static const double m_odds_ratio_barriers;
+	static const double m_odds_ratio_0 = -1;
+	static const double m_odds_ratio_severity = 0.626;
+	static const double m_odds_ratio_susceptibility = 1.07;
+	static const double m_odds_ratio_benefit = 0;
+	static const double m_odds_ratio_barriers = -0.4;
 };
 
 } /* namespace stride */
