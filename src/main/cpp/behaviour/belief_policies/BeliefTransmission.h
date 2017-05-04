@@ -63,6 +63,10 @@ public:
 		}
 	}
 
+	static bool HasAdopted(const Data& belief_data) {
+		return belief_data.HasAdopted();
+	}
+
 private:
 	static double 					 m_p_discussion;			///< The probability that an aware individual discusses disease
 };
