@@ -21,6 +21,7 @@
 set(LIB_SRC
 #---
 	behaviour/belief_policies/BeliefTransmission.cpp
+	behaviour/belief_policies/Threshold.cpp
 	behaviour/InformationPolicy.cpp
 #---
     calendar/Calendar.cpp
