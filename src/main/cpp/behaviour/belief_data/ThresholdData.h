@@ -10,6 +10,7 @@
 
 #include "behaviour/behaviour_policies/AlwaysFollowBeliefs.h"
 
+
 /*
  * Possible variants:
  * 		+ fraction adopted over entire simulation
@@ -42,7 +43,7 @@ public:
 		if (m_num_contacts == 0) {
 			return 0;
 		}
-		return m_num_contacts_infected / m_num_contacts;
+		return (double)m_num_contacts_infected / m_num_contacts;
 	}
 
 	template <typename BehaviourPolicy, typename BeliefPolicy>

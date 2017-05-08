@@ -11,6 +11,8 @@
 #include "behaviour/belief_data/ThresholdData.h"
 #include "core/Health.h"
 
+#include <iostream>
+
 namespace stride {
 
 /// Forward declaration of class Person
@@ -27,7 +29,10 @@ public:
 	}
 
 	static void Update(Data& belief_data, Health& health_data) {
-
+		double fraction_infected = belief_data.GetFractionInfected();
+		if (fraction_infected > 0) {
+			//std::cout << "Fraction infected: " << belief_data.GetFractionInfected() << ", threshold: " << belief_data.GetThresholdInfected() << std::endl;
+		}
 	}
 
 	template<typename BehaviourPolicy>
