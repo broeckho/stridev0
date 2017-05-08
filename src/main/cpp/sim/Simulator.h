@@ -45,7 +45,7 @@ class Cluster;
 class Simulator
 {
 public:
-	using PersonType = Person<AlwaysFollowBeliefs, BeliefTransmission>;
+	using PersonType = Person<AlwaysFollowBeliefs, Threshold<true, false> >;
 
         // Default constructor for empty Simulator.
         Simulator();

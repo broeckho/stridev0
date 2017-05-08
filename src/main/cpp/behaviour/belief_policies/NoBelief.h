@@ -30,10 +30,14 @@ class NoBelief {
 public:
 	using Data = Nothing;
 
+	static void Initialize(Data& belief_data, double risk_averseness) {}
+
 	static void Update(Data& belief_data, Health& health_data) {}
 
 	template<typename BehaviourPolicy>
 	static void Update(Data& belief_data, const Person<BehaviourPolicy, NoBelief>* p) {}
+
+	bool HasAdopted(Data& belief_data) const  { return false; }
 };
 
 } /* namespace stride */

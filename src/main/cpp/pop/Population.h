@@ -51,12 +51,17 @@ public:
 		return GetInfectedCount() / this->size();
 	}
 
+	template<typename BeliefPolicy>
 	unsigned int GetAdoptedCount() const
 	{
 		unsigned int total {0U};
 		for (const auto& p: *this) {
-			const auto& b = p.GetBeliefData();
-			total += b.HasAdopted();
+			auto belief_data = p.GetBeliefData();
+			bool adopted = BeliefPolicy::HasAdopted(belief_data);
+			if (adopted) {
+				total++;
+			}
+
 		}
 		return total;
 	}

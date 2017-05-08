@@ -48,14 +48,16 @@ public:
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id,
 			unsigned int work_id,unsigned int primary_community_id, unsigned int secondary_community_id, unsigned int start_infectiousness,
-			unsigned int start_symptomatic, unsigned int time_infectious, unsigned int time_symptomatic)
+			unsigned int start_symptomatic, unsigned int time_infectious, unsigned int time_symptomatic, double risk_averseness = 0)
 		: m_id(id), m_age(age), m_gender('M'),
 		  m_household_id(household_id), m_school_id(school_id),
 		  m_work_id(work_id), m_primary_community_id(primary_community_id), m_secondary_community_id(secondary_community_id),
 		  m_at_household(true), m_at_school(true),m_at_work(true),m_at_primary_community(true), m_at_secondary_community(true),
 		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
 		  m_is_participant(false)
-	{}
+	{
+		BeliefPolicy::Initialize(m_belief_data, risk_averseness);
+	}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }

@@ -23,6 +23,8 @@ public:
 
 	using Data = BeliefTransmissionData;
 
+	static void Initialize(Data& belief_data, double risk_averseness) {}
+
 	static void Update(Data& belief_data, Health& health_data) {
 		if (belief_data.IsAware()) {
 			// if fraction infected > threshold : adopt belief

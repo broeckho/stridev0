@@ -22,53 +22,25 @@ class Threshold {
 public:
 	using Data = ThresholdData;
 
+	static void Initialize(Data& belief_data, double risk_averseness) {}
+
 	static void Update(Data& belief_data, Health& health_data) {
 
-			// if fraction infected > threshold : adopt belief
-			// or if fraction adopted > threshold : adopt belief
-			/*if (belief_data.GetFractionContactsAdopted() > belief_data.GetThresholdAdopted()
-					|| belief_data.GetFractionContactsInfected() > belief_data.GetThresholdInfected()) {
-				belief_data.SetAdopted();
-			}*/
 	}
 
 	template<typename BehaviourPolicy>
 	static void Update(Data& belief_data, const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >* p) {
-
+		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >(p);
 	}
 
-	/*
-	template<typename BehaviourPolicy>
-	static void Update(Data& belief_data, const Person<BehaviourPolicy, BeliefTransmission>* p) {
-			bool other_infected = p->GetHealth().IsSymptomatic();
-			bool other_adopted = p->GetBeliefData().HasAdopted();
-
-			if (other_infected && other_adopted) {
-				belief_data.MeetInfectedAndAdopted();
-			} else if (other_infected) {
-				belief_data.MeetInfected();
-			} else if (other_adopted) {
-				belief_data.MeetAdopted();
-			}
-
-	}
-	 */
-
-};
-
-template<>
-class Threshold<true, false> {
-public:
-	using Data = ThresholdData;
-
-	static void Update(Data& belief_data, Health& health_data) {
-
+	static bool HasAdopted(Data& belief_data) {
+		if (belief_data.GetFractionInfected() > belief_data.GetThresholdInfected()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	template<typename BehaviourPolicy>
-	static void Update(Data& belief_data, const Person<BehaviourPolicy, Threshold<true, false> >* p) {
-
-	}
 };
 
 
