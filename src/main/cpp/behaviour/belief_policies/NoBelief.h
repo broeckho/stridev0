@@ -37,7 +37,7 @@ public:
 	template<typename BehaviourPolicy>
 	static void Update(Data& belief_data, const Person<BehaviourPolicy, NoBelief>* p) {}
 
-	bool HasAdopted(Data& belief_data) const  { return false; }
+	bool HasAdopted(const Data& belief_data) const  { return false; }
 };
 
 } /* namespace stride */

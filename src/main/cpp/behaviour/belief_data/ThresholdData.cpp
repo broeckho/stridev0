@@ -16,6 +16,10 @@ void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p) {
 	if (p->GetHealth().IsSymptomatic()) {
 		m_num_contacts_infected++;
 	}
+	const auto other_belief_data = p->GetBeliefData();
+	if (BeliefPolicy::HasAdopted(other_belief_data)) {
+		m_num_contacts_adopted++;
+	}
 }
 
 template void ThresholdData::Contact<AlwaysFollowBeliefs, Threshold<true, false> >(const Person<AlwaysFollowBeliefs, Threshold<true, false> >* p);

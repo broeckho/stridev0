@@ -11,8 +11,6 @@
 #include "behaviour/belief_data/ThresholdData.h"
 #include "core/Health.h"
 
-#include <iostream>
-
 namespace stride {
 
 /// Forward declaration of class Person
@@ -25,27 +23,34 @@ public:
 	using Data = ThresholdData;
 
 	static void Initialize(Data& belief_data, double risk_averseness) {
-		belief_data.SetThresholdInfected(1 - risk_averseness);
-	}
-
-	static void Update(Data& belief_data, Health& health_data) {
-		double fraction_infected = belief_data.GetFractionInfected();
-		if (fraction_infected > 0) {
-			//std::cout << "Fraction infected: " << belief_data.GetFractionInfected() << ", threshold: " << belief_data.GetThresholdInfected() << std::endl;
+		if (threshold_infected) {
+			belief_data.SetThresholdInfected(1 - risk_averseness);
+		}
+		if (threshold_adopted) {
+			belief_data.SetThresholdAdopted(1 - risk_averseness);
 		}
 	}
+
+	static void Update(Data& belief_data, Health& health_data) {}
 
 	template<typename BehaviourPolicy>
 	static void Update(Data& belief_data, const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >* p) {
 		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >(p);
 	}
 
-	static bool HasAdopted(Data& belief_data) {
-		if (belief_data.GetFractionInfected() > belief_data.GetThresholdInfected()) {
-			return true;
-		} else {
-			return false;
+	static bool HasAdopted(const Data& belief_data) {
+		if (threshold_infected) {
+			if (belief_data.GetFractionInfected() > belief_data.GetThresholdInfected()) {
+				return true;
+			}
 		}
+		if (threshold_adopted) {
+			if (belief_data.GetFractionAdopted() > belief_data.GetThresholdAdopted()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 };
