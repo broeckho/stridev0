@@ -22,7 +22,9 @@ class Threshold {
 public:
 	using Data = ThresholdData;
 
-	static void Initialize(Data& belief_data, double risk_averseness) {}
+	static void Initialize(Data& belief_data, double risk_averseness) {
+		belief_data.SetThresholdInfected(1 - risk_averseness);
+	}
 
 	static void Update(Data& belief_data, Health& health_data) {
 
