@@ -30,7 +30,6 @@
 #include "behaviour/behaviour_policies/AlwaysFollowBeliefs.h"
 
 #include "behaviour/belief_policies/NoBelief.h"
-#include "behaviour/belief_policies/BeliefTransmission.h"
 #include "behaviour/belief_policies/Threshold.h"
 
 namespace stride {
@@ -123,8 +122,6 @@ private:
 
 /// Explicit instantiations in .cpp file
 extern template class Person<NoBehaviour, NoBelief>;
-
-extern template class Person<AlwaysFollowBeliefs, BeliefTransmission>;
 extern template class Person<AlwaysFollowBeliefs, Threshold<true, false> >;
 extern template class Person<AlwaysFollowBeliefs, Threshold<false, true> >;
 extern template class Person<AlwaysFollowBeliefs, Threshold<true, true> >;

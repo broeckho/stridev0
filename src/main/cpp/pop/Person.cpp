@@ -94,7 +94,6 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p) {
 //--------------------------------------------------------------------------
 template class Person<NoBehaviour, NoBelief>;
 
-template class Person<AlwaysFollowBeliefs, BeliefTransmission>;
 template class Person<AlwaysFollowBeliefs, Threshold<true, false> >;
 template class Person<AlwaysFollowBeliefs, Threshold<false, true> >;
 template class Person<AlwaysFollowBeliefs, Threshold<true, true> >;
