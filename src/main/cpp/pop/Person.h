@@ -25,8 +25,12 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
-#include "../behavior/behavior_policies/NoBehavior.h"
-#include "../behavior/belief_policies/NoBelief.h"
+
+#include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/behaviour_policies/AlwaysFollowBeliefs.h"
+
+#include "behaviour/belief_policies/NoBelief.h"
+#include "behaviour/belief_policies/Threshold.h"
 
 namespace stride {
 
@@ -36,21 +40,23 @@ enum class ClusterType;
 /**
  * Store and handle person data.
  */
-template <class BehaviorPolicy, class BeliefPolicy>
+template <class BehaviourPolicy, class BeliefPolicy>
 class Person
 {
 public:
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id,
 			unsigned int work_id,unsigned int primary_community_id, unsigned int secondary_community_id, unsigned int start_infectiousness,
-			unsigned int start_symptomatic, unsigned int time_infectious, unsigned int time_symptomatic)
+			unsigned int start_symptomatic, unsigned int time_infectious, unsigned int time_symptomatic, double risk_averseness = 0)
 		: m_id(id), m_age(age), m_gender('M'),
 		  m_household_id(household_id), m_school_id(school_id),
 		  m_work_id(work_id), m_primary_community_id(primary_community_id), m_secondary_community_id(secondary_community_id),
 		  m_at_household(true), m_at_school(true),m_at_work(true),m_at_primary_community(true), m_at_secondary_community(true),
 		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
 		  m_is_participant(false)
-	{}
+	{
+		BeliefPolicy::Initialize(m_belief_data, risk_averseness);
+	}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }
@@ -70,6 +76,9 @@ public:
 	/// Return person's health status.
 	const Health& GetHealth() const { return m_health; }
 
+	/// Return person's belief status.
+	const typename BeliefPolicy::Data& GetBeliefData() const { return m_belief_data; }
+
 	/// Get the id.
     unsigned int GetId() const { return m_id; }
 
@@ -83,7 +92,10 @@ public:
 	void ParticipateInSurvey() { m_is_participant = true; }
 
 	/// Update the health status and presence in clusters.
-	void Update(bool is_work_off, bool is_school_off);
+	void Update(bool is_work_off, bool is_school_off, double fraction_infected);
+
+	/// Update belief & behaviour upon meeting another Person
+	void Update(const Person* p);
 
 private:
 	unsigned int    m_id;                     ///< The id.
@@ -109,7 +121,10 @@ private:
 };
 
 /// Explicit instantiations in .cpp file
-extern template class Person<NoBehavior, NoBelief>;
+extern template class Person<NoBehaviour, NoBelief>;
+extern template class Person<AlwaysFollowBeliefs, Threshold<true, false> >;
+extern template class Person<AlwaysFollowBeliefs, Threshold<false, true> >;
+extern template class Person<AlwaysFollowBeliefs, Threshold<true, true> >;
 
 } // end_of_namespace
 
