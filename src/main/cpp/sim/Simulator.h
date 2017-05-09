@@ -45,7 +45,8 @@ class Cluster;
 class Simulator
 {
 public:
-	using PersonType = Person<AlwaysFollowBeliefs, Threshold<true, false> >;
+	using PersonType = Person<NoBehaviour, NoBelief>;
+	using BeliefPolicy = NoBelief;
 
         // Default constructor for empty Simulator.
         Simulator();
