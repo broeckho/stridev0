@@ -100,6 +100,10 @@ shared_ptr<Population> PopulationBuilder::Build(
                 const auto time_infectious      = Sample(rng, distrib_time_infectious);
                 const auto time_symptomatic     = Sample(rng, distrib_time_symptomatic);
                 const auto values = StringUtils::Split(line, ",");
+                auto risk_averseness = 0.0;
+                if (values.size() > 6) {
+                	risk_averseness = StringUtils::FromString<double>(values[6]);
+                }
                 population.emplace_back(Simulator::PersonType(person_id,
                         StringUtils::FromString<unsigned int>(values[0]),
                         StringUtils::FromString<unsigned int>(values[1]),
@@ -107,7 +111,7 @@ shared_ptr<Population> PopulationBuilder::Build(
                         StringUtils::FromString<unsigned int>(values[3]),
                         StringUtils::FromString<unsigned int>(values[4]),
                         StringUtils::FromString<unsigned int>(values[5]),
-                        start_infectiousness, start_symptomatic, time_infectious, time_symptomatic));
+                        start_infectiousness, start_symptomatic, time_infectious, time_symptomatic, risk_averseness));
                 ++person_id;
         }
 

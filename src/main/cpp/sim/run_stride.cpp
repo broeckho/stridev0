@@ -154,7 +154,8 @@ void run_stride(bool track_index_case, const string& config_file_name)
                 run_clock.Stop();
                 cout << "     Done, infected count: ";
                 cases[i] = sim->GetPopulation()->GetInfectedCount();
-                cout << setw(10) << cases[i] << endl;
+                unsigned int adopters = sim->GetPopulation()->GetAdoptedCount<Simulator::BeliefPolicy>();
+                cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopters << endl;
         }
 
         // -----------------------------------------------------------------------------------------
