@@ -20,7 +20,7 @@
  * Header for the Simulator class.
  */
 
-#include "behaviour/InformationPolicy.h"
+#include "behaviour/information_policies/InformationPolicy.h"
 //#include "core/Cluster.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"

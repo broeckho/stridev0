@@ -29,5 +29,4 @@ InformationPolicy ToInformationPolicy(const std::string& s);
 } // end_of_namespace
 
 
-
 #endif /* SRC_MAIN_CPP_BEHAVIOUR_INFORMATIONPOLICY_H_ */

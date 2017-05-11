@@ -18,7 +18,7 @@
  * Implementation of InformationPolicy.
  */
 
-#include "../behaviour/InformationPolicy.h"
+#include "InformationPolicy.h"
 
 #include <boost/algorithm/string.hpp>
 #include <map>
