@@ -22,7 +22,7 @@ set(LIB_SRC
 #---
 	behaviour/belief_data/ThresholdData.cpp
 	behaviour/belief_policies/Threshold.cpp
-	behaviour/InformationPolicy.cpp
+	behaviour/information_policies/InformationPolicy.cpp
 #---
     calendar/Calendar.cpp
 #---
