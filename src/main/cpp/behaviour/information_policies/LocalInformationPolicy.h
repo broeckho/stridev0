@@ -10,7 +10,7 @@
 
 namespace stride {
 
-templace <bool prevalence_based, bool belief_based>
+template <bool prevalence_based, bool belief_based>
 class LocalInformationPolicy {
 
 };

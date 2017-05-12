@@ -20,7 +20,6 @@
  * Header for the Infector class.
  */
 
-#include "behaviour/information_policies/InformationPolicy.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
 
@@ -35,7 +34,7 @@ class Calendar;
 /**
  * Actual contacts and transmission in cluster (primary template).
  */
-template<LogMode log_level, bool track_index_case, InformationPolicy information_policy>
+template<LogMode log_level, bool track_index_case>
 class Infector
 {
 public:
@@ -44,23 +43,12 @@ public:
 	        RngHandler& contact_handler, std::shared_ptr<const Calendar> sim_state);
 };
 
-/**
- * Actual contacts and transmissions in cluster (specialization for 'local' information policy).
- */
-template<LogMode log_level, bool track_index_case>
-class Infector<log_level, track_index_case, InformationPolicy::Local>
-{
-public:
-        ///
-        static void Execute(Cluster& cluster, DiseaseProfile disease_profile,
-                RngHandler& contact_handler, std::shared_ptr<const Calendar> calendar);
-};
 
 /**
  * Actual contacts and transmission in cluster (specialisation for logging all contacts).
  */
 template<bool track_index_case>
-class Infector<LogMode::Contacts, track_index_case, InformationPolicy::Global>
+class Infector<LogMode::Contacts, track_index_case>
 {
 public:
         ///
@@ -69,28 +57,22 @@ public:
 };
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::None, false, InformationPolicy::Global>;
-extern template class Infector<LogMode::None, false, InformationPolicy::Local>;
+extern template class Infector<LogMode::None, false>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::None, true, InformationPolicy::Global>;
-extern template class Infector<LogMode::None, true, InformationPolicy::Local>;
+extern template class Infector<LogMode::None, true>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Transmissions, false, InformationPolicy::Global>;
-extern template class Infector<LogMode::Transmissions, true, InformationPolicy::Local>;
+extern template class Infector<LogMode::Transmissions, false>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Transmissions, true, InformationPolicy::Global>;
-extern template class Infector<LogMode::Transmissions, true, InformationPolicy::Local>;
+extern template class Infector<LogMode::Transmissions, true>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Contacts, false, InformationPolicy::Global>;
-extern template class Infector<LogMode::Contacts, false, InformationPolicy::Local>;
+extern template class Infector<LogMode::Contacts, false>;
 
 /// Explicit instantiation in cpp file.
-extern template class Infector<LogMode::Contacts, true, InformationPolicy::Global>;
-extern template class Infector<LogMode::Contacts, true, InformationPolicy::Local>;
+extern template class Infector<LogMode::Contacts, true>;
 
 } // end_of_namespace
 

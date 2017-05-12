@@ -20,51 +20,6 @@
 
 #include "InformationPolicy.h"
 
-#include <boost/algorithm/string.hpp>
-#include <map>
-#include <string>
-
-namespace {
-
-using stride::InformationPolicy;
-using boost::to_upper;
-using namespace std;
-
-map<InformationPolicy, string> g_information_policy_name {
-                make_pair(InformationPolicy::Global,    		"Global"),
-                make_pair(InformationPolicy::Local,         	"Local"),
-				make_pair(InformationPolicy::Null, 				"Null")
-};
-
-map<string, InformationPolicy> g_name_information_policy {
-                make_pair("GLOBAL",   				InformationPolicy::Global),
-                make_pair("LOCAL",        			InformationPolicy::Local),
-				make_pair("NULL",					InformationPolicy::Null)
-};
-
-}
-
 namespace stride {
 
-string ToString(InformationPolicy w)
-{
-	return (g_information_policy_name.count(w) == 1) ? g_information_policy_name[w] : "Null";
-}
-
-bool IsInformationPolicy(const string& s)
-{
-        std::string t {s};
-        to_upper(t);
-        return (g_name_information_policy.count(t) == 1);
-}
-
-InformationPolicy ToInformationPolicy(const string& s)
-{
-        std::string t {s};
-        to_upper(t);
-	return (g_name_information_policy.count(t) == 1) ? g_name_information_policy[t] : InformationPolicy::Null;
-}
-
-} // namespace
-
-
+} /* namespace stride */

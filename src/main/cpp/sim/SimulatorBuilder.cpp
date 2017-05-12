@@ -106,11 +106,6 @@ shared_ptr<Simulator> SimulatorBuilder::Build(const ptree& pt_config,
         const string l = pt_config.get<string>("run.log_level", "None");
         sim->m_log_level = IsLogMode(l) ? ToLogMode(l) : throw runtime_error(string(__func__) + "> Invalid input for LogMode.");
 
-        // Get information policy.
-        const string p = pt_config.get<string>("run.information_policy", "Global");
-        sim->m_information_policy = IsInformationPolicy(p) ? ToInformationPolicy(p) :
-        		throw runtime_error(string(__func__) + "> Invalid input for Information Policy.");
-
         // Rng's.
         const auto seed = pt_config.get<double>("run.rng_seed");
         Random rng(seed);
