@@ -54,7 +54,7 @@ void Simulator::SetTrackIndexCase(bool track_index_case)
         m_track_index_case = track_index_case;
 }
 
-template<LogMode log_level, bool track_index_case, typename local_information_policy>
+template<LogMode log_level, bool track_index_case>
 void Simulator::UpdateClusters()
 {
         #pragma omp parallel num_threads(m_num_threads)
@@ -63,27 +63,27 @@ void Simulator::UpdateClusters()
 
                 #pragma omp for schedule(runtime)
                 for (size_t i = 0; i < m_households.size(); i++) {
-                        Infector<log_level, track_index_case, local_information_policy>::Execute(
+                        Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
                                 m_households[i], m_disease_profile, m_rng_handler[thread], m_calendar);
                 }
                 #pragma omp for schedule(runtime)
                 for (size_t i = 0; i < m_school_clusters.size(); i++) {
-                        Infector<log_level, track_index_case, local_information_policy>::Execute(
+                        Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
                                 m_school_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
                 }
                 #pragma omp for schedule(runtime)
                 for (size_t i = 0; i < m_work_clusters.size(); i++) {
-                        Infector<log_level, track_index_case, local_information_policy>::Execute(
+                        Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
                                 m_work_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
                 }
                 #pragma omp for schedule(runtime)
                 for (size_t i = 0; i < m_primary_community.size(); i++) {
-                        Infector<log_level, track_index_case, local_information_policy>::Execute(
+                        Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
                                 m_primary_community[i], m_disease_profile, m_rng_handler[thread], m_calendar);
                 }
                 #pragma omp for schedule(runtime)
                 for (size_t i = 0; i < m_secondary_community.size(); i++) {
-                        Infector<log_level, track_index_case, local_information_policy>::Execute(
+                        Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
                                 m_secondary_community[i], m_disease_profile, m_rng_handler[thread], m_calendar);
                 }
         }

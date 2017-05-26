@@ -21,6 +21,7 @@
  */
 
 #include "behaviour/information_policies/NoLocalInformation.h"
+#include "behaviour/information_policies/NoGlobalInformation.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
 #include "core/RngHandler.h"
@@ -44,8 +45,11 @@ class Cluster;
 class Simulator
 {
 public:
-	using PersonType = Person<NoBehaviour, NoBelief>;
+	using GlobalInformationPolicy = NoGlobalInformation;
+	using LocalInformationPolicy = NoLocalInformation;
 	using BeliefPolicy = NoBelief;
+	using BehaviourPolicy = NoBehaviour;
+	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
 
         // Default constructor for empty Simulator.
         Simulator();
@@ -61,7 +65,7 @@ public:
 
 private:
         /// Update the contacts in the given clusters.
-        template<LogMode log_level, bool track_index_case = false, typename local_information_policy = NoLocalInformation>
+        template<LogMode log_level, bool track_index_case = false>
         void UpdateClusters();
 
 private:
