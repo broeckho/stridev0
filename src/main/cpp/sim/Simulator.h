@@ -22,6 +22,7 @@
 
 #include "behaviour/information_policies/NoLocalInformation.h"
 #include "behaviour/information_policies/NoGlobalInformation.h"
+#include "behaviour/information_policies/LocalDiscussion.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
 #include "core/RngHandler.h"
@@ -33,6 +34,7 @@
 #include <string>
 #include <vector>
 
+#include "../behaviour/belief_policies/Threshold.h"
 namespace stride {
 
 class Population;
@@ -47,9 +49,12 @@ class Simulator
 public:
 	using GlobalInformationPolicy = NoGlobalInformation;
 	using LocalInformationPolicy = NoLocalInformation;
+	//using BeliefPolicy = Threshold<true, false>;
+	//using BehaviourPolicy = AlwaysFollowBeliefs;
 	using BeliefPolicy = NoBelief;
 	using BehaviourPolicy = NoBehaviour;
 	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
+	//using LocalInformationPolicy = LocalDiscussion<PersonType>;
 
         // Default constructor for empty Simulator.
         Simulator();

@@ -268,16 +268,21 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
 // All explicit instantiations.
 //--------------------------------------------------------------------------
 template class Infector<LogMode::None, false, NoLocalInformation>;
+template class Infector<LogMode::None, false, LocalDiscussion<Simulator::PersonType> >;
 
 template class Infector<LogMode::None, true, NoLocalInformation>;
+template class Infector<LogMode::None, true, LocalDiscussion<Simulator::PersonType> >;
 
 template class Infector<LogMode::Transmissions, false, NoLocalInformation>;
+template class Infector<LogMode::Transmissions, false, LocalDiscussion<Simulator::PersonType> >;
 
 template class Infector<LogMode::Transmissions, true, NoLocalInformation>;
+template class Infector<LogMode::Transmissions, true, LocalDiscussion<Simulator::PersonType> >;
 
 template class Infector<LogMode::Contacts, false, NoLocalInformation>;
+template class Infector<LogMode::Contacts, false, LocalDiscussion<Simulator::PersonType> >;
 
 template class Infector<LogMode::Contacts, true, NoLocalInformation>;
-
+template class Infector<LogMode::Contacts, true, LocalDiscussion<Simulator::PersonType> >;
 
 } // end_of_namespace

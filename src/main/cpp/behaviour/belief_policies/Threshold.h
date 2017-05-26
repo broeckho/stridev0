@@ -62,6 +62,6 @@ extern template class Threshold<false, true>;
 extern template class Threshold<true, true>;
 
 
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLD_H_ */
-
 } /* namespace stride */
+
+#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLD_H_ */
