@@ -8,7 +8,7 @@
 #ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_
 #define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_
 
-#include "behaviour/behaviour_policies/AlwaysFollowBeliefs.h"
+#include "behaviour/behaviour_policies/Vaccination.h"
 
 
 /*
@@ -76,16 +76,10 @@ private:
 
 };
 
-extern template void ThresholdData::Contact<AlwaysFollowBeliefs, Threshold<true, false> >(const Person<AlwaysFollowBeliefs, Threshold<true, false> >* p);
-extern template void ThresholdData::Contact<AlwaysFollowBeliefs, Threshold<false, true> >(const Person<AlwaysFollowBeliefs, Threshold<false, true> >* p);
-extern template void ThresholdData::Contact<AlwaysFollowBeliefs, Threshold<true, true> >(const Person<AlwaysFollowBeliefs, Threshold<true, true> >* p);
+extern template void ThresholdData::Contact<Vaccination<Threshold<true, false> >, Threshold<true, false> >(const Person<Vaccination<Threshold<true, false> >, Threshold<true, false> >* p);
+extern template void ThresholdData::Contact<Vaccination<Threshold<true, false> >, Threshold<false, true> >(const Person<Vaccination<Threshold<true, false> >, Threshold<false, true> >* p);
+extern template void ThresholdData::Contact<Vaccination<Threshold<true, false> >, Threshold<true, true> >(const Person<Vaccination<Threshold<true, false> >, Threshold<true, true> >* p);
 
-
-//extern template return-type name < argument-list > ( parameter-list ) ;
-//extern template ReallyBigFunction<int>();
-//extern template void ThresholdData::Contact<AlwaysFollowBeliefs, Threshold<true, false> >(const Person<AlwaysFollowBeliefs, Threshold<true, false> >);
-//extern template<AlwaysFollowBeliefs, Threshold<true, false> >
-//void ThresholdData::Contact(const Person<AlwaysFollowBeliefs, Threshold<true, false> >);
 
 } /* namespace stride */
 

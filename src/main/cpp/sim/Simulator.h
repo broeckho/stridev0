@@ -50,9 +50,9 @@ public:
 	using GlobalInformationPolicy = NoGlobalInformation;
 	using LocalInformationPolicy = NoLocalInformation;
 	//using BeliefPolicy = Threshold<true, false>;
-	//using BehaviourPolicy = AlwaysFollowBeliefs;
 	using BeliefPolicy = NoBelief;
-	using BehaviourPolicy = NoBehaviour;
+	//using BehaviourPolicy = Vaccination<BeliefPolicy>;
+	using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
 	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
 	//using LocalInformationPolicy = LocalDiscussion<PersonType>;
 

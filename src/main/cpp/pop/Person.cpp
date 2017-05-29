@@ -62,10 +62,14 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 {
         m_health.Update();
 
-        // Vaccination behavior //TODO multiple behaviors
-        /*if (BehaviorPolicy::PracticesBehavior(BeliefPolicy::BelievesIn(m_belief_data))) {
-        	m_health.SetImmune();
-        }*/
+        // Vaccination behavior
+        // As long as people are susceptible to a disease
+        // (or think they are: they have been infected but are not yet symptomatic) they can choose to get vaccinated
+        if (m_health.IsSusceptible() || (m_health.IsInfected() && (! m_health.IsSymptomatic()))) {
+        	if (BehaviourPolicy::PracticesVaccination(m_belief_data)) {
+        		m_health.SetImmune();
+        	}
+        }
 
         // Update presence in clusters.
         if (is_work_off || (m_age <= MinAdultAge() && is_school_off)) {
@@ -92,9 +96,9 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p) {
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Person<NoBehaviour, NoBelief>;
+template class Person<NoBehaviour<NoBelief>, NoBelief>;
 
-template class Person<AlwaysFollowBeliefs, Threshold<true, false> >;
-template class Person<AlwaysFollowBeliefs, Threshold<false, true> >;
-template class Person<AlwaysFollowBeliefs, Threshold<true, true> >;
+template class Person<Vaccination<Threshold<true, false> >, Threshold<true, false> >;
+template class Person<Vaccination<Threshold<true, false> >, Threshold<false, true> >;
+template class Person<Vaccination<Threshold<true, false> >, Threshold<true, true> >;
 } // end_of_namespace
