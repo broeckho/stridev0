@@ -55,13 +55,6 @@ public:
 
 };
 
-
-/// Explicit instantiations in .cpp file
-extern template class Threshold<true, false>;
-extern template class Threshold<false, true>;
-extern template class Threshold<true, true>;
-
-
 } /* namespace stride */
 
 #endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLD_H_ */

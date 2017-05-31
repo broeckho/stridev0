@@ -34,7 +34,9 @@
 #include <string>
 #include <vector>
 
-#include "../behaviour/belief_policies/Threshold.h"
+#include "behaviour/belief_policies/Threshold.h"
+#include "behaviour/belief_policies/ThresholdWithAwareness.h"
+
 namespace stride {
 
 class Population;
@@ -47,14 +49,21 @@ class Cluster;
 class Simulator
 {
 public:
-	using GlobalInformationPolicy = NoGlobalInformation;
-	using LocalInformationPolicy = NoLocalInformation;
-	//using BeliefPolicy = Threshold<true, false>;
-	using BeliefPolicy = NoBelief;
-	//using BehaviourPolicy = Vaccination<BeliefPolicy>;
-	using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+	/// Belief policy
+	//using BeliefPolicy = NoBelief;
+	using BeliefPolicy = Threshold<true, true>;
+
+	/// BehaviourPolicy
+	//using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+	using BehaviourPolicy = Vaccination<BeliefPolicy>;
+
+	/// Person type
 	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
-	//using LocalInformationPolicy = LocalDiscussion<PersonType>;
+
+	/// Information policy
+	using GlobalInformationPolicy = NoGlobalInformation;
+	//using LocalInformationPolicy = NoLocalInformation;
+	using LocalInformationPolicy = LocalDiscussion<PersonType>;
 
         // Default constructor for empty Simulator.
         Simulator();
