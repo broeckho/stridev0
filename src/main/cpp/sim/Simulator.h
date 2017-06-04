@@ -50,20 +50,20 @@ class Simulator
 {
 public:
 	/// Belief policy
-	//using BeliefPolicy = NoBelief;
-	using BeliefPolicy = Threshold<true, true>;
+	using BeliefPolicy = NoBelief;
+	//using BeliefPolicy = ThresholdWithAwareness<true, true>;
 
 	/// BehaviourPolicy
-	//using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
-	using BehaviourPolicy = Vaccination<BeliefPolicy>;
+	using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+	//using BehaviourPolicy = Vaccination<BeliefPolicy>;
 
 	/// Person type
 	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
 
 	/// Information policy
 	using GlobalInformationPolicy = NoGlobalInformation;
-	//using LocalInformationPolicy = NoLocalInformation;
-	using LocalInformationPolicy = LocalDiscussion<PersonType>;
+	using LocalInformationPolicy = NoLocalInformation;
+	//using LocalInformationPolicy = LocalDiscussion<PersonType>;
 
         // Default constructor for empty Simulator.
         Simulator();
