@@ -34,6 +34,7 @@ set(LIB_SRC
     core/Infector.cpp
     core/LogMode.cpp
 #---
+	output/AdoptedFile.cpp
 	output/CasesFile.cpp
 	output/PersonFile.cpp
 	output/SummaryFile.cpp

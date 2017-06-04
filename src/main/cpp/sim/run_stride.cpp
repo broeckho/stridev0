@@ -20,6 +20,7 @@
 
 # include "run_stride.h"
 
+#include "output/AdoptedFile.h"
 #include "output/CasesFile.h"
 #include "output/PersonFile.h"
 #include "output/SummaryFile.h"
@@ -147,6 +148,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
         Stopwatch<> run_clock("run_clock");
         const unsigned int num_days = pt_config.get<unsigned int>("run.num_days");
         vector<unsigned int> cases(num_days);
+        vector<unsigned int> adopted(num_days);
         for (unsigned int i = 0; i < num_days; i++) {
                 cout << "Simulating day: " << setw(5) << i;
                 run_clock.Start();
@@ -164,6 +166,10 @@ void run_stride(bool track_index_case, const string& config_file_name)
         // Cases
         CasesFile    cases_file(output_prefix);
         cases_file.Print(cases);
+
+        // Adopted
+        AdoptedFile    adopted_file(output_prefix);
+        adopted_file.Print(adopted);
 
         // Summary
         SummaryFile  summary_file(output_prefix);
