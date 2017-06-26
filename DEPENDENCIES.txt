@@ -29,7 +29,7 @@ you should look at MacPorts (www.macports.org).
 -----------------------------------------------------------------------------
     BOOST:
 -----------------------------------------------------------------------------
-Boost headers are REQUIRED, as are the libraries filesystem, thread, date_time,
+Boost headers are REQUIRED, as are libraries filesystem, thread, date_time,
 and system. 
 See www.boost.org.
 
@@ -38,27 +38,27 @@ See www.boost.org.
 #############################################################################
 
 -----------------------------------------------------------------------------
-    DOMP:
+    DOMP: see src/main/resources/lib/domp
 -----------------------------------------------------------------------------
 A OpenMP placeholder library with implementations of OpenMP primitives that
 are appropriate for a sequential program. Makes it possible to avoid 
 conditional compilations. We have slightly extended the implementation.
 See https://github.com/chipbuster/libdomp
 -----------------------------------------------------------------------------
-    SPDLOG:
+    SPDLOG: see src/main/resources/lib/spdlog
 -----------------------------------------------------------------------------
 A C++ asynchronous an multi-threaded logging library, in header only format
 developed by Gabi Melman.
 See https://github.com/gabime/spdlog
 
 -----------------------------------------------------------------------------
-    TCLAP:
+    TCLAP: see src/main/resources/lib/tclap
 -----------------------------------------------------------------------------
 A templatized C++ command line parser library developped by M. E. Smoot and
 D. Arano. Available at http://http://tclap.sourceforge.net/
 
 -----------------------------------------------------------------------------
-    TRNG4:
+    TRNG4: see src/main/resources/lib/trng-4.15
 -----------------------------------------------------------------------------
 Version 4.0 of Tina's Random Number Generators Library developed by Heiko 
 Bauke and available at htt:/http://numbercrunch.de/trng/. Tina's Random Number 
@@ -67,12 +67,8 @@ generator library for sequential and parallel Monte Carlo simulations. Its
 design principles are based on a proposal for an extensible random number 
 generator facility, that has become part of the C++11 standard.
 
-#############################################################################
-#     Included dependencies: (see src/test/resources/lib)
-#############################################################################
-
 -----------------------------------------------------------------------------
-    Googletest:
+    Googletest: see src/test/resources/lib/gtext
 -----------------------------------------------------------------------------
 A C++ unit test framwework developed by Gooogle and available at 
 https://github.com/google/googletest.
