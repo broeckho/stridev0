@@ -15,20 +15,28 @@
 #  Copyright 2016, Willem L, Kuylen E & Broeckhove J
 #############################################################################
 
-We target three platforms Linux/Unix and Mac OSX each with
-the GNU gcc g++ or clang compiler.
+We target Linux/Unix and Mac OSX platforms each with GCC and Clang compiler.
 
 #############################################################################
-#   Tested on the following platforms:
+#   CI Tested on the following platforms:
 #############################################################################
- OS                |  Compiler               |  Boost  |
- -------------------------------------------------------
- Ubuntu 14.04      |  Ubuntu GCC 5.1.0       |  1.55   |
- Ubuntu 16.04      |  Ubuntu GCC 5.4.0       |  1.58   |
- Ubuntu 16.04      |  Ubuntu clang 3.8.0     |  1.58   |
- Mac OS X 10.11.6  |  Apple LLVM 8.0.0       |  1.59   |
- Mac OS X 10.11.6  |  MacPorts GCC 5.3.0     |  1.59   |
- Mac OS X 10.11.6  |  MacPorts GCC 6.1.0     |  1.59   |
- Mac OS X 10.11.6  |  MacPorts clang 3.9.0   |  1.59   |
+ OS              |  Compiler               |  Boost  | System Id
+ ----------------------------------------------------------------------------
+ Ubuntu 14.04    |  Ubuntu GCC 6.3.0       |  1.54   | Travis CI
+ Ubuntu 14.04    |  Ubuntu Clang 3.8.0     |  1.54   | Travis CI
+ Ubuntu 14.04    |  Ubuntu Clang 4.0.1     |  1.54   | Travis CI
+ Mac OS X 10.12  |  Homebrew Clang 3.8.0   |  1.64   | Travis CI 
+ Mac OS X 10.12  |  Apple Clang 8.1.0      |  1.64   | Travis CI                  |
+
+#############################################################################
+#   Developped on the following platforms:
+#############################################################################
+ OS              |  Compiler               |  Boost  | System Id
+ ----------------------------------------------------------------------------
+ Ubuntu 14.04    |  Ubuntu GCC 5.1.0       |  1.55   | Jan B's octo
+ Mac OS X 10.11  |  MacPorts GCC 6.3.0     |  1.59   | Jan B's MacBook Pro
+ Mac OS X 10.11  |  MacPorts Clang 4.0.0   |  1.59   | Jan B's MacBook Pro
+ Mac OS X 10.11  |  Apple Clang 8.0.0      |  1.59   | Jan B's MacBook Pro
+ Mac OS X 10.11  |  MacPorts GCC 6.1.0     |  1.59   | Jan B's Mac Pro
 
 #############################################################################
