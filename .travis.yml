@@ -27,7 +27,7 @@ matrix:
       addons:
         apt:
           sources:  [ *default_sources ]
-          packages: [ *default_packages, gcc-6, g++-6 ]
+          packages: [ *default_packages, g++-6 ]
 
     - os: linux
       compiler: clang
@@ -37,7 +37,6 @@ matrix:
           sources: [ *default_sources, llvm-toolchain-trusty ]
           packages:
             - *default_packages
-            - clang-3.8
             - clang++-3.8
             - libstdc++-6-dev
 
