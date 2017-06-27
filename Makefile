@@ -54,9 +54,6 @@ endif
 ifneq ($(CMAKE_INSTALL_PREFIX),)
 	CMAKE_ARGS += -DCMAKE_INSTALL_PREFIX:PATH=$(CMAKE_INSTALL_PREFIX)
 endif
-ifneq ($(CMAKE_C_COMPILER),)
-	CMAKE_ARGS += -DCMAKE_C_COMPILER:FILEPATH=$(CMAKE_C_COMPILER)
-endif
 ifneq ($(CMAKE_CXX_COMPILER),)
 	CMAKE_ARGS += -DCMAKE_CXX_COMPILER:FILEPATH=$(CMAKE_CXX_COMPILER)
 endif
@@ -102,7 +99,6 @@ help:
 	@ $(CMAKE) -E echo "   BUILD_DIR                  : " $(BUILD_DIR)
 	@ $(CMAKE) -E echo " "
 	@ $(CMAKE) -E echo "   CMAKE_GENERATOR            : " $(CMAKE_GENERATOR)
-	@ $(CMAKE) -E echo "   CMAKE_C_COMPILER           : " $(CMAKE_C_COMPILER)
 	@ $(CMAKE) -E echo "   CMAKE_CXX_COMPILER         : " $(CMAKE_CXX_COMPILER)
 	@ $(CMAKE) -E echo "   CMAKE_CXX_FLAGS            : " $(CMAKE_CXX_FLAGS)
 	@ $(CMAKE) -E echo "   CMAKE_BUILD_TYPE           : " $(CMAKE_BUILD_TYPE)
