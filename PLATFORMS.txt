@@ -15,7 +15,7 @@
 #  Copyright 2016, Willem L, Kuylen E & Broeckhove J
 #############################################################################
 
-We target Linux/Unix and Mac OSX platforms each with GCC and Clang compiler.
+We target Linux/Unix and Mac OSX platforms with GCC and Clang compilers.
 
 #############################################################################
 #   CI Tested on the following platforms:
@@ -33,10 +33,11 @@ We target Linux/Unix and Mac OSX platforms each with GCC and Clang compiler.
 #############################################################################
  OS              |  Compiler               |  Boost  | System Id
  ----------------------------------------------------------------------------
- Ubuntu 14.04    |  Ubuntu GCC 5.1.0       |  1.55   | Jan B's octo
+ Ubuntu 14.04    |  Ubuntu GCC 5.1.0       |  1.55   | octo
+ Ubuntu 16.04    |  Ubuntu GCC 5.4.0       |  1.58   | roadrunner
  Mac OS X 10.11  |  MacPorts GCC 6.3.0     |  1.59   | Jan B's MacBook Pro
  Mac OS X 10.11  |  MacPorts Clang 4.0.0   |  1.59   | Jan B's MacBook Pro
  Mac OS X 10.11  |  Apple Clang 8.0.0      |  1.59   | Jan B's MacBook Pro
- Mac OS X 10.11  |  MacPorts GCC 6.1.0     |  1.59   | Jan B's Mac Pro
+ Mac OS X 10.11  |  MacPorts GCC 5.4.0     |  1.59   | hermes
 
 #############################################################################

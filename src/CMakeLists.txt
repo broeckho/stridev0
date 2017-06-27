@@ -33,7 +33,7 @@ set( CMAKE_PROGRAM_PATH  "/opt/local/bin;/usr/texbin;/usr/local/bin;/usr/bin"
 	CACHE PATH "Where to look with find_program." )
 	
 #============================================================================
-# Project name, configuration for CMake, macros for build & install.
+# Configuration for CMake, for build & install.
 #============================================================================
 project( STRIDE )
 include( CMakeCMakeConfig.txt )
@@ -58,14 +58,10 @@ else()
 endif()
 
 #============================================================================
-# Configuration for DOC: DOXYGEN AND LATEX
+# Configuration for DOC: DOXYGEN
 #============================================================================
 if( STRIDE_INCLUDE_DOC )
     find_package( Doxygen )	
-    find_package( LATEX )
-    if( NOT "${PDFLATEX_COMPILER}" STREQUAL "PDFLATEX_COMPILER-NOTFOUND" )
-    	set( LATEX_FOUND YES )
-    endif()
 endif()
 #============================================================================
 # Add subdirs
