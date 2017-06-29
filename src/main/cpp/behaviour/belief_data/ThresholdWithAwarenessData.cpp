@@ -1,10 +1,3 @@
-/*
- * ThresholdWithAwarenessData.cpp
- *
- *  Created on: May 31, 2017
- *      Author: elise
- */
-
 #include "ThresholdWithAwarenessData.h"
 #include "pop/Person.h"
 

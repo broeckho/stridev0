@@ -1,12 +1,19 @@
-/*
- * ThresholdData.h
- *
- *  Created on: May 7, 2017
- *      Author: elise
- */
-
 #ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_
 #define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_
+/*
+ *  This is free software: you can redistribute it and/or modify it
+ *  under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *  The software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  You should have received a copy of the GNU General Public License
+ *  along with the software. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ */
 
 #include "behaviour/behaviour_policies/Vaccination.h"
 
@@ -25,6 +32,9 @@ class Person;
 template <bool threshold_infected, bool threshold_adopted>
 class Threshold;
 
+/**
+ *
+ */
 class ThresholdData
 {
 public:
@@ -69,7 +79,7 @@ private:
 
 	double m_threshold_infected; ///< Fraction of contacts that needs to be infected before person adopts belief.
 	double m_threshold_adopted;  ///< Fraction of contacts that needs to have adopted the belief for person to also
-				     ///adopt.
+				     /// adopt.
 };
 
 extern template void ThresholdData::Contact<Vaccination<Threshold<true, false>>, Threshold<true, false>>(

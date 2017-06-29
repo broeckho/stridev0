@@ -52,8 +52,8 @@ void Calendar::InitializeHolidays(const boost::property_tree::ptree& pt_config)
 	// Load json file
 	boost::property_tree::ptree pt_holidays;
 	{
-		const auto file_name{pt_config.get<string>("run.holidays_file", "holidays_flanders_2016.json")};
-		const auto file_path{InstallDirs::GetDataDir() /= file_name};
+		const string file_name{pt_config.get<string>("run.holidays_file", "holidays_flanders_2016.json")};
+		const path file_path{InstallDirs::GetDataDir() /= file_name};
 		if (!is_regular_file(file_path)) {
 			throw runtime_error(string(__func__) + "Holidays file " + file_path.string() + " not present.");
 		}
