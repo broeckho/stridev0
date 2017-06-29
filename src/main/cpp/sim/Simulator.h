@@ -20,9 +20,9 @@
  * Header for the Simulator class.
  */
 
-#include "behaviour/information_policies/NoLocalInformation.h"
-#include "behaviour/information_policies/NoGlobalInformation.h"
 #include "behaviour/information_policies/LocalDiscussion.h"
+#include "behaviour/information_policies/NoGlobalInformation.h"
+#include "behaviour/information_policies/NoLocalInformation.h"
 #include "core/DiseaseProfile.h"
 #include "core/LogMode.h"
 #include "core/RngHandler.h"
@@ -51,11 +51,11 @@ class Simulator
 public:
 	/// Belief policy
 	using BeliefPolicy = NoBelief;
-	//using BeliefPolicy = ThresholdWithAwareness<true, true>;
+	// using BeliefPolicy = ThresholdWithAwareness<true, true>;
 
 	/// BehaviourPolicy
 	using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
-	//using BehaviourPolicy = Vaccination<BeliefPolicy>;
+	// using BehaviourPolicy = Vaccination<BeliefPolicy>;
 
 	/// Person type
 	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
@@ -63,46 +63,46 @@ public:
 	/// Information policy
 	using GlobalInformationPolicy = NoGlobalInformation;
 	using LocalInformationPolicy = NoLocalInformation;
-	//using LocalInformationPolicy = LocalDiscussion<PersonType>;
+	// using LocalInformationPolicy = LocalDiscussion<PersonType>;
 
-        // Default constructor for empty Simulator.
-        Simulator();
+	// Default constructor for empty Simulator.
+	Simulator();
 
-        /// Get the population.
-        const std::shared_ptr<const Population> GetPopulation() const;
+	/// Get the population.
+	const std::shared_ptr<const Population> GetPopulation() const;
 
-        /// Change track_index_case setting.
-        void SetTrackIndexCase(bool track_index_case);
+	/// Change track_index_case setting.
+	void SetTrackIndexCase(bool track_index_case);
 
-        /// Run one time step, computing full simulation (default) or only index case.
-        void TimeStep();
-
-private:
-        /// Update the contacts in the given clusters.
-        template<LogMode log_level, bool track_index_case = false>
-        void UpdateClusters();
+	/// Run one time step, computing full simulation (default) or only index case.
+	void TimeStep();
 
 private:
-	boost::property_tree::ptree         m_config_pt;            ///< Configuration property tree.
+	/// Update the contacts in the given clusters.
+	template <LogMode log_level, bool track_index_case = false>
+	void UpdateClusters();
 
 private:
-	unsigned int                        m_num_threads;          ///< The number of (OpenMP) threads.
-        std::vector<RngHandler>             m_rng_handler;          ///< Pointer to the RngHandlers.
-        LogMode                             m_log_level;            ///< Specifies logging mode.
-        std::shared_ptr<Calendar>           m_calendar;             ///< Management of calendar.
+	boost::property_tree::ptree m_config_pt; ///< Configuration property tree.
 
 private:
-        std::shared_ptr<Population>         m_population;           ///< Pointer to the Population.
+	unsigned int m_num_threads;            ///< The number of (OpenMP) threads.
+	std::vector<RngHandler> m_rng_handler; ///< Pointer to the RngHandlers.
+	LogMode m_log_level;                   ///< Specifies logging mode.
+	std::shared_ptr<Calendar> m_calendar;  ///< Management of calendar.
 
-	std::vector<Cluster>                m_households;           ///< Container with household Clusters.
-        std::vector<Cluster>                m_school_clusters;      ///< Container with school Clusters.
-        std::vector<Cluster>                m_work_clusters;        ///< Container with work Clusters.
-	std::vector<Cluster>                m_primary_community;    ///< Container with primary community Clusters.
-	std::vector<Cluster>                m_secondary_community;  ///< Container with secondary community  Clusters.
+private:
+	std::shared_ptr<Population> m_population; ///< Pointer to the Population.
 
-	DiseaseProfile                      m_disease_profile;      ///< Profile of disease.
+	std::vector<Cluster> m_households;          ///< Container with household Clusters.
+	std::vector<Cluster> m_school_clusters;     ///< Container with school Clusters.
+	std::vector<Cluster> m_work_clusters;       ///< Container with work Clusters.
+	std::vector<Cluster> m_primary_community;   ///< Container with primary community Clusters.
+	std::vector<Cluster> m_secondary_community; ///< Container with secondary community  Clusters.
 
-	bool                                m_track_index_case;     ///< General simulation or tracking index case.
+	DiseaseProfile m_disease_profile; ///< Profile of disease.
+
+	bool m_track_index_case; ///< General simulation or tracking index case.
 
 private:
 	friend class SimulatorBuilder;

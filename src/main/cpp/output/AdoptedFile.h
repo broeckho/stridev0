@@ -15,7 +15,8 @@
 namespace stride {
 namespace output {
 
-class AdoptedFile {
+class AdoptedFile
+{
 public:
 	/// Constructor
 	AdoptedFile(const std::string& file = "stride_adopted");
@@ -25,12 +26,13 @@ public:
 
 	/// Print the given cases with corresponding tag.
 	void Print(const std::vector<unsigned int>& cases);
+
 private:
 	/// Generate file name and open the file stream.
 	void Initialize(const std::string& file);
 
 private:
-	std::ofstream		m_fstream;	///< The file stream.
+	std::ofstream m_fstream; ///< The file stream.
 };
 
 } /* namespace output */

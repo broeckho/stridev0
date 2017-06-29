@@ -13,9 +13,11 @@
 namespace stride {
 
 template <typename PersonType>
-class LocalDiscussion {
+class LocalDiscussion
+{
 public:
-	static void Update(PersonType* p1, PersonType* p2) {
+	static void Update(PersonType* p1, PersonType* p2)
+	{
 		if (RNG::GetInstance().NextDouble() < 1.0) {
 			p1->Update(p2);
 			p2->Update(p1);
@@ -24,6 +26,5 @@ public:
 };
 
 } /* namespace stride */
-
 
 #endif /* SRC_MAIN_CPP_BEHAVIOUR_INFORMATION_POLICIES_LOCALDISCUSSION_H_ */

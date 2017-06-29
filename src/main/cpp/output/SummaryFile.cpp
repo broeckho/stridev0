@@ -21,10 +21,9 @@
 #include "SummaryFile.h"
 
 #include <boost/property_tree/ptree.hpp>
-#include <omp.h>
-#include <iostream>
 #include <fstream>
-
+#include <iostream>
+#include <omp.h>
 
 namespace stride {
 namespace output {
@@ -37,43 +36,31 @@ SummaryFile::SummaryFile(const std::string& file)
 
 	// add header
 	m_fstream << "pop_file,num_days,pop_size,seeding_rate,"
-	        << "R0,transm_rate,immunity_rate,num_threads,rng_seed,run_time,"
-	        << "total_time,num_cases,AR" << endl;
+		  << "R0,transm_rate,immunity_rate,num_threads,rng_seed,run_time,"
+		  << "total_time,num_cases,AR" << endl;
 }
 
-SummaryFile::~SummaryFile()
-{
-	m_fstream.close();
-}
+SummaryFile::~SummaryFile() { m_fstream.close(); }
 
-void SummaryFile::Print(
-        const boost::property_tree::ptree& pt_config,
-        unsigned int population_size,
-        unsigned int num_cases,
-        unsigned int run_time,
-        unsigned int total_time)
+void SummaryFile::Print(const boost::property_tree::ptree& pt_config, unsigned int population_size,
+			unsigned int num_cases, unsigned int run_time, unsigned int total_time)
 {
 	unsigned int num_threads = 0;
 
-        #pragma omp parallel
+#pragma omp parallel
 	{
 		num_threads = omp_get_num_threads();
 	}
 
-	m_fstream
-		<< pt_config.get<string>("run.population_file") << ","
-		<< pt_config.get<unsigned int>("run.num_days") << ","
-		<< population_size << ","
-		<< pt_config.get<double>("run.seeding_rate") << ","
-		<< pt_config.get<double>("run.r0") << ","
-		<< "NA" << "," // << pt_config.get<double>("run.transmission_rate") << ";"
-		<< pt_config.get<double>("run.immunity_rate") << ","
-		<< num_threads << ","
-		<< pt_config.get<unsigned int>("run.rng_seed") << ","
-		<< run_time << "," << total_time << "," << num_cases << ","
-		<< static_cast<double>(num_cases) / population_size << endl;
+	m_fstream << pt_config.get<string>("run.population_file") << "," << pt_config.get<unsigned int>("run.num_days")
+		  << "," << population_size << "," << pt_config.get<double>("run.seeding_rate") << ","
+		  << pt_config.get<double>("run.r0") << ","
+		  << "NA"
+		  << "," // << pt_config.get<double>("run.transmission_rate") << ";"
+		  << pt_config.get<double>("run.immunity_rate") << "," << num_threads << ","
+		  << pt_config.get<unsigned int>("run.rng_seed") << "," << run_time << "," << total_time << ","
+		  << num_cases << "," << static_cast<double>(num_cases) / population_size << endl;
 }
 
 } // end namespace
 } // end namespace
-

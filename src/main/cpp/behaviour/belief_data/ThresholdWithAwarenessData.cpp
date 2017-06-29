@@ -11,7 +11,8 @@
 namespace stride {
 
 template <typename BehaviourPolicy, typename BeliefPolicy>
-void ThresholdWithAwarenessData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p) {
+void ThresholdWithAwarenessData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)
+{
 	if (IsAware()) {
 		// Update fraction infected and / or fraction adopted
 		m_num_contacts++;
@@ -28,12 +29,14 @@ void ThresholdWithAwarenessData::Contact(const Person<BehaviourPolicy, BeliefPol
 	}
 }
 
-template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAwareness<true, false> >, ThresholdWithAwareness<true, false> >
-		(const Person<Vaccination<ThresholdWithAwareness<true, false> >, ThresholdWithAwareness<true, false> >* p);
-template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAwareness<false, true> >, ThresholdWithAwareness<false, true> >
-		(const Person<Vaccination<ThresholdWithAwareness<false, true> >, ThresholdWithAwareness<false, true> >* p);
-template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAwareness<true, true> >, ThresholdWithAwareness<true, true> >
-		(const Person<Vaccination<ThresholdWithAwareness<true, true> >, ThresholdWithAwareness<true, true> >* p);
-
+template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAwareness<true, false>>,
+						  ThresholdWithAwareness<true, false>>(
+    const Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>* p);
+template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAwareness<false, true>>,
+						  ThresholdWithAwareness<false, true>>(
+    const Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>* p);
+template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAwareness<true, true>>,
+						  ThresholdWithAwareness<true, true>>(
+    const Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>* p);
 
 } /* namespace stride */

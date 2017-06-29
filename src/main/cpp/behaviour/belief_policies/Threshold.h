@@ -14,15 +14,17 @@
 namespace stride {
 
 /// Forward declaration of class Person
-template<typename BehaviourPolicy, typename BeliefPolicy>
+template <typename BehaviourPolicy, typename BeliefPolicy>
 class Person;
 
 template <bool threshold_infected, bool threshold_adopted>
-class Threshold {
+class Threshold
+{
 public:
 	using Data = ThresholdData;
 
-	static void Initialize(Data& belief_data, double risk_averseness) {
+	static void Initialize(Data& belief_data, double risk_averseness)
+	{
 		if (threshold_infected) {
 			belief_data.SetThresholdInfected(1 - risk_averseness);
 		}
@@ -33,12 +35,15 @@ public:
 
 	static void Update(Data& belief_data, Health& health_data) {}
 
-	template<typename BehaviourPolicy>
-	static void Update(Data& belief_data, const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >* p) {
-		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >(p);
+	template <typename BehaviourPolicy>
+	static void Update(Data& belief_data,
+			   const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>* p)
+	{
+		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>(p);
 	}
 
-	static bool HasAdopted(const Data& belief_data) {
+	static bool HasAdopted(const Data& belief_data)
+	{
 		if (threshold_infected) {
 			if (belief_data.GetFractionInfected() > belief_data.GetThresholdInfected()) {
 				return true;
@@ -52,7 +57,6 @@ public:
 
 		return false;
 	}
-
 };
 
 } /* namespace stride */

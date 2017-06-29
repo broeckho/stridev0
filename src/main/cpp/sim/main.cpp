@@ -20,9 +20,9 @@
 
 #include "run_stride.h"
 
-#include <tclap/CmdLine.h>
 #include <exception>
 #include <iostream>
+#include <tclap/CmdLine.h>
 
 using namespace std;
 using namespace stride;
@@ -37,9 +37,9 @@ int main(int argc, char** argv)
 		// Parse command line.
 		// -----------------------------------------------------------------------------------------
 		CmdLine cmd("stride", ' ', "1.0", false);
-		SwitchArg         index_case_Arg("r", "r0", "R0 only", cmd, false);
-		ValueArg<string>  config_file_Arg("c", "config", "Config File", false,
-		                                "./config/run_default.xml", "CONFIGURATION FILE", cmd);
+		SwitchArg index_case_Arg("r", "r0", "R0 only", cmd, false);
+		ValueArg<string> config_file_Arg("c", "config", "Config File", false, "./config/run_default.xml",
+						 "CONFIGURATION FILE", cmd);
 		cmd.parse(argc, argv);
 
 		// -----------------------------------------------------------------------------------------
@@ -47,14 +47,13 @@ int main(int argc, char** argv)
 		// -----------------------------------------------------------------------------------------
 		run_stride(index_case_Arg.getValue(), config_file_Arg.getValue());
 
-	}
-	catch (exception& e) {
+	} catch (exception& e) {
 		exit_status = EXIT_FAILURE;
 		cerr << "\nEXCEPION THROWN: " << e.what() << endl;
-	}
-	catch (...) {
+	} catch (...) {
 		exit_status = EXIT_FAILURE;
-		cerr << "\nEXCEPION THROWN: " << "Unknown exception." << endl;
+		cerr << "\nEXCEPION THROWN: "
+		     << "Unknown exception." << endl;
 	}
 	return exit_status;
 }

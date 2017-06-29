@@ -46,8 +46,8 @@ public:
 	/// Constructor
 	Cluster(std::size_t cluster_id, ClusterType cluster_type);
 
-        /// Constructor
-        //Cluster(const Cluster& rhs);
+	/// Constructor
+	// Cluster(const Cluster& rhs);
 
 	/// Add the given Person to the Cluster.
 	void AddPerson(Simulator::PersonType* p);
@@ -61,30 +61,32 @@ public:
 	/// Get basic contact rate in this cluster.
 	double GetContactRate(const Simulator::PersonType* p) const
 	{
-		return g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())] / m_members.size();;
+		return g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())] / m_members.size();
+		;
 	}
 
 public:
-        /// Add contact profile.
-        static void AddContactProfile(ClusterType cluster_type, const ContactProfile& profile);
+	/// Add contact profile.
+	static void AddContactProfile(ClusterType cluster_type, const ContactProfile& profile);
 
 private:
 	/// Sort members w.r.t. health status (order: exposed/infected/recovered, susceptible, immune).
 	std::tuple<bool, size_t> SortMembers();
 
 	/// Infector calculates contacts and transmissions.
-        template<LogMode log_level, bool track_index_case, typename local_information_policy>
-        friend class Infector;
+	template <LogMode log_level, bool track_index_case, typename local_information_policy>
+	friend class Infector;
 
 	/// Calculate which members are present in the cluster on the current day.
 	void UpdateMemberPresence();
 
 private:
-	std::size_t                               m_cluster_id;     ///< The ID of the Cluster (for logging purposes).
-	ClusterType                               m_cluster_type;   ///< The type of the Cluster (for logging purposes).
-	std::size_t                               m_index_immune;   ///< Index of the first immune member in the Cluster.
-	std::vector<std::pair<Simulator::PersonType*, bool>>     m_members;        ///< Container with pointers to Cluster members.
-	const ContactProfile&                     m_profile;
+	std::size_t m_cluster_id;   ///< The ID of the Cluster (for logging purposes).
+	ClusterType m_cluster_type; ///< The type of the Cluster (for logging purposes).
+	std::size_t m_index_immune; ///< Index of the first immune member in the Cluster.
+	std::vector<std::pair<Simulator::PersonType*, bool>> m_members; ///< Container with pointers to Cluster members.
+	const ContactProfile& m_profile;
+
 private:
 	static std::array<ContactProfile, NumOfClusterTypes()> g_profiles;
 };

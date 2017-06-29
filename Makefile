@@ -129,5 +129,8 @@ distclean clean:
 
 test installcheck: install_test
 	$(MAKE) -C $(BUILD_DIR)/test --no-print-directory run_ctest 
-	
+		
+format:
+	src/resources/bash/clang-format-all src
+
 #############################################################################

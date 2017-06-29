@@ -22,15 +22,12 @@
 namespace stride {
 
 template <typename belief_policy>
-class NoBehaviour {
+class NoBehaviour
+{
 public:
-	static bool PracticesSocialDistancing(const typename belief_policy::Data& belief_data) {
-		return false;
-	}
+	static bool PracticesSocialDistancing(const typename belief_policy::Data& belief_data) { return false; }
 
-	static bool PracticesVaccination(const typename belief_policy::Data& belief_data) {
-		return false;
-	}
+	static bool PracticesVaccination(const typename belief_policy::Data& belief_data) { return false; }
 };
 
 } /* namespace stride */

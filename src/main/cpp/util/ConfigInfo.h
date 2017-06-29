@@ -35,9 +35,9 @@ public:
 	static constexpr bool HaveOpenMP()
 	{
 #ifdef _OPENMP
-	        return true;
+		return true;
 #else
-	        return false;
+		return false;
 #endif
 	}
 };

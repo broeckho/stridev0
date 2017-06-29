@@ -28,19 +28,20 @@ namespace util {
 /**
  * Install directories.
  */
-class InstallDirs {
+class InstallDirs
+{
 public:
-        /// Utility method: get path to bin directory.
-        static boost::filesystem::path GetBinDir();
+	/// Utility method: get path to bin directory.
+	static boost::filesystem::path GetBinDir();
 
-        /// Utility method: get path to the current directory.
-        static boost::filesystem::path GetCurrentDir();
+	/// Utility method: get path to the current directory.
+	static boost::filesystem::path GetCurrentDir();
 
-        /// Utility method: get path to the directory for data files.
-        static boost::filesystem::path GetDataDir();
+	/// Utility method: get path to the directory for data files.
+	static boost::filesystem::path GetDataDir();
 
-        /// Utility method: get name of executable.
-        static boost::filesystem::path GetExecPath();
+	/// Utility method: get name of executable.
+	static boost::filesystem::path GetExecPath();
 
 	/// Utility method: get application installation root directory.
 	static boost::filesystem::path GetRootDir();
@@ -53,11 +54,11 @@ private:
 	static void Initialize();
 
 private:
-        static boost::filesystem::path  g_bin_dir;
-        static boost::filesystem::path  g_current_dir;
-        static boost::filesystem::path 	g_data_dir;
-        static boost::filesystem::path  g_exec_path;
-        static boost::filesystem::path 	g_root_dir;
+	static boost::filesystem::path g_bin_dir;
+	static boost::filesystem::path g_current_dir;
+	static boost::filesystem::path g_data_dir;
+	static boost::filesystem::path g_exec_path;
+	static boost::filesystem::path g_root_dir;
 };
 
 } // namespace

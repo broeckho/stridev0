@@ -41,11 +41,7 @@ public:
 	}
 
 	/// Get random double.
-	double NextDouble()
-	{
-		return m_uniform_dist(m_engine);
-
-	}
+	double NextDouble() { return m_uniform_dist(m_engine); }
 
 	/// Get random unsigned int from [0, max[.
 	unsigned int operator()(unsigned int max)
@@ -60,14 +56,11 @@ public:
 	 * => stream A: 0 2 4...
 	 * => stream B: 1 3 5...
 	 */
-	void Split(unsigned int total, unsigned int id)
-	{
-		m_engine.split(total,id);
-	}
+	void Split(unsigned int total, unsigned int id) { m_engine.split(total, id); }
 
 private:
-	trng::mrg2               	m_engine;         ///< The random number engine.
-	trng::uniform01_dist<double>	m_uniform_dist;   ///< The random distribution.
+	trng::mrg2 m_engine;                         ///< The random number engine.
+	trng::uniform01_dist<double> m_uniform_dist; ///< The random distribution.
 };
 
 } // end namespace

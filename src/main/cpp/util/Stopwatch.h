@@ -20,9 +20,9 @@
  * Definition of Stopwatch.
  */
 
+#include "TimeToString.h"
 #include <chrono>
 #include <string>
-#include "TimeToString.h"
 
 namespace stride {
 namespace util {
@@ -30,7 +30,7 @@ namespace util {
 /**
  * Provides a stopwatch interface to time: it accumulates time between start/stop pairs.
  */
-template<typename T = std::chrono::system_clock>
+template <typename T = std::chrono::system_clock>
 class Stopwatch
 {
 public:
@@ -38,7 +38,7 @@ public:
 
 	/// Constructor initializes stopwatch.
 	Stopwatch(std::string name = "stopwatch", bool running = false)
-			: m_accumulated(T::duration::zero()), m_name(name), m_running(running)
+	    : m_accumulated(T::duration::zero()), m_name(name), m_running(running)
 	{
 		if (m_running) {
 			m_last_start = T::now();
@@ -74,16 +74,10 @@ public:
 	}
 
 	/// Reports whether stopwatch has been started.
-	bool IsRunning() const
-	{
-		return (m_running);
-	}
+	bool IsRunning() const { return (m_running); }
 
 	/// Return name of this stopwatch
-	std::string GetName() const
-	{
-		return m_name;
-	}
+	std::string GetName() const { return m_name; }
 
 	/// Returns the accumulated value without altering the stopwatch state.
 	typename T::duration Get() const
@@ -104,35 +98,35 @@ public:
 		string colon_string;
 		typedef typename TClock::period TPeriod;
 		if (ratio_less_equal<TPeriod, micro>::value) {
-			microseconds d = duration_cast < microseconds > (Get());
+			microseconds d = duration_cast<microseconds>(Get());
 			colon_string = TimeToString::ToColonString(d);
 		} else if (ratio_less_equal<TPeriod, milli>::value) {
-			milliseconds d = duration_cast < milliseconds > (Get());
+			milliseconds d = duration_cast<milliseconds>(Get());
 			colon_string = TimeToString::ToColonString(d);
 		} else {
-			seconds d = duration_cast < seconds > (Get());
+			seconds d = duration_cast<seconds>(Get());
 			colon_string = TimeToString::ToColonString(d);
 		}
 		return colon_string;
 	}
 
 private:
-	typename T::duration       m_accumulated;
-	typename T::time_point     m_last_start;
-	std::string                m_name;
-	bool                       m_running;
+	typename T::duration m_accumulated;
+	typename T::time_point m_last_start;
+	std::string m_name;
+	bool m_running;
 };
 
 /**
  * Insert accumulated time into output stream without altering stopwatch state.
  */
-template<typename T>
-std::ostream&
-operator<<(std::ostream& oss, Stopwatch<T> const& stopwatch) {
+template <typename T>
+std::ostream& operator<<(std::ostream& oss, Stopwatch<T> const& stopwatch)
+{
 	return (oss << stopwatch.ToString());
 }
 
 } // end namespace
 } // end namespace
 
-#endif  // end of include guard
+#endif // end of include guard
