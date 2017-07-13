@@ -20,6 +20,7 @@
 
 #include "PopulationBuilder.h"
 
+#include "core/Cluster.h"
 #include "core/Health.h"
 #include "pop/Person.h"
 #include "pop/Population.h"
@@ -57,6 +58,11 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	const double seeding_rate = pt_config.get<double>("run.seeding_rate");
 	const double immunity_rate = pt_config.get<double>("run.immunity_rate");
 	const string disease_config_file = pt_config.get<string>("run.disease_config_file");
+
+	//------------------------------------------------
+	// Logger.
+	//------------------------------------------------
+    const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
 
 	//------------------------------------------------
 	// Check input.
@@ -131,12 +137,13 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 		// replacement)
 		// A for loop will not do because we might draw the same person twice.
 		unsigned int num_samples = 0;
-		const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
 		while (num_samples < num_participants) {
 			Simulator::PersonType& p = population[rng(max_population_index)];
 			if (!p.IsParticipatingInSurvey()) {
 				p.ParticipateInSurvey();
-				logger->info("[PART] {} {} {}", p.GetId(), p.GetAge(), p.GetGender());
+				logger->info("[PART] {} {} {} {} {}",
+						p.GetId(), p.GetAge(), p.GetGender(),
+                			p.GetClusterId(ClusterType::School), p.GetClusterId(ClusterType::Work));
 				num_samples++;
 			}
 		}
@@ -163,6 +170,10 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 		if (p.GetHealth().IsSusceptible()) {
 			p.GetHealth().StartInfection();
 			num_infected--;
+
+            logger->info("[PRIM] {} {} {} {}",
+                           p.GetId(), -1, -1, 0);
+
 		}
 	}
 

@@ -45,7 +45,7 @@ def prepare_csv(log_file_path):
     with open(participants_file, 'w') as p, open(contacts_file, 'w') as c, open(transmission_file,'w') as t:
 
         # Write headers for csv files
-        p_fieldnames = ['local_id', 'part_age', 'part_gender']
+        p_fieldnames = ['local_id', 'part_age', 'part_gender', 'school_id', 'workplace_id']
         p_writer = csv.DictWriter(p, fieldnames=p_fieldnames)
         p_writer.writeheader()
         

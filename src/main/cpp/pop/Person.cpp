@@ -84,7 +84,12 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 	}
 
 	// Update presence in clusters.
-	if (is_work_off || (m_age <= MinAdultAge() && is_school_off)) {
+    if(m_at_home_due_to_illness) {
+    		m_at_school              = false;
+		m_at_work                = false;
+		m_at_secondary_community = false;
+		m_at_primary_community   = false;
+    } else if (is_work_off || (m_age <= MinAdultAge() && is_school_off)) {
 		m_at_school = false;
 		m_at_work = false;
 		m_at_secondary_community = false;

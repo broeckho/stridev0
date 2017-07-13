@@ -31,10 +31,11 @@ Health::Health(unsigned int start_infectiousness, unsigned int start_symptomatic
 void Health::SetImmune()
 {
 	m_status = HealthStatus::Immune;
-	m_start_infectiousness = 0U;
-	m_start_symptomatic = 0U;
-	m_end_infectiousness = 0U;
-	m_end_symptomatic = 0U;
+}
+
+void Health::SetSusceptible()
+{
+	m_status = HealthStatus::Susceptible;
 }
 
 void Health::StartInfection()

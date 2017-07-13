@@ -35,3 +35,8 @@ build*/
 /src/doc/latex_user_man/UserManual.out
 /src/doc/latex_user_man/UserManual.synctex.gz
 /src/doc/latex_user_man/UserManual.toc
+
+#------------------------------------
+# Python stuff
+#------------------------------------
+.pydevproject

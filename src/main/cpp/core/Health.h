@@ -85,8 +85,11 @@ public:
 		return m_status == HealthStatus::Symptomatic || m_status == HealthStatus::InfectiousAndSymptomatic;
 	}
 
-	/// Set immune to true.
+	/// Set health state to immune.
 	void SetImmune();
+
+	/// Set health state to susceptible
+	void SetSusceptible();
 
 	/// Start the infection.
 	void StartInfection();
