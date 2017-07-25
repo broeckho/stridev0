@@ -28,15 +28,9 @@ Health::Health(unsigned int start_infectiousness, unsigned int start_symptomatic
 	m_end_symptomatic = start_symptomatic + time_symptomatic;
 }
 
-void Health::SetImmune()
-{
-	m_status = HealthStatus::Immune;
-}
+void Health::SetImmune() { m_status = HealthStatus::Immune; }
 
-void Health::SetSusceptible()
-{
-	m_status = HealthStatus::Susceptible;
-}
+void Health::SetSusceptible() { m_status = HealthStatus::Susceptible; }
 
 void Health::StartInfection()
 {

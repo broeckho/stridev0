@@ -55,7 +55,7 @@ public:
 	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
 	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
 	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-	      m_is_participant(false),m_at_home_due_to_illness(false)
+	      m_is_participant(false), m_at_home_due_to_illness(false)
 	{
 		BeliefPolicy::Initialize(m_belief_data, risk_averseness);
 	}
@@ -119,9 +119,8 @@ private:
 	Health m_health;                           ///< Health info for this person.
 	typename BeliefPolicy::Data m_belief_data; ///< Info w.r.t. this Person's health beliefs
 
-	bool m_is_participant; ///< Is participating in the social contact study
-	bool m_at_home_due_to_illness;  ///< Is person present home due to illness?
-
+	bool m_is_participant;         ///< Is participating in the social contact study
+	bool m_at_home_due_to_illness; ///< Is person present home due to illness?
 };
 
 /// Explicit instantiations in .cpp file

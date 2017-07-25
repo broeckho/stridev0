@@ -62,7 +62,7 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	//------------------------------------------------
 	// Logger.
 	//------------------------------------------------
-    const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
+	const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
 
 	//------------------------------------------------
 	// Check input.
@@ -141,9 +141,8 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 			Simulator::PersonType& p = population[rng(max_population_index)];
 			if (!p.IsParticipatingInSurvey()) {
 				p.ParticipateInSurvey();
-				logger->info("[PART] {} {} {} {} {}",
-						p.GetId(), p.GetAge(), p.GetGender(),
-                			p.GetClusterId(ClusterType::School), p.GetClusterId(ClusterType::Work));
+				logger->info("[PART] {} {} {} {} {}", p.GetId(), p.GetAge(), p.GetGender(),
+					     p.GetClusterId(ClusterType::School), p.GetClusterId(ClusterType::Work));
 				num_samples++;
 			}
 		}
@@ -171,9 +170,7 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 			p.GetHealth().StartInfection();
 			num_infected--;
 
-            logger->info("[PRIM] {} {} {} {}",
-                           p.GetId(), -1, -1, 0);
-
+			logger->info("[PRIM] {} {} {} {}", p.GetId(), -1, -1, 0);
 		}
 	}
 
