@@ -19,14 +19,14 @@
 """
 Create an age-based contact matrix in XML-format.
 
-Author: Elise Kuylen (2016)
+Author: Elise Kuylen and Lander Willem (2017)
 """
 
 import sys
 import csv
 import xml.etree.cElementTree as ET
 
-def createFromCSV(household_file, work_file, school_file, community_file_week, community_file_weekend, prefix=""):
+def createFromCSV(household_file, work_file, school_file, prim_community_file, sec_community_file, postfix="", directory="."):
     """
         Create contact matrices from files with diary-study results.
         """
@@ -42,9 +42,9 @@ def createFromCSV(household_file, work_file, school_file, community_file_week, c
         elif cluster_type == "school":
             cluster_file = school_file
         elif cluster_type == "primary_community":
-            cluster_file = community_file_weekend
+            cluster_file = prim_community_file
         else:
-            cluster_file = community_file_week
+            cluster_file = sec_community_file
     
         with open(cluster_file, 'r') as f:
             part_age = 0
@@ -64,26 +64,30 @@ def createFromCSV(household_file, work_file, school_file, community_file_week, c
                     rate = float(row[key].replace(',','.'))
                     
                     if cluster_type == "household":
-                        rate = rate*10
-                    elif cluster_type == "work":
                         rate = rate*2.5
                     
                     ET.SubElement(contact, "rate").text = str(rate)
                 part_age += 1
 
     tree = ET.ElementTree(root)
-    output_file = prefix + "_contact_matrix_stride.xml";
+    output_file = directory + "/contact_matrix_" + postfix + ".xml";
     tree.write(output_file)
+    print "Complete: " + output_file ;
 
 
 def main(argv):
-    if len(argv) == 6:
-        print "Creating contact matrix from CSV files."
+    print ""
+    if len(argv) == 5:
+        print "Creating contact matrix from CSV files using default name and directory."
+        createFromCSV(argv[0], argv[1], argv[2], argv[3], argv[4])
+    elif len(argv) == 6:
+        print "Creating contact matrix from CSV files using default directory."
         createFromCSV(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5])
+    elif len(argv) == 7:
+        print "Creating contact matrix from CSV files."
+        createFromCSV(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6])
     else:
-        print ""
-        print "!! ERROR: Program requires 5 input files: household, primary_community, work, school, secondary_community, PREFIX"
-        print ""
-
+        print "!! ERROR: Program requires 5 input files: household, work, school, primary_community, secondary_community, POSTFIX, DIRECTORY"
+    print ""
 if __name__ == "__main__":
     main(sys.argv[1:])
