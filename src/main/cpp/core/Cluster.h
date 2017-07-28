@@ -61,8 +61,19 @@ public:
 	/// Get basic contact rate in this cluster.
 	double GetContactRate(const Simulator::PersonType* p) const
 	{
-		return g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())] / m_members.size();
-		;
+		double reference_num_contacts = g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())];
+		double potential_num_contacts = (m_members.size()-1);
+
+		// given that contacts are reciprocal, one needs to make only half of his/her contacts himself/herself
+		double individual_contact_rate = reference_num_contacts / potential_num_contacts / 2;
+
+		// take into account that contacts are not directed
+		// contact probability for 1=>2 and 2=>1 = indiv_cnt_rate*indiv_cnt_rate
+		individual_contact_rate += (individual_contact_rate*individual_contact_rate);
+
+		return individual_contact_rate;
+		//return g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())] / (m_members.size()-1) / 2;
+
 	}
 
 public:
