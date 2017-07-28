@@ -63,9 +63,6 @@ def createFromCSV(household_file, work_file, school_file, prim_community_file, s
                     key = "age" + str(cnt_age)
                     rate = float(row[key].replace(',','.'))
                     
-                    if cluster_type == "household":
-                        rate = rate*2.5
-                    
                     ET.SubElement(contact, "rate").text = str(rate)
                 part_age += 1
 

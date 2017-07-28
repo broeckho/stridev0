@@ -42,6 +42,7 @@ plot_social_contacts <- function(data_tag,project_dir)
     summary_data  <- summary_data_all[i_file,]
     num_days      <- as.double(summary_data$num_days[i_file])
     
+    
     if(dim(cdata)[1]>0 && dim(pdata)[1]>0)
     {
       
@@ -61,8 +62,10 @@ plot_social_contacts <- function(data_tag,project_dir)
       L <- 80
       
       tag <- 'debug'
-      cdata_flag <- cdata$cnt_prim_comm == 1 & cdata$part_age < 10#>=0
-      pdata_flag <- pdata$part_age<5
+      cdata_flag <- cdata$cnt_school == 1
+      pdata_flag <- pdata$student == 1
+      bool_gen_pop <- FALSE
+     
       plot_cnt_matrix <- function(cdata_flag,pdata_flag,tag,num_days, bool_gen_pop=TRUE)
         
       {
@@ -74,14 +77,14 @@ plot_social_contacts <- function(data_tag,project_dir)
         
         # temporary max age
         L_temp <- max(cdata$part_age,L,cdata$cnt_age)+1
-        
+
         # count contacts
         mij_tbl <- table(cdata$part_age[cdata_flag],cdata$cnt_age[cdata_flag])
         row_ind <- as.numeric(row.names(mij_tbl)) +1 # age 0 == index 1
         col_ind <- as.numeric(colnames(mij_tbl))  +1 # age 0 == index 1
-        mij <- matrix(0,L_temp,L_temp)  
+        mij <- matrix(0,L_temp,L_temp)
         mij[row_ind,col_ind] <- mij_tbl
-        
+
         # count participant per age
         if(sum(mij)==0)
         {
@@ -89,22 +92,22 @@ plot_social_contacts <- function(data_tag,project_dir)
           col_ind <- 1:(L+1)
         }
         # pdata_flag_update   <- pdata_flag & pdata$part_age %in% ((min(row_ind,col_ind):max(row_ind,col_ind))-1)
-        pdata_flag_update   <- pdata_flag  
+        pdata_flag_update   <- pdata_flag
         p_ages_tbl          <- table(pdata$part_age[pdata_flag_update])
-        
+
         row_ind <- as.numeric(names(p_ages_tbl)) +1
-        p_ages <- matrix(0,L_temp,1)  
+        p_ages <- matrix(0,L_temp,1)
         p_ages[row_ind] <- p_ages_tbl
-        
-        # remove age>L (age_column L+1)  
+
+        # remove age>L (age_column L+1)
         mij <- mij[1:(L+1),1:(L+1)]
         p_ages <- p_ages[1:(L+1)]
-        
+
         # adjust for number of participants (if age is present)
         ages_present <- p_ages>0
         p_ages[ages_present]
         #mij[ages_present,ages_present] <- mij[ages_present,ages_present]/rep(p_ages[ages_present],each=sum(ages_present)) ## CORRECT??!
-        
+
         #contacts/participant
         for(j in 1:(L+1))
         {
@@ -114,35 +117,59 @@ plot_social_contacts <- function(data_tag,project_dir)
           }
         }
         
-        # mx <- mij[1:5,1:5]
-        # px <- p_ages[1:5]
-        # mx[1,]/p_ages[1:5]
-        # make mij reciproce
-        i <- 20
-        j <- 1
-        if(bool_gen_pop)
-          for(i in 1:(L+1))
-          {
-            for(j in i:(L+1))
-            {
-              if(p_ages[j]>0)
-              {
-                mij[i,j] <- (mij[i,j] + mij[j,i])/2 
-                mij[j,i] <- mij[i,j]
-              }
-            }
-          }
+        # # mx <- mij[1:5,1:5]
+        # # px <- p_ages[1:5]
+        # # mx[1,]/p_ages[1:5]
+        # # make mij reciproce
+        # i <- 20
+        # j <- 1
+        # if(bool_gen_pop)
+        #   for(i in 1:(L+1))
+        #   {
+        #     for(j in i:(L+1))
+        #     {
+        #       if(p_ages[j]>0)
+        #       {
+        #         mij[i,j] <- (mij[i,j] + mij[j,i])/2 
+        #         mij[j,i] <- mij[i,j]
+        #       }
+        #     }
+        #   }
         
         # account for multiple days
           mij <- mij/num_days
         
+        # count (weighted number of contacts per participant)
+        num_part <- dim(pdata)[1]
+        names(pdata)
+        count_cnt_age <- matrix(NA,L+1,num_part)
+        tmp_cdata_local_id <- cdata$local_id[cdata_flag]
+        for (j in 1:num_part){
+          if(pdata_flag[j] & pdata$part_age[j] < (L+1))
+          {
+            part_age <- pdata$part_age[j]
+            part_id  <- pdata$local_id[j]
+            part_num_cnt <- sum(tmp_cdata_local_id == part_id)
+            
+            count_cnt_age[part_age+1,j] <- part_num_cnt
+          }
+        }
+        
+        # account for multiple days
+        count_cnt_age <- count_cnt_age/num_days
+        
+        # get ranges
+        bxplot_values <- boxplot(t(count_cnt_age),outline=F,plot=F)
         
         # plot matrix 
         image(c(0:L),c(0:L),mij,xlab="age of respondent",ylab="age of contact",main=paste(tag))
         
         # plot number of contacts
         num_cnt_age <- rowSums(mij)
-        plot(num_cnt_age,main=paste(tag),xlab='age',ylab='count')  
+        plot(num_cnt_age,main=paste(tag),xlab='age',ylab='count',ylim=c(0,max(bxplot_values$stats,na.rm=T)))  
+        
+        boxplot(t(count_cnt_age),outline=F,xaxt='n',plot=T,add=T)
+        lines(num_cnt_age,main=paste(tag),col=2,lwd=4)  
         
         return(mij)
       }
