@@ -241,7 +241,7 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
 	// check all contacts
 	for (size_t i_person1 = 0; i_person1 < c_members.size(); i_person1++) {
 		// check if member participates in the social contact survey && member is present today
-		//if (c_members[i_person1].second && c_members[i_person1].first->IsParticipatingInSurvey()) {
+		// if (c_members[i_person1].second && c_members[i_person1].first->IsParticipatingInSurvey()) {
 		if (c_members[i_person1].second) {
 			auto p1 = c_members[i_person1].first;
 			const double contact_rate = cluster.GetContactRate(p1);
@@ -253,15 +253,14 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
 					// check for contact
 					if (contact_handler.HasContact(contact_rate)) {
 
-						if(c_members[i_person1].first->IsParticipatingInSurvey())
-						{
-							LOG_POLICY<LogMode::Contacts>::Execute(logger, p1, p2, c_type, calendar);
+						if (c_members[i_person1].first->IsParticipatingInSurvey()) {
+							LOG_POLICY<LogMode::Contacts>::Execute(logger, p1, p2, c_type,
+											       calendar);
 						}
-						if(c_members[i_person2].first->IsParticipatingInSurvey())
-						{
-							LOG_POLICY<LogMode::Contacts>::Execute(logger, p2, p1, c_type, calendar);
+						if (c_members[i_person2].first->IsParticipatingInSurvey()) {
+							LOG_POLICY<LogMode::Contacts>::Execute(logger, p2, p1, c_type,
+											       calendar);
 						}
-
 
 						// check for transmission
 						bool transmission = contact_handler.HasTransmission(transmission_rate);
@@ -276,8 +275,6 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
 								R0_POLICY<track_index_case>::Execute(p1);
 							}
 						}
-
-
 					}
 				}
 			}
