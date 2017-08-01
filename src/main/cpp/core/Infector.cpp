@@ -132,9 +132,8 @@ void Infector<log_level, track_index_case, local_information_policy>::Execute(Cl
 			auto p1 = c_members[i_person1].first;
 			const double contact_rate = cluster.GetContactRate(p1);
 
-			// loop over possible contacts
-			// FIXME should this loop start from 0? Because of asymm. contact rates
-			for (size_t i_person2 = i_person1 + 1; i_person2 < c_members.size(); i_person2++) {
+			// loop over possible contacts (contacts can be initiated by each member)
+			for (size_t i_person2 = 0; i_person2 < c_members.size(); i_person2++) {
 				// check if member is present today
 				if (c_members[i_person2].second) {
 					auto p2 = c_members[i_person2].first;
@@ -176,6 +175,7 @@ void Infector<log_level, track_index_case, NoLocalInformation>::Execute(Cluster&
 									RngHandler& contact_handler,
 									shared_ptr<const Calendar> calendar)
 {
+
 	// check if the cluster has infected members and sort
 	bool infectious_cases;
 	size_t num_cases;
@@ -191,27 +191,42 @@ void Infector<log_level, track_index_case, NoLocalInformation>::Execute(Cluster&
 		const auto& c_members = cluster.m_members;
 		const auto transmission_rate = disease_profile.GetTransmissionRate();
 
-		// match infectious in first part with susceptible in second part, skip last part (immune)
+		// match infectious and susceptible members, skip last part (immune)
 		for (size_t i_infected = 0; i_infected < num_cases; i_infected++) {
 			// check if member is present today
 			if (c_members[i_infected].second) {
 				const auto p1 = c_members[i_infected].first;
-				// FIXME Is it necessary to check for infectiousness here? Infectious members are
-				// already sorted...
+
 				if (p1->GetHealth().IsInfectious()) {
-					const double contact_rate = cluster.GetContactRate(p1);
-					// FIXME if loop 2 in all contacts algorithm should start from 0, we should also
-					// implement this symmetry here!
+					const double contact_rate_p1 = cluster.GetContactRate(p1);
+
+					// loop over possible susceptible contacts
 					for (size_t i_contact = num_cases; i_contact < c_immune; i_contact++) {
+
 						// check if member is present today
 						if (c_members[i_contact].second) {
+
 							auto p2 = c_members[i_contact].first;
+							const double contact_rate_p2 = cluster.GetContactRate(p2);
+
+							// check for contact and transmission
+							// contact p1 => p2 AND p2 => p1
 							if (contact_handler.HasContactAndTransmission(
-								contact_rate, transmission_rate)) {
-								LOG_POLICY<log_level>::Execute(logger, p1, p2, c_type,
-											       calendar);
-								p2->GetHealth().StartInfection();
-								R0_POLICY<track_index_case>::Execute(p2);
+								contact_rate_p1, transmission_rate) ||
+							    contact_handler.HasContactAndTransmission(
+								contact_rate_p2, transmission_rate)) {
+								//								LOG_POLICY<log_level>::Execute(logger,
+								//p1, p2, c_type,
+								//												   calendar);
+								//								p2->GetHealth().StartInfection();
+								//								R0_POLICY<track_index_case>::Execute(p2);
+								if (p1->GetHealth().IsInfectious() &&
+								    p2->GetHealth().IsSusceptible()) {
+									p2->GetHealth().StartInfection();
+									R0_POLICY<track_index_case>::Execute(p2);
+									LOG_POLICY<log_level>::Execute(
+									    logger, p1, p2, c_type, calendar);
+								}
 							}
 						}
 					}
@@ -240,29 +255,30 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
 
 	// check all contacts
 	for (size_t i_person1 = 0; i_person1 < c_members.size(); i_person1++) {
-		// check if member participates in the social contact survey && member is present today
-		// if (c_members[i_person1].second && c_members[i_person1].first->IsParticipatingInSurvey()) {
+		// check if member is present today
 		if (c_members[i_person1].second) {
 			auto p1 = c_members[i_person1].first;
 			const double contact_rate = cluster.GetContactRate(p1);
 			// loop over possible contacts
 			for (size_t i_person2 = 0; i_person2 < c_members.size(); i_person2++) {
-				// check if member is present today
+				// check if possible contact is present today
 				if (i_person2 != i_person1 && c_members[i_person2].second) {
 					auto p2 = c_members[i_person2].first;
-					// check for contact
+					// check for effective contact
 					if (contact_handler.HasContact(contact_rate)) {
 
+						// log contact, if person 1 is participating in survey
 						if (c_members[i_person1].first->IsParticipatingInSurvey()) {
 							LOG_POLICY<LogMode::Contacts>::Execute(logger, p1, p2, c_type,
 											       calendar);
 						}
+						// log contact, if person 2 is participating in survey
 						if (c_members[i_person2].first->IsParticipatingInSurvey()) {
 							LOG_POLICY<LogMode::Contacts>::Execute(logger, p2, p1, c_type,
 											       calendar);
 						}
 
-						// check for transmission
+						// given the contact, check for transmission
 						bool transmission = contact_handler.HasTransmission(transmission_rate);
 						if (transmission) {
 							if (p1->GetHealth().IsInfectious() &&

@@ -169,6 +169,7 @@ def main(argv):
         # Remove copied files
         os.remove(output_prefix + '_summary.csv')
         os.remove(output_prefix + '_cases.csv')
+        os.remove(output_prefix + '_adopted.csv')
 
         # get participant, contact and transmission files from the 'logfile'.
         cmd_parse = './lib/log2csv.py ' + output_prefix
