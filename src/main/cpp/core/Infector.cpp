@@ -210,16 +210,11 @@ void Infector<log_level, track_index_case, NoLocalInformation>::Execute(Cluster&
 							const double contact_rate_p2 = cluster.GetContactRate(p2);
 
 							// check for contact and transmission
-							// contact p1 => p2 AND p2 => p1
+							//  p1 => p2 OR p2 => p1
 							if (contact_handler.HasContactAndTransmission(
 								contact_rate_p1, transmission_rate) ||
 							    contact_handler.HasContactAndTransmission(
 								contact_rate_p2, transmission_rate)) {
-								//								LOG_POLICY<log_level>::Execute(logger,
-								//p1, p2, c_type,
-								//												   calendar);
-								//								p2->GetHealth().StartInfection();
-								//								R0_POLICY<track_index_case>::Execute(p2);
 								if (p1->GetHealth().IsInfectious() &&
 								    p2->GetHealth().IsSusceptible()) {
 									p2->GetHealth().StartInfection();

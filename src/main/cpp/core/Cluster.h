@@ -64,8 +64,13 @@ public:
 		double reference_num_contacts = g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())];
 		double potential_num_contacts = (m_members.size() - 1);
 
+		double individual_contact_rate = reference_num_contacts / potential_num_contacts;
+		if (individual_contact_rate >= 1) {
+			individual_contact_rate = 0.999;
+		}
+
 		// given that contacts are reciprocal, one needs to make only half of his/her contacts himself/herself
-		double individual_contact_rate = reference_num_contacts / potential_num_contacts / 2;
+		individual_contact_rate = individual_contact_rate / 2;
 
 		// take into account that contacts are not directed
 		// contact probability for 1=>2 and 2=>1 = indiv_cnt_rate*indiv_cnt_rate

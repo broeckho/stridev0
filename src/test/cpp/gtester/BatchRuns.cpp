@@ -100,8 +100,8 @@ const string BatchDemos::g_disease_config_file_adapted = "disease_measles.xml";
 const double BatchDemos::g_transmission_rate_measles = 16U;
 const double BatchDemos::g_transmission_rate_maximum = 100U;
 
-const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 525000), make_pair("seeding_rate", 0),
-						      make_pair("immunity_rate", 6), make_pair("measles", 166000),
+const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 6000), make_pair("seeding_rate", 0),
+						      make_pair("immunity_rate", 6), make_pair("measles", 102000),
 						      make_pair("maximum", 700000)};
 
 TEST_P(BatchDemos, Run)
@@ -188,7 +188,7 @@ TEST_P(BatchDemos, Run)
 	// Round up.
 	// -----------------------------------------------------------------------------------------
 	const unsigned int num_cases = sim->GetPopulation()->GetInfectedCount();
-	ASSERT_NEAR(num_cases, g_results.at(test_tag), 20000) << "!! CHANGED !!";
+	ASSERT_NEAR(num_cases, g_results.at(test_tag), 10000) << "!! CHANGED !!";
 }
 
 namespace {
