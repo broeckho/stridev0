@@ -69,6 +69,8 @@ protected:
 	static const string g_holidays_file;
 	static const unsigned int g_num_participants_survey;
 	static const string g_start_date;
+	static const string g_age_contact_matrix_file;
+	static const string g_log_level;
 
 	static const unsigned int g_rng_seed_adapted;
 	static const double g_seeding_rate_adapted;
@@ -81,17 +83,19 @@ protected:
 };
 
 // Default values
-const string BatchDemos::g_population_file = "pop_oklahoma.csv";
+const string BatchDemos::g_population_file = "pop_flanders600.csv";
 const double BatchDemos::g_r0 = 3.0;
 const unsigned int BatchDemos::g_num_days = 30U;
 const unsigned int BatchDemos::g_rng_seed = 2015U;
-const double BatchDemos::g_seeding_rate = 0.0001;
+const double BatchDemos::g_seeding_rate = 0.0009;
 const double BatchDemos::g_immunity_rate = 0.0;
 const string BatchDemos::g_disease_config_file = "disease_influenza.xml";
 const string BatchDemos::g_output_prefix = "test";
 const string BatchDemos::g_holidays_file = "holidays_none.json";
 const unsigned int BatchDemos::g_num_participants_survey = 10;
 const string BatchDemos::g_start_date = "2017-01-01";
+const string BatchDemos::g_age_contact_matrix_file = "contact_matrix_flanders_subpop.xml";
+const string BatchDemos::g_log_level = "None";
 
 // Adapted values
 const double BatchDemos::g_seeding_rate_adapted = 0.0;
@@ -100,9 +104,9 @@ const string BatchDemos::g_disease_config_file_adapted = "disease_measles.xml";
 const double BatchDemos::g_transmission_rate_measles = 16U;
 const double BatchDemos::g_transmission_rate_maximum = 100U;
 
-const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 6000), make_pair("seeding_rate", 0),
-						      make_pair("immunity_rate", 6), make_pair("measles", 102000),
-						      make_pair("maximum", 700000)};
+const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 117500), make_pair("seeding_rate", 0),
+						      make_pair("immunity_rate", 5), make_pair("measles", 563500),
+						      make_pair("maximum", 600000)};
 
 TEST_P(BatchDemos, Run)
 {
@@ -130,8 +134,8 @@ TEST_P(BatchDemos, Run)
 	pt_config.put("run.num_participants_survey", g_num_participants_survey);
 	pt_config.put("run.start_date", g_start_date);
 	pt_config.put("run.holidays_file", g_holidays_file);
-	pt_config.put("run.age_contact_matrix_file", "contact_matrix_average.xml");
-	pt_config.put("run.log_level", "None");
+	pt_config.put("run.age_contact_matrix_file", g_age_contact_matrix_file);
+	pt_config.put("run.log_level", g_log_level);
 	bool track_index_case = false;
 
 	// -----------------------------------------------------------------------------------------
@@ -188,7 +192,7 @@ TEST_P(BatchDemos, Run)
 	// Round up.
 	// -----------------------------------------------------------------------------------------
 	const unsigned int num_cases = sim->GetPopulation()->GetInfectedCount();
-	ASSERT_NEAR(num_cases, g_results.at(test_tag), 10000) << "!! CHANGED !!";
+	ASSERT_NEAR(num_cases, g_results.at(test_tag), g_results.at(test_tag) * 0.1) << "!! CHANGED !!";
 }
 
 namespace {
