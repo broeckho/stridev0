@@ -48,10 +48,9 @@ void DiseaseProfile::Initialize(const ptree& pt_config, const ptree& pt_disease)
 		m_transmission_rate = (-b + std::sqrt(determ)) / (2 * a);
 	} else {
 		std::cout << "ILLIGAL R0 VALUE" << std::endl;
-		std::cout << "MAX R0 VALUE: " << (-(b * b) / (4 * a)) <<  std::endl;
+		std::cout << "MAX R0 VALUE: " << (-(b * b) / (4 * a)) << std::endl;
 		m_transmission_rate = 0;
 	}
-
 }
 
 } // namespace

@@ -71,6 +71,9 @@ public:
 	/// Get the population.
 	const std::shared_ptr<const Population> GetPopulation() const;
 
+	/// Get the disease profile.
+	const DiseaseProfile GetDiseaseProfile() const;
+
 	/// Change track_index_case setting.
 	void SetTrackIndexCase(bool track_index_case);
 

@@ -31,7 +31,7 @@ public:
 	DiseaseProfile() : m_transmission_rate(0.0) {}
 
 	/// Return transmission rate.
-	double GetTransmissionRate() { return m_transmission_rate; }
+	double GetTransmissionRate() const { return m_transmission_rate; }
 
 	/// Initialize.
 	void Initialize(const boost::property_tree::ptree& pt_config, const boost::property_tree::ptree& pt_disease);
