@@ -45,7 +45,7 @@ void DiseaseProfile::Initialize(const ptree& pt_config, const ptree& pt_disease)
 	// to obtain a real values (instead of complex)
 	if (r0 < (-(b * b) / (4 * a))) {
 		const double determ = (b * b) - 4 * a * c;
-		m_transmission_rate = (-b + std::sqrt(determ)) / (2 * a);
+		m_transmission_rate = (-b + sqrt(determ)) / (2 * a);
 	} else {
 		std::cout << "ILLIGAL R0 VALUE" << std::endl;
 		std::cout << "MAX R0 VALUE: " << (-(b * b) / (4 * a)) << std::endl;
