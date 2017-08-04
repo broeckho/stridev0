@@ -27,7 +27,7 @@
 		<probability>1</probability>
 	</time_symptomatic>
 	<transmission>
-        <b0>0.33</b0>
-        <b1>125.8</b1>
-    </transmission>
+        <b0>0</b0>
+        <b1>143.17</b1>
+        <b2>-1276.02</b2></transmission>
 </disease>

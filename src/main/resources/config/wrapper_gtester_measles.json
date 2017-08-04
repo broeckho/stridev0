@@ -4,7 +4,7 @@
 	"omp_schedule":"DYNAMIC,1",
 	"rng_seed":[2015,1,2,3,4,5,6,7,8,9],
 	"r0":[16],
-	"seeding_rate":[0.0001],
+	"seeding_rate":[0.0009],
 	"immunity_rate": [0.0],
 	"population_file":["pop_flanders600.csv"],
 	"num_days":30,
