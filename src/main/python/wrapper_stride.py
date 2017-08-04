@@ -172,7 +172,7 @@ def main(argv):
         os.remove(output_prefix + '_adopted.csv')
 
         # get participant, contact and transmission files from the 'logfile'.
-        cmd_parse = './lib/log2csv.py ' + output_prefix
+        cmd_parse = 'python ./lib/log2csv.py ' + output_prefix
         os.system(cmd_parse)
 
         # Remove configuration file
