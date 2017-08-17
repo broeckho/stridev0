@@ -140,48 +140,61 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	Stopwatch<> total_clock("total_clock", true);
 	cout << "Building the simulator. " << endl;
 	auto sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
-	cout << "Done building the simulator. " << endl << endl;
+	cout << "Done building the simulator. " << endl;
 
 	// -----------------------------------------------------------------------------------------
-	// Run the simulation.
+	// Check the simulator.
 	// -----------------------------------------------------------------------------------------
-	Stopwatch<> run_clock("run_clock");
-	const unsigned int num_days = pt_config.get<unsigned int>("run.num_days");
-	vector<unsigned int> cases(num_days);
-	vector<unsigned int> adopted(num_days);
-	for (unsigned int i = 0; i < num_days; i++) {
-		cout << "Simulating day: " << setw(5) << i;
-		run_clock.Start();
-		sim->TimeStep();
-		run_clock.Stop();
-		cout << "     Done, infected count: ";
-		cases[i] = sim->GetPopulation()->GetInfectedCount();
-		unsigned int adopters = sim->GetPopulation()->GetAdoptedCount<Simulator::BeliefPolicy>();
-		cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopters << endl;
+	bool simulator_is_operational = sim->IsOperational();
+	if (simulator_is_operational) {
+		cout << "Done checking the simulator. " << endl << endl;
+	} else {
+		file_logger->info("[ERROR] Invalid configuration");
+		cout << "Invalid configuration => terminate without output" << endl << endl;
 	}
 
 	// -----------------------------------------------------------------------------------------
-	// Generate output files
+	// Run the simulation (if operational).
 	// -----------------------------------------------------------------------------------------
-	// Cases
-	CasesFile cases_file(output_prefix);
-	cases_file.Print(cases);
+	Stopwatch<> run_clock("run_clock");
+	if (simulator_is_operational) {
+		const unsigned int num_days = pt_config.get<unsigned int>("run.num_days");
+		vector<unsigned int> cases(num_days);
+		vector<unsigned int> adopted(num_days);
+		for (unsigned int i = 0; i < num_days; i++) {
+			cout << "Simulating day: " << setw(5) << i;
+			run_clock.Start();
+			sim->TimeStep();
+			run_clock.Stop();
+			cout << "     Done, infected count: ";
+			cases[i] = sim->GetPopulation()->GetInfectedCount();
+			unsigned int adopters = sim->GetPopulation()->GetAdoptedCount<Simulator::BeliefPolicy>();
+			cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopters << endl;
+		}
 
-	// Adopted
-	AdoptedFile adopted_file(output_prefix);
-	adopted_file.Print(adopted);
+		// -----------------------------------------------------------------------------------------
+		// Generate output files
+		// -----------------------------------------------------------------------------------------
+		// Cases
+		CasesFile cases_file(output_prefix);
+		cases_file.Print(cases);
 
-	// Summary
-	SummaryFile summary_file(output_prefix);
-	summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
-			   sim->GetDiseaseProfile().GetTransmissionRate(),
-			   duration_cast<milliseconds>(run_clock.Get()).count(),
-			   duration_cast<milliseconds>(total_clock.Get()).count());
+		// Adopted
+		AdoptedFile adopted_file(output_prefix);
+		adopted_file.Print(adopted);
 
-	// Persons
-	if (pt_config.get<double>("run.generate_person_file") == 1) {
-		PersonFile person_file(output_prefix);
-		person_file.Print(sim->GetPopulation());
+		// Summary
+		SummaryFile summary_file(output_prefix);
+		summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
+				   sim->GetDiseaseProfile().GetTransmissionRate(),
+				   duration_cast<milliseconds>(run_clock.Get()).count(),
+				   duration_cast<milliseconds>(total_clock.Get()).count());
+
+		// Persons
+		if (pt_config.get<double>("run.generate_person_file") == 1) {
+			PersonFile person_file(output_prefix);
+			person_file.Print(sim->GetPopulation());
+		}
 	}
 
 	// -----------------------------------------------------------------------------------------

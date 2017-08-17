@@ -50,6 +50,7 @@ void DiseaseProfile::Initialize(const ptree& pt_config, const ptree& pt_disease)
 		std::cout << "ILLIGAL R0 VALUE" << std::endl;
 		std::cout << "MAX R0 VALUE: " << (-(b * b) / (4 * a)) << std::endl;
 		m_transmission_rate = 0;
+		m_is_operational = false;
 	}
 }
 

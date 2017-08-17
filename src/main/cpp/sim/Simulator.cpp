@@ -48,6 +48,8 @@ const shared_ptr<const Population> Simulator::GetPopulation() const { return m_p
 
 const DiseaseProfile Simulator::GetDiseaseProfile() const { return m_disease_profile; }
 
+bool Simulator::IsOperational() const { return GetDiseaseProfile().IsOperational(); }
+
 void Simulator::SetTrackIndexCase(bool track_index_case) { m_track_index_case = track_index_case; }
 
 template <LogMode log_level, bool track_index_case>

@@ -74,6 +74,9 @@ public:
 	/// Get the disease profile.
 	const DiseaseProfile GetDiseaseProfile() const;
 
+	/// Check if the simulator is operational.
+	bool IsOperational() const;
+
 	/// Change track_index_case setting.
 	void SetTrackIndexCase(bool track_index_case);
 

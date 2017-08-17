@@ -39,7 +39,7 @@ public:
 	/**
 	 * Initializes a Population: add persons, set immunity, seed infection.
 	 *
-	 * @param pt_config       Property_tree with generalconfiguration settings.
+	 * @param pt_config       Property_tree with general configuration settings.
 	 * @param pt_disease      Property_tree with disease configuration settings.
 	 * @return                Pointer to the initialized population.
 	 */
