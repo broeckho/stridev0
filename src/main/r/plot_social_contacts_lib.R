@@ -199,8 +199,8 @@ plot_social_contacts <- function(data_tag,project_dir)
       ## LOAD SURVEY DATA FROM FLANDERS AND FULLY CONNECTED HOUSEHOLDS
       #survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/ref_miami_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
       survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
-      survey_mij_school     <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_school_student_age21_gam_mij_edit.csv'),sep=';',dec=',',header=T)
-      survey_mij_work       <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_workplace_employed_age_gam_mij_edit.csv'),sep=';',dec=',',header=T)
+      survey_mij_school     <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_school_student_age24_gam_mij_median.csv'),sep=';',dec=',',header=T)
+      survey_mij_work       <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_workplace_employed_age_gam_mij_median.csv'),sep=';',dec=',',header=T)
       survey_mij_community  <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_community_exclusion_gam_mij_rec.csv'),sep=';',dec=',',header=T)
       # survey_mij_total      <- survey_mij_hh + survey_mij_work + survey_mij_school + survey_mij_community
       survey_mij_total      <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_gam_mij_rec.csv'),sep=';',dec=',',header=T)

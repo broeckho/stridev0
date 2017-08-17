@@ -11,6 +11,6 @@ Current contributors are (in alphabetical order):
 
 * Jan Broeckhove (jan.broeckhove@uantwerpen.be)
 * Elise Kuylen (elise.kuylen@student.uantwerpen.be)
-* Lander Willem (;lander.willem@uantwerpen.be)
+* Lander Willem (lander.willem@uantwerpen.be)
 
 The current status of the project build is : [![Build Status](https://travis-ci.org/broeckho/stride.svg?branch=master)](https://travis-ci.org/broeckho/stride)

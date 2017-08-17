@@ -104,8 +104,8 @@ const string BatchDemos::g_disease_config_file_adapted = "disease_measles.xml";
 const double BatchDemos::g_transmission_rate_measles = 16U;
 const double BatchDemos::g_transmission_rate_maximum = 190U;
 
-const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 23500), make_pair("seeding_rate", 0),
-						      make_pair("immunity_rate", 5), make_pair("measles", 563500),
+const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 15200), make_pair("seeding_rate", 0),
+						      make_pair("immunity_rate", 5), make_pair("measles", 546500),
 						      make_pair("maximum", 600000)};
 
 TEST_P(BatchDemos, Run)
