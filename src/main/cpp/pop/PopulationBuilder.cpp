@@ -67,7 +67,7 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	//------------------------------------------------
 	// Check input.
 	//------------------------------------------------
-	bool status = (seeding_rate <= 1) && (immunity_rate <= 1) && ((seeding_rate + immunity_rate) <= 1);
+	bool status = (seeding_rate <= 1) && (immunity_rate <= 1); // && ((seeding_rate + immunity_rate) <= 1);
 	if (!status) {
 		throw runtime_error(string(__func__) + "> Bad input data.");
 	}
@@ -151,14 +151,95 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	//------------------------------------------------
 	// Set population immunity.
 	//------------------------------------------------
-	unsigned int num_immune = floor(static_cast<double>(population.size()) * immunity_rate);
-	while (num_immune > 0) {
-		Simulator::PersonType& p = population[rng(max_population_index)];
-		if (p.GetHealth().IsSusceptible()) {
-			p.GetHealth().SetImmune();
-			num_immune--;
+	const string immunity_profile = pt_config.get<string>("run.immunity_profile");
+	std::stringstream ss;
+	ss << "disease.immunity." << immunity_profile;
+	std::string xml_immunity_profile = ss.str();
+
+	std::cout << "using immunity profile: " << xml_immunity_profile << std::endl;
+
+	if (!pt_disease.get_child_optional(xml_immunity_profile)) {
+
+		std::cout << "using average immunity: " << immunity_rate << std::endl;
+		unsigned int num_immune = floor(static_cast<double>(population.size()) * immunity_rate);
+		while (num_immune > 0) {
+			Simulator::PersonType& p = population[rng(max_population_index)];
+			if (p.GetHealth().IsSusceptible()) {
+				p.GetHealth().SetImmune();
+				num_immune--;
+			}
 		}
-	}
+	} else { // with age-specific immunity
+		std::cout << "using age-specific immunity: " << xml_immunity_profile << std::endl;
+
+		const auto distrib_immunity = GetDistribution(pt_disease, xml_immunity_profile);
+
+		vector<double> population_count_age;
+		for (unsigned int index_age = 0; index_age < 100; index_age++) {
+			population_count_age.push_back(0);
+		}
+
+		// set all individuals to "immune"
+		for (unsigned int i = 0; i < population.size(); i++) {
+			Simulator::PersonType& p = population[i];
+			p.GetHealth().SetImmune();
+			population_count_age[p.GetAge()]++;
+		}
+
+		// select some individuals to "susceptible", given age specific probabilities
+		//        	std::cout << "population immune... start selecting susceptibles" << std::endl;
+		//        	std::cout << "population size " << population.size() << std::endl;
+
+		for (unsigned int index_age = 0; index_age < distrib_immunity.size(); index_age++) {
+
+			unsigned int num_susceptible =
+			    floor(population_count_age[index_age] * (1 - distrib_immunity[index_age]));
+			// std::cout << "age " << index_age << std::endl;
+			//        		std::cout << "num_susceptible " << num_susceptible << std::endl;
+			//        		std::cout << "(1-distrib_immunity[index_age]) " <<
+			//        (1-distrib_immunity[index_age]) << std::endl;
+
+			while (num_susceptible > 0) {
+				Simulator::PersonType& p = population[rng(max_population_index)];
+				if (p.GetAge() == index_age && p.GetHealth().IsImmune()) {
+					p.GetHealth().SetSusceptible();
+					num_susceptible--;
+					// std::cout << "** num_susceptible " << num_susceptible << std::endl;
+				}
+			} // end num_susceptible while loop
+		}         // end index_age for loop
+
+		if (xml_immunity_profile == "disease.immunity.cocoon") {
+			std::cout << "** COCOON " << std::endl;
+			// target individuals aged 20-38 years with children <1 year
+			for (unsigned int i = 0; i < population.size(); i++) {
+				Simulator::PersonType& p = population[i];
+
+				if (p.GetHealth().IsSusceptible() && p.GetAge() > 20 && p.GetAge() < 38) {
+
+					unsigned int household_id = p.GetClusterId(ClusterType::Household);
+					bool has_infant = false;
+
+					for (unsigned int i2 = 0; i2 < population.size() && !has_infant; i2++) {
+						Simulator::PersonType& p2 = population[i2];
+						if (p2.GetAge() < 1 &&
+						    p2.GetClusterId(ClusterType::Household) == household_id) {
+							has_infant = true;
+						}
+					}
+					// std::cout << "** has_infant " << has_infant << "		age: "<<
+					// p.GetAge()<<  std::endl;
+
+					if (has_infant == true && rng.NextDouble() < 0.8) {
+						p.GetHealth().SetImmune();
+						std::cout << "** set immune " << i << "		age: " << p.GetAge()
+							  << std::endl;
+					}
+				}
+			}
+		}
+
+	} // end age-specific immunity ELSE
 
 	//------------------------------------------------
 	// Seed infected persons.

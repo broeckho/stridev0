@@ -196,21 +196,23 @@ plot_social_contacts <- function(data_tag,project_dir)
       mij_sec_comm <- plot_cnt_matrix(cdata$cnt_sec_comm==1,pdata$part_age>=0,'sec_comm',num_days)
       dim(mij_sec_comm)
       
-      ## LOAD SURVEY DATA FROM FLANDERS AND FULLY CONNECTED HOUSEHOLDS
-      #survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/ref_miami_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
-      survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
-      survey_mij_school     <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_school_student_age24_gam_mij_median.csv'),sep=';',dec=',',header=T)
-      survey_mij_work       <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_workplace_employed_age_gam_mij_median.csv'),sep=';',dec=',',header=T)
-      survey_mij_community  <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_community_exclusion_gam_mij_rec.csv'),sep=';',dec=',',header=T)
-      # survey_mij_total      <- survey_mij_hh + survey_mij_work + survey_mij_school + survey_mij_community
-      survey_mij_total      <- read.table(file=paste0(project_dir,'/data/ref_fl2010_regular_weekday_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+      #data_tag <- 'ref_fl2010'
+      data_tag <- 'fl2010_15touch'
       
+      # LOAD SURVEY DATA FROM FLANDERS AND FULLY CONNECTED HOUSEHOLDS
+      #survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/ref_miami_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+      survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/',data_tag,'_regular_weekday_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+      survey_mij_school     <- read.table(file=paste0(project_dir,'/data/',data_tag,'_regular_weekday_school_student_age24_gam_mij_median.csv'),sep=';',dec=',',header=T)
+      survey_mij_work       <- read.table(file=paste0(project_dir,'/data/',data_tag,'_regular_weekday_workplace_employed_age_gam_mij_median.csv'),sep=';',dec=',',header=T)
+      survey_mij_community  <- read.table(file=paste0(project_dir,'/data/',data_tag,'_regular_weekday_community_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+      survey_mij_total      <- read.table(file=paste0(project_dir,'/data/',data_tag,'_regular_weekday_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+
       survey_mij_school_weekend    <- survey_mij_school*0
       survey_mij_work_weekend      <- survey_mij_work*0
-      survey_mij_community_weekend  <- read.table(file=paste0(project_dir,'/data/ref_fl2010_weekend_community_gam_mij_rec.csv'),sep=';',dec=',',header=T)
-      # survey_mij_total_weekend     <- survey_mij_hh + survey_mij_community_weekend 
-      survey_mij_total_weekend     <- read.table(file=paste0(project_dir,'/data/ref_fl2010_weekend_gam_mij_rec.csv'),sep=';',dec=',',header=T)
-      
+      survey_mij_community_weekend  <- read.table(file=paste0(project_dir,'/data/',data_tag,'_weekend_community_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+      survey_mij_total_weekend     <- read.table(file=paste0(project_dir,'/data/',data_tag,'_weekend_gam_mij_rec.csv'),sep=';',dec=',',header=T)
+       
+    
       ## COMPARE
       par(mfrow=c(3,2))
       

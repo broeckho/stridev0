@@ -33,7 +33,7 @@ import xml.etree.cElementTree as ET
 # --------------------------------
 # Function that runs the simulator.
 # --------------------------------
-def runSimulator(binary_command, num_days, rng_seed, seeding_rate, r0, population_file, immunity_rate, output_prefix, disease_config_file, generate_person_file, num_participants_survey, start_date, holidays_file, age_contact_matrix_file, log_level):
+def runSimulator(binary_command, num_days, rng_seed, seeding_rate, r0, population_file, immunity_rate, immunity_profile, output_prefix, disease_config_file, generate_person_file, num_participants_survey, start_date, holidays_file, age_contact_matrix_file, log_level):
     
     # Write configuration file
     root = ET.Element("run")
@@ -44,6 +44,8 @@ def runSimulator(binary_command, num_days, rng_seed, seeding_rate, r0, populatio
     ET.SubElement(root, "r0").text = str(r0)
     ET.SubElement(root, "population_file").text = population_file
     ET.SubElement(root, "immunity_rate").text = str(immunity_rate)
+    ET.SubElement(root, "immunity_profile").text = str(immunity_profile)
+    
     ET.SubElement(root, "output_prefix").text = str(str(output_prefix))
     ET.SubElement(root, "disease_config_file").text = str(str(disease_config_file))
     ET.SubElement(root, "generate_person_file").text = str(str(generate_person_file))
@@ -151,7 +153,7 @@ def main(argv):
         os.putenv('OMP_SCHEDULE' , str(config['omp_schedule']))
         
         # Run the simulator     ('experiment[0]' has been used for the OMP_NUM_THREADS)
-        runSimulator(config['binary_command'], config['num_days'], experiment[1], experiment[2], experiment[3], experiment[4], experiment[5], output_prefix, config['disease_config_file'],config['generate_person_file'],config['num_participants_survey'], config['start_date'], config['holidays_file'], config['age_contact_matrix_file'], config['log_level'])
+        runSimulator(config['binary_command'], config['num_days'], experiment[1], experiment[2], experiment[3], experiment[4], experiment[5], config['immunity_profile'], output_prefix, config['disease_config_file'],config['generate_person_file'],config['num_participants_survey'], config['start_date'], config['holidays_file'], config['age_contact_matrix_file'], config['log_level'])
                
         # Append the aggregated outputs
         if is_first:

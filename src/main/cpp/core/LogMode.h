@@ -27,7 +27,7 @@ namespace stride {
 /**
 * Enum specifiying the level of logging required:
 * \li none at all
-* \li only contacts where transimission occurs
+* \li only contacts where transmission occurs
 * \li all contacts.
 */
 enum class LogMode

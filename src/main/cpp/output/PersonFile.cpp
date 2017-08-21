@@ -41,7 +41,7 @@ void PersonFile::Initialize(const std::string& file)
 	m_fstream.open((file + "_person.csv").c_str());
 
 	// add header
-	m_fstream << "id,age,is_recovered,is_immune,start_infectiousness;"
+	m_fstream << "id,age,is_recovered,is_immune,start_infectiousness,"
 		  << "end_infectiousness,start_symptomatic,end_symptomatic" << endl;
 }
 
