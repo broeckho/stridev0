@@ -197,7 +197,7 @@ plot_social_contacts <- function(data_tag,project_dir)
       dim(mij_sec_comm)
       
       #data_tag <- 'ref_fl2010'
-      data_tag <- 'fl2010_15touch'
+      data_tag <- 'ref_fl2010_15touch'
       
       # LOAD SURVEY DATA FROM FLANDERS AND FULLY CONNECTED HOUSEHOLDS
       #survey_mij_hh         <- read.table(file=paste0(project_dir,'/data/ref_miami_household_gam_mij_rec.csv'),sep=';',dec=',',header=T)
