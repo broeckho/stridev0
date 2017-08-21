@@ -153,7 +153,7 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	//------------------------------------------------
 	const string immunity_profile = pt_config.get<string>("run.immunity_profile");
 	std::stringstream ss;
-	ss << "disease.immunity." << immunity_profile;
+	ss << "disease.immunity_profile." << immunity_profile;
 	std::string xml_immunity_profile = ss.str();
 
 	std::cout << "using immunity profile: " << xml_immunity_profile << std::endl;
@@ -194,22 +194,22 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 
 			unsigned int num_susceptible =
 			    floor(population_count_age[index_age] * (1 - distrib_immunity[index_age]));
-			// std::cout << "age " << index_age << std::endl;
-			//        		std::cout << "num_susceptible " << num_susceptible << std::endl;
-			//        		std::cout << "(1-distrib_immunity[index_age]) " <<
-			//        (1-distrib_immunity[index_age]) << std::endl;
+			std::cout << "age " << index_age << std::endl;
+			std::cout << "num_susceptible " << num_susceptible << std::endl;
+			std::cout << "(1-distrib_immunity[index_age]) " << (1 - distrib_immunity[index_age])
+				  << std::endl;
 
 			while (num_susceptible > 0) {
 				Simulator::PersonType& p = population[rng(max_population_index)];
 				if (p.GetAge() == index_age && p.GetHealth().IsImmune()) {
 					p.GetHealth().SetSusceptible();
 					num_susceptible--;
-					// std::cout << "** num_susceptible " << num_susceptible << std::endl;
+					std::cout << "** num_susceptible " << num_susceptible << std::endl;
 				}
 			} // end num_susceptible while loop
 		}         // end index_age for loop
 
-		if (xml_immunity_profile == "disease.immunity.cocoon") {
+		if (xml_immunity_profile == "disease.immunity_profile.cocoon") {
 			std::cout << "** COCOON " << std::endl;
 			// target individuals aged 20-38 years with children <1 year
 			for (unsigned int i = 0; i < population.size(); i++) {

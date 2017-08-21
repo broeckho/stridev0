@@ -6,7 +6,7 @@
 	"r0":[1],
 	"seeding_rate":[0.0001],
 	"immunity_rate": [0.0],
-        "immunity_profile": "current",
+        "immunity_profile": "none",
 	"population_file":["pop_flanders1600.csv"],
 	"num_days":1,
 	"output_tag":"flanders_cnt_weekend",

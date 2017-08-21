@@ -6,6 +6,7 @@
 	"r0":[16],
 	"seeding_rate":[0.0009],
 	"immunity_rate": [0.0],
+	"immunity_profile": "none",
 	"population_file":["pop_flanders600.csv"],
 	"num_days":30,
 	"output_tag":"gtester_measles",

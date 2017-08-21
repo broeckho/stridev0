@@ -50,7 +50,7 @@
 		<b1>125.22</b1>
 		<b2>-20.28</b2>
     </transmission>
-    <immunity>
+    <immunity_profile>
         <current>
             <proportion>0.25</proportion>
             <proportion>0.93</proportion>
@@ -561,107 +561,5 @@
             <proportion>0.953</proportion>
             <proportion>0.953</proportion>
         </cocoon>
-        <full>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-            <proportion>1</proportion>
-        </full>
-    </immunity>
+    </immunity_profile>
 </disease>

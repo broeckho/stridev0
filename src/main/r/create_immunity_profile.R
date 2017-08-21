@@ -66,8 +66,9 @@ immunity_profile_catchup <- immunity_profile_regular
 catchup_ages <- 20:38
 catchup_fraq <- (immunity_profile[2]-immunity_profile_catchup[20:38])*0.8
 
-immunity_profile_full <- immunity_profile
-immunity_profile_full[] <- 1
+immunity_profile_flu <- immunity_profile
+immunity_profile_flu[] <- 0.6
+
 
 
 immunity_profile_catchup[catchup_ages] <- immunity_profile_catchup[catchup_ages] + catchup_fraq
@@ -121,14 +122,14 @@ for(i in 1:num_age){
   newXMLNode("proportion", immunity_profile_regular[i], parent = gen)
 }
 
-gen <- newXMLNode("full", parent = top)
+gen <- newXMLNode("flu", parent = top)
 for(i in 1:num_age){
-  newXMLNode("proportion", immunity_profile_full[i], parent = gen)
+  newXMLNode("proportion", immunity_profile_flu[i], parent = gen)
 }
 
 top
 
-saveXML(top, file="../resources/data/immunity_measels.xml",NewLineOnAttributes=T)
+saveXML(top, file="../resources/data/immunity_out.xml",NewLineOnAttributes=T)
 #saveXML(top, file=paste0(tag,"immunity_measels.xml"),NewLineOnAttributes=T)
 
 
