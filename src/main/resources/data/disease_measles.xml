@@ -561,5 +561,11 @@
             <proportion>0.953</proportion>
             <proportion>0.953</proportion>
         </cocoon>
+        <cocoon_ages>
+            <adult_age_min> 20 </adult_age_min>
+            <adult_age_max> 30 </adult_age_max>
+            <child_age_min> 0 </child_age_min>
+            <child_age_max> 0 </child_age_max>
+        </cocoon_ages>
     </immunity_profile>
 </disease>

@@ -32,7 +32,7 @@ class Population;
 class Calendar;
 
 /**
- * Main class that contains and direct the virtual world.
+ * Class to build the Simulator.
  */
 class SimulatorBuilder
 {

@@ -1,5 +1,5 @@
-#ifndef POPULATION_BUILDER_H_INCLUDED
-#define POPULATION_BUILDER_H_INCLUDED
+#ifndef IMMUNITYPROFILE_H_INCLUDED
+#define IMMUNITYPROFILE_H_INCLUDED
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 /**
  * @file
- * Initialize populations.
+ * Header for the ImmunityProfile class.
  */
 
 #include "Population.h"
@@ -25,30 +25,26 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <memory>
-#include <string>
-#include <vector>
 
 namespace stride {
 
 /**
- * Initializes Population objects.
+ * To initialize the ImmunityProfile of the Population.
  */
-class PopulationBuilder
+class ImmunityProfile
 {
 public:
 	/**
-	 * Initializes a Population: add persons, set immunity, seed infection.
+	 * Initializes the immunity profile of the population.
 	 *
+	 * @param pop             Pointer to the population.
 	 * @param pt_config       Property_tree with general configuration settings.
 	 * @param pt_disease      Property_tree with disease configuration settings.
+	 * @param rng             Object to generate random numbers.
 	 * @return                Pointer to the initialized population.
 	 */
-	static std::shared_ptr<Population> Build(const boost::property_tree::ptree& pt_config,
-						 const boost::property_tree::ptree& pt_disease, util::Random& rng);
-
-private:
-	/// Sample from the distribution.
-	static unsigned int Sample(util::Random& rng, const std::vector<double>& distribution);
+	static void Initialize(std::shared_ptr<Population> pop, const boost::property_tree::ptree& pt_config,
+			       const boost::property_tree::ptree& pt_disease, util::Random& rng);
 };
 
 } // end_of_namespace

@@ -26,6 +26,7 @@
 #include "core/ContactProfile.h"
 #include "core/Infector.h"
 #include "core/LogMode.h"
+#include "pop/ImmunityProfile.h"
 #include "pop/Population.h"
 #include "pop/PopulationBuilder.h"
 #include "util/InstallDirs.h"

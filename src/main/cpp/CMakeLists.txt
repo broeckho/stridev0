@@ -41,6 +41,7 @@ set(LIB_SRC
 #---	
     pop/Person.cpp
     pop/PopulationBuilder.cpp
+    pop/ImmunityProfile.cpp
 #---
 	sim/run_stride.cpp
 	sim/Simulator.cpp
