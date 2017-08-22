@@ -100,7 +100,7 @@ public:
 	/// Builds a string with lower case characters only.
 	static std::string ToLower(std::string const& source)
 	{
-		auto lower = [](int c) -> int { return std::toupper(c); };
+		auto lower = [](int c) -> int { return std::tolower(c); };
 		std::string copy;
 		std::transform(source.begin(), source.end(), std::back_inserter(copy), lower);
 		return copy;

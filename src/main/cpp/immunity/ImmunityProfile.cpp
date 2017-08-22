@@ -15,7 +15,7 @@
 
 /**
  * @file
- * Implementation of ClusterType.
+ * Implementation of ImmunityProfile.
  */
 
 #include "ImmunityProfile.h"
@@ -72,69 +72,27 @@ void ImmunityProfile::Initialize(std::shared_ptr<Population> pop, const boost::p
 			population_count_age.push_back(0);
 		}
 
-		// set all individuals to "immune"
+		// set all "susceptible" individuals "immune"
 		for (unsigned int i = 0; i < population.size(); i++) {
 			Simulator::PersonType& p = population[i];
-			p.GetHealth().SetImmune();
-			population_count_age[p.GetAge()]++;
+			if (p.GetHealth().IsSusceptible()) {
+				p.GetHealth().SetImmune();
+				population_count_age[p.GetAge()]++;
+			}
 		}
 
 		for (unsigned int index_age = 0; index_age < distrib_immunity.size(); index_age++) {
-
 			unsigned int num_susceptible =
 			    floor(population_count_age[index_age] * (1 - distrib_immunity[index_age]));
-//			std::cout << index_age << "** num_susceptible " << num_susceptible << std::endl;
-
 			while (num_susceptible > 0) {
 				Simulator::PersonType& p = population[rng(max_population_index)];
 				if (p.GetAge() == index_age && p.GetHealth().IsImmune()) {
 					p.GetHealth().SetSusceptible();
 					num_susceptible--;
-
 				}
 			} // end num_susceptible while loop
-		}  // end index_age for loop
-
-		if (xml_immunity_profile == "disease.immunity_profile.cocoon") {
-	//		                         disease.immunity_profile.cocoon
-			std::cout << "** COCOON " << std::endl;
-
-			const double adult_age_min = pt_disease.get<double>(xml_immunity_profile + "_ages.adult_age_min");
-			const double adult_age_max = pt_disease.get<double>(xml_immunity_profile + "_ages.adult_age_max");
-			const double child_age_min = pt_disease.get<double>(xml_immunity_profile + "_ages.child_age_max");
-			const double child_age_max = pt_disease.get<double>(xml_immunity_profile + "_ages.child_age_max");
-
-			std::cout << adult_age_min << " " << adult_age_max << " " << child_age_min << " " << child_age_max << std::endl;
-
-			// target individuals aged 20-38 years with children <1 year
-			for (unsigned int i = 0; i < population.size(); i++) {
-				Simulator::PersonType& p = population[i];
-
-				if (p.GetHealth().IsSusceptible() && p.GetAge() >= adult_age_min && p.GetAge() <= adult_age_max) {
-
-					unsigned int household_id = p.GetClusterId(ClusterType::Household);
-					bool has_infant = false;
-
-					for (unsigned int i2 = 0; i2 < population.size() && !has_infant; i2++) {
-						Simulator::PersonType& p2 = population[i2];
-						if (p2.GetAge() >= child_age_min && p2.GetAge() <= child_age_max &&
-						    p2.GetClusterId(ClusterType::Household) == household_id) {
-							has_infant = true;
-						}
-					}
-					// std::cout << "** has_infant " << has_infant << "		age: "<<
-					// p.GetAge()<<  std::endl;
-
-					if (has_infant == true && rng.NextDouble() < 0.8) {
-						p.GetHealth().SetImmune();
-//						std::cout << "** set immune " << i << "		age: " << p.GetAge()
-//							  << std::endl;
-					}
-				}
-			}
-		}
-
-	} // end age-specific immunity ELSE
+		}         // end index_age for loop
+	}                 // end age-specific immunity ELSE
 }
 
 } // namespace stride

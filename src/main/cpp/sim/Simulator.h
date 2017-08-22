@@ -112,6 +112,7 @@ private:
 
 private:
 	friend class SimulatorBuilder;
+	friend class Vaccinator;
 };
 
 } // end_of_namespace

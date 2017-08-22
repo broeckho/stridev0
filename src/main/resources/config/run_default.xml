@@ -5,6 +5,8 @@
     <seeding_rate>0.002</seeding_rate>
     <immunity_rate>0.8</immunity_rate>
     <immunity_profile>none</immunity_profile>
+    <vaccine_policy>Random</vaccine_policy>
+    <vaccine_coverage>0.8</vaccine_coverage>
     <population_file>pop_flanders600.csv</population_file>
     <num_days>50</num_days>
     <output_prefix></output_prefix>

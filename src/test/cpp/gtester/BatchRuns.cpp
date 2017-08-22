@@ -65,6 +65,8 @@ protected:
 	static const double g_seeding_rate;
 	static const double g_immunity_rate;
 	static const string g_immunity_profile;
+	static const string g_vaccine_policy;
+	static const double g_vaccine_coverage;
 	static const string g_disease_config_file;
 	static const string g_output_prefix;
 	static const string g_holidays_file;
@@ -91,6 +93,8 @@ const unsigned int BatchDemos::g_rng_seed = 2015U;
 const double BatchDemos::g_seeding_rate = 0.0009;
 const double BatchDemos::g_immunity_rate = 0.0;
 const string BatchDemos::g_immunity_profile = "none";
+const string BatchDemos::g_vaccine_policy = "None";
+const double BatchDemos::g_vaccine_coverage = 0.0;
 const string BatchDemos::g_disease_config_file = "disease_influenza.xml";
 const string BatchDemos::g_output_prefix = "test";
 const string BatchDemos::g_holidays_file = "holidays_none.json";
@@ -104,7 +108,7 @@ const double BatchDemos::g_seeding_rate_adapted = 0.0;
 const double BatchDemos::g_immunity_rate_adapted = 0.999991;
 const string BatchDemos::g_disease_config_file_adapted = "disease_measles.xml";
 const double BatchDemos::g_transmission_rate_measles = 16U;
-const double BatchDemos::g_transmission_rate_maximum = 190U;
+const double BatchDemos::g_transmission_rate_maximum = 60U;
 
 const map<string, unsigned int> BatchDemos::g_results{make_pair("default", 58850), make_pair("seeding_rate", 0),
 						      make_pair("immunity_rate", 5), make_pair("measles", 546500),
@@ -130,6 +134,8 @@ TEST_P(BatchDemos, Run)
 	pt_config.put("run.seeding_rate", g_seeding_rate);
 	pt_config.put("run.immunity_rate", g_immunity_rate);
 	pt_config.put("run.immunity_profile", g_immunity_profile);
+	pt_config.put("run.vaccine_policy", g_vaccine_policy);
+	pt_config.put("run.vaccine_coverage", g_vaccine_coverage);
 	pt_config.put("run.population_file", g_population_file);
 	pt_config.put("run.num_days", g_num_days);
 	pt_config.put("run.output_prefix", g_output_prefix);

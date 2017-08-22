@@ -21,7 +21,9 @@
 
 rm(list=ls())
 
-data_tag <- 'imm_current'
+opt_data_tag <- 'imm_current'
+#opt_data_tag <- paste('15touch_current',c('cocoon','none','random'),sep = '_')
+
 plot_immunity <- function(data_tag)
 {
   
@@ -269,14 +271,12 @@ plot_immunity <- function(data_tag)
 
 }
 
-plot_immunity(data_tag)
+## RUN CODE
+for(data_tag in opt_data_tag)
+{
+  plot_immunity(data_tag)
+}
 
-# 
-# plot_immunity('seroprev_current')
-# plot_immunity('seroprev_catchup')
-# plot_immunity('seroprev_cocoon')
-# # #plot_immunity('scare')
-# plot_immunity('seroprev_uniform')
 
 
 

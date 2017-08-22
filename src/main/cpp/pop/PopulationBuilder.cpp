@@ -22,7 +22,6 @@
 
 #include "core/Cluster.h"
 #include "core/Health.h"
-#include "pop/ImmunityProfile.h"
 #include "pop/Person.h"
 #include "pop/Population.h"
 #include "util/InstallDirs.h"
@@ -90,7 +89,8 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 		throw runtime_error(string(__func__) + "> Error opening population file " + file_path.string());
 	}
 
-	const auto distrib_start_infectiousness = PtreeUtils::GetDistribution(pt_disease, "disease.start_infectiousness");
+	const auto distrib_start_infectiousness =
+	    PtreeUtils::GetDistribution(pt_disease, "disease.start_infectiousness");
 	const auto distrib_start_symptomatic = PtreeUtils::GetDistribution(pt_disease, "disease.start_symptomatic");
 	const auto distrib_time_infectious = PtreeUtils::GetDistribution(pt_disease, "disease.time_infectious");
 	const auto distrib_time_symptomatic = PtreeUtils::GetDistribution(pt_disease, "disease.time_symptomatic");
@@ -149,12 +149,6 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 			}
 		}
 	}
-
-	//------------------------------------------------
-	// Set population immunity.
-	//------------------------------------------------
-	// Use the ImmunityProfile class
-	ImmunityProfile::Initialize(pop, pt_config, pt_disease, rng);
 
 	//------------------------------------------------
 	// Seed infected persons.

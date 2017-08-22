@@ -7,6 +7,8 @@
 	"seeding_rate":[0.0001],
 	"immunity_rate": [0.0],
  	"immunity_profile": "none",
+        "vaccine_policy": "None",
+        "vaccine_coverage": 0.0,
 	"population_file":["pop_flanders600.csv"],
 	"num_days":50,
 	"output_tag":"wrapper_default",

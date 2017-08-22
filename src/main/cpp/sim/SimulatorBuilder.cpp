@@ -26,7 +26,8 @@
 #include "core/ContactProfile.h"
 #include "core/Infector.h"
 #include "core/LogMode.h"
-#include "pop/ImmunityProfile.h"
+#include "immunity/ImmunityProfile.h"
+#include "immunity/Vaccinator.h"
 #include "pop/Population.h"
 #include "pop/PopulationBuilder.h"
 #include "util/InstallDirs.h"
@@ -116,6 +117,12 @@ shared_ptr<Simulator> SimulatorBuilder::Build(const ptree& pt_config, const ptre
 
 	// Initialize clusters.
 	InitializeClusters(sim);
+
+	// Initialize population immunity
+	ImmunityProfile::Initialize(sim->m_population, pt_config, pt_disease, rng);
+
+	// Additional vaccination?
+	Vaccinator::Apply(pt_config.get<string>("run.vaccine_policy"), sim, pt_config, pt_disease, rng);
 
 	// Initialize disease profile.
 	sim->m_disease_profile.Initialize(pt_config, pt_disease);

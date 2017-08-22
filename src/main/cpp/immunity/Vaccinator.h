@@ -1,5 +1,5 @@
-#ifndef IMMUNITYPROFILE_H_INCLUDED
-#define IMMUNITYPROFILE_H_INCLUDED
+#ifndef VACCINATOR_H_INCLUDED
+#define VACCINATOR_H_INCLUDED
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -17,34 +17,30 @@
 
 /**
  * @file
- * Header for the ImmunityProfile class.
+ * Header for the Vaccinator class.
  */
 
-#include "Population.h"
+#include "immunity/VaccinePolicy.h"
+#include "sim/Simulator.h"
 #include "util/Random.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <memory>
 
+#include <iostream>
+
 namespace stride {
 
-/**
- * To initialize the ImmunityProfile of the Population.
- */
-class ImmunityProfile
+class Vaccinator
 {
 public:
-	/**
-	 * Initializes the immunity profile of the population.
-	 *
-	 * @param pop             Pointer to the population.
-	 * @param pt_config       Property_tree with general configuration settings.
-	 * @param pt_disease      Property_tree with disease configuration settings.
-	 * @param rng             Object to generate random numbers.
-	 * @return                Pointer to the initialized population.
-	 */
-	static void Initialize(std::shared_ptr<Population> pop, const boost::property_tree::ptree& pt_config,
-			       const boost::property_tree::ptree& pt_disease, util::Random& rng);
+	template <VaccinePolicy vaccin_policy>
+	static void ApplyPolicy(std::shared_ptr<Simulator> sim, const boost::property_tree::ptree& pt_config,
+				const boost::property_tree::ptree& pt_disease, util::Random& rng);
+
+	static void Apply(const std::string vaccine_policy, std::shared_ptr<Simulator> sim,
+			  const boost::property_tree::ptree& pt_config, const boost::property_tree::ptree& pt_disease,
+			  util::Random& rng);
 };
 
 } // end_of_namespace
