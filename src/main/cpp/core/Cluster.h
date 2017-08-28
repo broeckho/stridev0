@@ -105,6 +105,9 @@ private:
 
 /// Explicit instantiations in .cpp file
 extern template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief> >;
+extern template class Cluster<Person<Vaccination<Threshold<true, false> >, Threshold<true, false> > >;
+extern template class Cluster<Person<Vaccination<Threshold<false, true> >, Threshold<false, true> > >;
+extern template class Cluster<Person<Vaccination<Threshold<true, true> >, Threshold<true, true> > >;
 
 } // end_of_namespace
 

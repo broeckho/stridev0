@@ -21,7 +21,10 @@
 #include "run_stride.h"
 
 #include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/behaviour_policies/Vaccination.h"
 #include "behaviour/belief_policies/NoBelief.h"
+#include "behaviour/belief_policies/Threshold.h"
+#include "behaviour/information_policies/LocalDiscussion.h"
 #include "behaviour/information_policies/NoGlobalInformation.h"
 #include "behaviour/information_policies/NoLocalInformation.h"
 #include "output/AdoptedFile.h"
@@ -95,10 +98,10 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	// -----------------------------------------------------------------------------------------
 
 	// TODO get these from configuration file
-	typedef NoGlobalInformation GlobalInformationPolicy;
-	typedef NoLocalInformation LocalInformationPolicy;
 	typedef NoBelief BeliefPolicy;
 	typedef NoBehaviour<BeliefPolicy> BehaviourPolicy;
+	typedef NoGlobalInformation GlobalInformationPolicy;
+	typedef NoLocalInformation LocalInformationPolicy;
 
 	// -----------------------------------------------------------------------------------------
 	// OpenMP.

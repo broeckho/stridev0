@@ -94,6 +94,8 @@ void Cluster<person_type>::UpdateMemberPresence()
 // All explicit instantiations.
 //--------------------------------------------------------------------------
 template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief> >;
-
+template class Cluster<Person<Vaccination<Threshold<true, false> >, Threshold<true, false> > >;
+template class Cluster<Person<Vaccination<Threshold<false, true> >, Threshold<false, true> > >;
+template class Cluster<Person<Vaccination<Threshold<true, true> >, Threshold<true, true> > >;
 
 } // end_of_namespace

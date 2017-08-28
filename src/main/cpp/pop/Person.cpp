@@ -112,12 +112,11 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p)
 // All explicit instantiations.
 //--------------------------------------------------------------------------
 template class Person<NoBehaviour<NoBelief>, NoBelief>;
-
-/*
 template class Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>;
 template class Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>;
 template class Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>;
 
+/*
 template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
 template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
 template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;*/

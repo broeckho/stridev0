@@ -293,21 +293,63 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation, person_ty
 // All explicit instantiations.
 //--------------------------------------------------------------------------
 template class Infector<LogMode::None, false, NoLocalInformation, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::None, false, NoLocalInformation, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::None, false, NoLocalInformation, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::None, false, NoLocalInformation, PersonVaccinationThresholdTT>;
+
 template class Infector<LogMode::None, false, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::None, false, LocalDiscussion<PersonVaccinationThresholdTF>, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::None, false, LocalDiscussion<PersonVaccinationThresholdFT>, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::None, false, LocalDiscussion<PersonVaccinationThresholdTT>, PersonVaccinationThresholdTT>;
 
 template class Infector<LogMode::None, true, NoLocalInformation, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::None, true, NoLocalInformation, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::None, true, NoLocalInformation, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::None, true, NoLocalInformation, PersonVaccinationThresholdTT>;
+
 template class Infector<LogMode::None, true, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::None, true, LocalDiscussion<PersonVaccinationThresholdTF>, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::None, true, LocalDiscussion<PersonVaccinationThresholdFT>, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::None, true, LocalDiscussion<PersonVaccinationThresholdTT>, PersonVaccinationThresholdTT>;
 
 template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonVaccinationThresholdTT>;
+
 template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonVaccinationThresholdTF>, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonVaccinationThresholdFT>, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonVaccinationThresholdTT>, PersonVaccinationThresholdTT>;
 
 template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonVaccinationThresholdTT>;
+
 template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonVaccinationThresholdTF>, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonVaccinationThresholdFT>, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonVaccinationThresholdTT>, PersonVaccinationThresholdTT>;
 
 template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonVaccinationThresholdTT>;
+
 template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonVaccinationThresholdTF>, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonVaccinationThresholdFT>, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonVaccinationThresholdTT>, PersonVaccinationThresholdTT>;
 
 template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonVaccinationThresholdTT>;
+
 template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
+template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonVaccinationThresholdTF>, PersonVaccinationThresholdTF>;
+template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonVaccinationThresholdFT>, PersonVaccinationThresholdFT>;
+template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonVaccinationThresholdTT>, PersonVaccinationThresholdTT>;
 
 } // end_of_namespace

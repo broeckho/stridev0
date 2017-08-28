@@ -15,7 +15,9 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-/*namespace stride {
+#include "pop/Person.h"
+
+namespace stride {
 
 template <typename BehaviourPolicy, typename BeliefPolicy>
 void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)
@@ -30,8 +32,8 @@ void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)
 	}
 }
 
-template void ThresholdData::Contact<Vaccination<Threshold<true, false>>, Threshold<true, false>>(
-    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>* p);
+template void ThresholdData::Contact<Vaccination<Threshold<true, false> >, Threshold<true, false>>(
+    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false> >* p);
 template void ThresholdData::Contact<Vaccination<Threshold<false, true>>, Threshold<false, true>>(
     const Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>* p);
 template void ThresholdData::Contact<Vaccination<Threshold<true, true>>, Threshold<true, true>>(

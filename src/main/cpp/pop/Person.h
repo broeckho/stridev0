@@ -21,6 +21,7 @@
  */
 #include "behaviour/behaviour_policies/NoBehaviour.h"
 #include "behaviour/belief_policies/NoBelief.h"
+#include "behaviour/belief_policies/Threshold.h"
 
 #include "core/Health.h"
 
@@ -116,12 +117,11 @@ private:
 
 /// Explicit instantiations in .cpp file
 extern template class Person<NoBehaviour<NoBelief>, NoBelief>;
-/*
-
 extern template class Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>;
 extern template class Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>;
 extern template class Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>;
 
+/*
 extern template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
 extern template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
 extern template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;*/
