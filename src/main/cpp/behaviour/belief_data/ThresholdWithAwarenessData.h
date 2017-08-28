@@ -15,7 +15,7 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-#include "behaviour/behaviour_policies/Vaccination.h"
+/*#include "behaviour/behaviour_policies/Vaccination.h"
 
 namespace stride {
 

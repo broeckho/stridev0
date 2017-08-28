@@ -19,13 +19,11 @@
  */
 
 #include "Person.h"
-#include "Age.h"
 
 #include "core/ClusterType.h"
+#include "pop/Age.h"
 
-#include <memory>
 #include <stdexcept>
-#include <string>
 
 namespace stride {
 
@@ -74,7 +72,7 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 {
 	m_health.Update();
 
-	// Vaccination behavior
+	// Vaccination behaviour
 	// As long as people are susceptible to a disease
 	// (or think they are: they have been infected but are not yet symptomatic) they can choose to get vaccinated
 	if (m_health.IsSusceptible() || (m_health.IsInfected() && (!m_health.IsSymptomatic()))) {
@@ -107,7 +105,6 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 template <class BehaviourPolicy, class BeliefPolicy>
 void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p)
 {
-	// BeliefPolicy::Update(m_belief_data, p->GetBeliefData(), p->GetHealth());
 	BeliefPolicy::Update(m_belief_data, p);
 }
 
@@ -116,11 +113,14 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p)
 //--------------------------------------------------------------------------
 template class Person<NoBehaviour<NoBelief>, NoBelief>;
 
+/*
 template class Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>;
 template class Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>;
 template class Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>;
 
 template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
 template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
-template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;
+template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;*/
+
+
 } // end_of_namespace

@@ -20,19 +20,17 @@
  * Header file for the core Population class
  */
 
-#include "Person.h"
-#include "core/Health.h"
-#include "sim/Simulator.h"
-
-#include <numeric>
 #include <vector>
+
+#include "pop/Person.h"
 
 namespace stride {
 
 /**
  * Container for persons in population.
  */
-class Population : public std::vector<Simulator::PersonType>
+template <typename person_type>
+class Population: public std::vector<person_type>
 {
 public:
 	/// Get the cumulative number of cases.
@@ -59,8 +57,10 @@ public:
 				total++;
 			}
 		}
+
 		return total;
 	}
+
 };
 
 } // end_of_namespace

@@ -20,9 +20,6 @@
 
 #include "SummaryFile.h"
 
-#include <boost/property_tree/ptree.hpp>
-#include <fstream>
-#include <iostream>
 #include <omp.h>
 
 namespace stride {
@@ -30,7 +27,11 @@ namespace output {
 
 using namespace std;
 
-SummaryFile::SummaryFile(const std::string& file)
+SummaryFile::SummaryFile(const string& file) { Initialize(file); }
+
+SummaryFile::~SummaryFile() { m_fstream.close(); }
+
+void SummaryFile::Initialize(const string& file)
 {
 	m_fstream.open((file + "_summary.csv").c_str());
 
@@ -40,8 +41,6 @@ SummaryFile::SummaryFile(const std::string& file)
 		     "participants_survey,disease_config"
 		  << endl;
 }
-
-SummaryFile::~SummaryFile() { m_fstream.close(); }
 
 void SummaryFile::Print(const boost::property_tree::ptree& pt_config, unsigned int population_size,
 			unsigned int num_cases, double transmission_rate, unsigned int run_time,

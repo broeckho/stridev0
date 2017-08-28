@@ -20,6 +20,7 @@
  */
 
 #include "behaviour/belief_data/Nothing.h"
+#include "core/Health.h"
 
 namespace stride {
 
@@ -36,12 +37,11 @@ public:
 	static void Update(Data& belief_data, Health& health_data) {}
 
 	template <typename BehaviourPolicy>
-	static void Update(Data& belief_data, const Person<BehaviourPolicy, NoBelief>* p)
-	{
-	}
+	static void Update(Data& belief_data, const Person<BehaviourPolicy, NoBelief>* p) {}
 
 	static bool HasAdopted(const Data& belief_data) { return false; }
 };
+
 
 } /* namespace stride */
 

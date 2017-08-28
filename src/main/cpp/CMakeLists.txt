@@ -22,7 +22,6 @@ set(LIB_SRC
 #---
 	behaviour/belief_data/ThresholdData.cpp
 	behaviour/belief_data/ThresholdWithAwarenessData.cpp
-	behaviour/information_policies/InformationPolicy.cpp
 #---
     calendar/Calendar.cpp
 #---
@@ -40,11 +39,8 @@ set(LIB_SRC
 	output/SummaryFile.cpp
 #---	
     pop/Person.cpp
-    pop/PopulationBuilder.cpp
 #---
 	sim/run_stride.cpp
-	sim/Simulator.cpp
-	sim/SimulatorBuilder.cpp
 #---
 	util/InstallDirs.cpp
 )

@@ -15,7 +15,7 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-#include "behaviour/behaviour_policies/Vaccination.h"
+//#include "behaviour/behaviour_policies/Vaccination.h"
 
 /*
  * Possible variants:
@@ -24,7 +24,7 @@
  * 		+ with history
  * 		+ and off course all combinations
  */
-namespace stride {
+/*namespace stride {
 
 template <typename BehaviourPolicy, typename BeliefPolicy>
 class Person;
@@ -35,7 +35,7 @@ class Threshold;
 /**
  *
  */
-class ThresholdData
+/*class ThresholdData
 {
 public:
 	/// Default constructor

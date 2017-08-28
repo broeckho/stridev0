@@ -14,7 +14,7 @@
  *
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
-namespace stride {
+/*namespace stride {
 
 enum class VariableState
 {
@@ -68,5 +68,5 @@ private:
 	VariableState m_perceived_barriers;
 };
 }
-
+*/
 #endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_HBMDATA_H_ */

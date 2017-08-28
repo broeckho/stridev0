@@ -15,7 +15,7 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-#include "behaviour/belief_data/ThresholdWithAwarenessData.h"
+/*#include "behaviour/belief_data/ThresholdWithAwarenessData.h"
 #include "core/Health.h"
 
 namespace stride {

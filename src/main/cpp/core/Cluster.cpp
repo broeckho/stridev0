@@ -20,40 +20,33 @@
 
 #include "Cluster.h"
 
-#include "Infector.h"
-#include "LogMode.h"
-#include "calendar/Calendar.h"
-#include "pop/Person.h"
-
-#include <cstddef>
-#include <memory>
-#include <spdlog/spdlog.h>
-#include <vector>
-
 namespace stride {
 
 using namespace std;
 
-std::array<ContactProfile, NumOfClusterTypes()> Cluster::g_profiles;
+template <typename person_type>
+array<ContactProfile, NumOfClusterTypes()> Cluster<person_type>::g_profiles;
 
-Cluster::Cluster(std::size_t cluster_id, ClusterType cluster_type)
-    : m_cluster_id(cluster_id), m_cluster_type(cluster_type), m_index_immune(0),
-      m_profile(g_profiles.at(ToSizeType(m_cluster_type)))
-{
-}
+template <typename person_type>
+Cluster<person_type>::Cluster(std::size_t cluster_id, ClusterType cluster_type)
+	: m_cluster_id(cluster_id), m_cluster_type(cluster_type), m_index_immune(0),
+	  m_profile(g_profiles.at(ToSizeType(m_cluster_type))) {}
 
-void Cluster::AddContactProfile(ClusterType cluster_type, const ContactProfile& profile)
+template <typename person_type>
+void Cluster<person_type>::AddContactProfile(ClusterType cluster_type, const ContactProfile& profile)
 {
 	g_profiles.at(ToSizeType(cluster_type)) = profile;
 }
 
-void Cluster::AddPerson(Simulator::PersonType* p)
+template <typename person_type>
+void Cluster<person_type>::AddPerson(person_type* p)
 {
 	m_members.emplace_back(std::make_pair(p, true));
 	m_index_immune++;
 }
 
-tuple<bool, size_t> Cluster::SortMembers()
+template <typename person_type>
+tuple<bool, size_t> Cluster<person_type>::SortMembers()
 {
 	bool infectious_cases = false;
 	size_t num_cases = 0;
@@ -86,14 +79,21 @@ tuple<bool, size_t> Cluster::SortMembers()
 		}
 	}
 
-	return make_tuple(infectious_cases, num_cases);
+	return std::make_tuple(infectious_cases, num_cases);
 }
 
-void Cluster::UpdateMemberPresence()
+template <typename person_type>
+void Cluster<person_type>::UpdateMemberPresence()
 {
 	for (auto& member : m_members) {
 		member.second = member.first->IsInCluster(m_cluster_type);
 	}
 }
+
+//--------------------------------------------------------------------------
+// All explicit instantiations.
+//--------------------------------------------------------------------------
+template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief> >;
+
 
 } // end_of_namespace

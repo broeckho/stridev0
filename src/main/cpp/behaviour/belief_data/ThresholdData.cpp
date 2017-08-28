@@ -15,7 +15,7 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-namespace stride {
+/*namespace stride {
 
 template <typename BehaviourPolicy, typename BeliefPolicy>
 void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)

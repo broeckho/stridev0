@@ -19,23 +19,14 @@
  * @file
  * Header file for the Person class.
  */
+#include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/belief_policies/NoBelief.h"
 
 #include "core/Health.h"
 
-#include <cstddef>
-#include <iostream>
-#include <memory>
-
-#include "behaviour/behaviour_policies/NoBehaviour.h"
-#include "behaviour/behaviour_policies/Vaccination.h"
-
-#include "behaviour/belief_policies/NoBelief.h"
-#include "behaviour/belief_policies/Threshold.h"
-#include "behaviour/belief_policies/ThresholdWithAwareness.h"
-
 namespace stride {
 
-class Calendar;
+/*class Calendar;*/
 enum class ClusterType;
 
 /**
@@ -47,15 +38,15 @@ class Person
 public:
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id, unsigned int work_id,
-	       unsigned int primary_community_id, unsigned int secondary_community_id,
-	       unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
-	       unsigned int time_symptomatic, double risk_averseness = 0)
-	    : m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
-	      m_work_id(work_id), m_primary_community_id(primary_community_id),
-	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
-	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
-	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-	      m_is_participant(false), m_at_home_due_to_illness(false)
+			unsigned int primary_community_id, unsigned int secondary_community_id,
+			unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
+			unsigned int time_symptomatic, double risk_averseness = 0)
+		: m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
+		  m_work_id(work_id), m_primary_community_id(primary_community_id),
+		  m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
+		  m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
+		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
+		  m_is_participant(false), m_at_home_due_to_illness(false)
 	{
 		BeliefPolicy::Initialize(m_belief_data, risk_averseness);
 	}
@@ -125,6 +116,7 @@ private:
 
 /// Explicit instantiations in .cpp file
 extern template class Person<NoBehaviour<NoBelief>, NoBelief>;
+/*
 
 extern template class Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>;
 extern template class Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>;
@@ -132,7 +124,7 @@ extern template class Person<Vaccination<Threshold<true, true>>, Threshold<true,
 
 extern template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
 extern template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
-extern template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;
+extern template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;*/
 
 } // end_of_namespace
 

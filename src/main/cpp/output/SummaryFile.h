@@ -20,8 +20,6 @@
  * Header for the SummaryFile class.
  */
 
-#include "pop/Population.h"
-
 #include <boost/property_tree/ptree.hpp>
 #include <fstream>
 #include <string>

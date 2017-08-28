@@ -8,6 +8,8 @@
 #ifndef SRC_MAIN_CPP_BEHAVIOUR_BEHAVIOUR_POLICIES_VACCINATION_H_
 #define SRC_MAIN_CPP_BEHAVIOUR_BEHAVIOUR_POLICIES_VACCINATION_H_
 
+namespace stride {
+
 template <typename belief_policy>
 class Vaccination
 {
@@ -23,5 +25,7 @@ public:
 		}
 	}
 };
+
+} /* end of namespace stride */
 
 #endif /* SRC_MAIN_CPP_BEHAVIOUR_BEHAVIOUR_POLICIES_VACCINATION_H_ */

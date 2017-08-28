@@ -20,11 +20,14 @@
 
 #include "run_stride.h"
 
+#include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/belief_policies/NoBelief.h"
+#include "behaviour/information_policies/NoGlobalInformation.h"
+#include "behaviour/information_policies/NoLocalInformation.h"
 #include "output/AdoptedFile.h"
 #include "output/CasesFile.h"
 #include "output/PersonFile.h"
 #include "output/SummaryFile.h"
-#include "sim/Simulator.h"
 #include "sim/SimulatorBuilder.h"
 #include "util/ConfigInfo.h"
 #include "util/InstallDirs.h"
@@ -37,13 +40,10 @@
 #include <omp.h>
 #include <spdlog/spdlog.h>
 
-#include <cmath>
-#include <iomanip>
-#include <ios>
 #include <iostream>
-#include <limits>
-#include <stdexcept>
+#include <memory>
 #include <string>
+
 
 namespace stride {
 
@@ -82,6 +82,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	// -----------------------------------------------------------------------------------------
 	ptree pt_config;
 	const auto file_path = canonical(system_complete(config_file_name));
+
 	if (!is_regular_file(file_path)) {
 		throw runtime_error(string(__func__) + ">Config file " + file_path.string() +
 				    " not present. Aborting.");
@@ -90,10 +91,21 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	cout << "Configuration file:  " << file_path.string() << endl;
 
 	// -----------------------------------------------------------------------------------------
+	// Get information, belief and behaviour policies to be used
+	// -----------------------------------------------------------------------------------------
+
+	// TODO get these from configuration file
+	typedef NoGlobalInformation GlobalInformationPolicy;
+	typedef NoLocalInformation LocalInformationPolicy;
+	typedef NoBelief BeliefPolicy;
+	typedef NoBehaviour<BeliefPolicy> BehaviourPolicy;
+
+	// -----------------------------------------------------------------------------------------
 	// OpenMP.
 	// -----------------------------------------------------------------------------------------
 	unsigned int num_threads;
-#pragma omp parallel
+
+	#pragma omp parallel
 	{
 		num_threads = omp_get_num_threads();
 	}
@@ -102,6 +114,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	} else {
 		cout << "Not using OpenMP threads." << endl;
 	}
+
 	// -----------------------------------------------------------------------------------------
 	// Set output path prefix.
 	// -----------------------------------------------------------------------------------------
@@ -139,7 +152,9 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	// -----------------------------------------------------------------------------------------
 	Stopwatch<> total_clock("total_clock", true);
 	cout << "Building the simulator. " << endl;
-	auto sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
+
+	auto sim = SimulatorBuilder<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>::Build(pt_config, num_threads, track_index_case);
+
 	cout << "Done building the simulator. " << endl;
 
 	// -----------------------------------------------------------------------------------------
@@ -167,9 +182,11 @@ void run_stride(bool track_index_case, const string& config_file_name)
 			sim->TimeStep();
 			run_clock.Stop();
 			cout << "     Done, infected count: ";
+
 			cases[i] = sim->GetPopulation()->GetInfectedCount();
-			unsigned int adopters = sim->GetPopulation()->GetAdoptedCount<Simulator::BeliefPolicy>();
-			cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopters << endl;
+			adopted[i] = sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
+
+			cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i] << endl;
 		}
 
 		// -----------------------------------------------------------------------------------------
@@ -182,6 +199,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 		// Adopted
 		AdoptedFile adopted_file(output_prefix);
 		adopted_file.Print(adopted);
+
 
 		// Summary
 		SummaryFile summary_file(output_prefix);
@@ -204,5 +222,6 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	cout << "  run_time: " << run_clock.ToString() << "  -- total time: " << total_clock.ToString() << endl << endl;
 	cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
 }
+
 
 } // end_of_namespace

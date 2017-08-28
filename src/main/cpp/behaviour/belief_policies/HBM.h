@@ -15,7 +15,7 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-#include "behaviour/belief_data/HBMData.h"
+/*#include "behaviour/belief_data/HBMData.h"
 #include "core/Health.h"
 #include "util/RNG.h"
 
@@ -24,13 +24,13 @@
 namespace stride {
 
 template <typename BehaviourPolicy, typename BeliefPolicy>
-class Person;
+class Person;*/
 
 /*
  * p(behaviour) = OR0 * (OR1^x1 * OR2^x2 * OR3^x3 * OR4^x4)/ (1 + OR0 * (prod ORi^xi))
  */
 
-class HBM
+/*class HBM
 {
 public:
 	using Data = HBMData;
@@ -64,6 +64,6 @@ private:
 	static const double m_odds_ratio_barriers = -0.4;
 };
 
-} /* namespace stride */
+} *//* namespace stride */
 
 #endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_HBM_H_ */

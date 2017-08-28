@@ -25,7 +25,6 @@
 #include <fstream>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace stride {
 namespace output {
@@ -43,7 +42,16 @@ public:
 	~PersonFile();
 
 	/// Print the given cases with corresponding tag.
-	void Print(const std::shared_ptr<const Population> population);
+	template <class person_type>
+	void Print(const std::shared_ptr<const Population<person_type> > population)
+	{
+		for (const auto& p : *population) {
+			const auto& h = p.GetHealth();
+			m_fstream << p.GetId() << "," << p.GetAge() << "," << h.IsRecovered() << "," << h.IsImmune() << ","
+				  << h.GetStartInfectiousness() << "," << h.GetEndInfectiousness() << ","
+				  << h.GetStartSymptomatic() << "," << h.GetEndSymptomatic() << std::endl;
+		}
+	}
 
 private:
 	/// Generate file name and open the file stream.

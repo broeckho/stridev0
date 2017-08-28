@@ -18,8 +18,10 @@
  * Implementation of scenario tests running in batch mode.
  */
 
-#include "pop/Population.h"
-#include "sim/Simulator.h"
+#include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/belief_policies/NoBelief.h"
+#include "behaviour/information_policies/NoGlobalInformation.h"
+#include "behaviour/information_policies/NoLocalInformation.h"
 #include "sim/SimulatorBuilder.h"
 
 #include <boost/property_tree/ptree.hpp>
@@ -27,7 +29,6 @@
 #include <omp.h>
 #include <spdlog/spdlog.h>
 
-#include <cmath>
 #include <map>
 #include <string>
 #include <tuple>
@@ -173,7 +174,7 @@ TEST_P(BatchDemos, Run)
 	// Initialize the simulation.
 	// -----------------------------------------------------------------------------------------
 	cout << "Building the simulator. " << endl;
-	auto sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
+	auto sim = SimulatorBuilder<NoGlobalInformation, NoLocalInformation, NoBelief, NoBehaviour<NoBelief> >::Build(pt_config, num_threads, track_index_case);
 	cout << "Done building the simulator. " << endl << endl;
 
 	// -----------------------------------------------------------------------------------------

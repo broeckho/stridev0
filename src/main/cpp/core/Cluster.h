@@ -20,26 +20,22 @@
  * Header for the core Cluster class.
  */
 
+#include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/belief_policies/NoBelief.h"
 #include "core/ClusterType.h"
 #include "core/ContactProfile.h"
 #include "core/LogMode.h"
 #include "pop/Person.h"
-#include "pop/PopulationBuilder.h"
-#include "sim/Simulator.h"
 
 #include <array>
-#include <cstddef>
 #include <vector>
-//#include <memory>
 
 namespace stride {
-
-class RngHandler;
-class Calendar;
 
 /**
  * Represents a location for social contacts, an group of people.
  */
+template <typename person_type>
 class Cluster
 {
 public:
@@ -50,7 +46,7 @@ public:
 	// Cluster(const Cluster& rhs);
 
 	/// Add the given Person to the Cluster.
-	void AddPerson(Simulator::PersonType* p);
+	void AddPerson(person_type* p);
 
 	/// Return number of persons in this cluster.
 	std::size_t GetSize() const { return m_members.size(); }
@@ -59,7 +55,7 @@ public:
 	ClusterType GetClusterType() const { return m_cluster_type; }
 
 	/// Get basic contact rate in this cluster.
-	double GetContactRate(const Simulator::PersonType* p) const
+	double GetContactRate(const person_type* p) const
 	{
 		double reference_num_contacts = g_profiles.at(ToSizeType(m_cluster_type))[EffectiveAge(p->GetAge())];
 		double potential_num_contacts = (m_members.size() - 1);
@@ -90,22 +86,25 @@ private:
 	std::tuple<bool, size_t> SortMembers();
 
 	/// Infector calculates contacts and transmissions.
-	template <LogMode log_level, bool track_index_case, typename local_information_policy>
+	template <LogMode log_level, bool track_index_case, typename local_information_policy, typename i_person_type>
 	friend class Infector;
 
 	/// Calculate which members are present in the cluster on the current day.
 	void UpdateMemberPresence();
 
 private:
-	std::size_t m_cluster_id;   ///< The ID of the Cluster (for logging purposes).
-	ClusterType m_cluster_type; ///< The type of the Cluster (for logging purposes).
+	std::size_t m_cluster_id;	///< The ID of the Cluster (for logging purposes).
+	ClusterType m_cluster_type;	///< The type of the Cluster (for logging purposes).
 	std::size_t m_index_immune; ///< Index of the first immune member in the Cluster.
-	std::vector<std::pair<Simulator::PersonType*, bool>> m_members; ///< Container with pointers to Cluster members.
+	std::vector<std::pair<person_type*, bool> > m_members; ///< Container with pointers to Cluster members.
 	const ContactProfile& m_profile;
 
 private:
 	static std::array<ContactProfile, NumOfClusterTypes()> g_profiles;
 };
+
+/// Explicit instantiations in .cpp file
+extern template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief> >;
 
 } // end_of_namespace
 
