@@ -97,6 +97,11 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	// Get information, belief and behaviour policies to be used
 	// -----------------------------------------------------------------------------------------
 
+	string belief_policy = pt_config.get<string>("run.belief_policy", "NoBelief");
+	string behaviour_policy = pt_config.get<string>("run.behaviour_policy", "NoBehaviour");
+	string local_information_policy = pt_config.get<string>("run.local_information_policy", "NoLocalInformation");
+	string global_information_policy = pt_config.get<string>("run.global_information_policy", "NoGlobalInformation");
+
 	// TODO get these from configuration file
 	typedef NoBelief BeliefPolicy;
 	typedef NoBehaviour<BeliefPolicy> BehaviourPolicy;
