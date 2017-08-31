@@ -24,6 +24,8 @@
 #include <trng/uniform01_dist.hpp>
 #include <trng/uniform_int_dist.hpp>
 
+#include <vector>
+
 namespace stride {
 namespace util {
 
@@ -57,6 +59,19 @@ public:
 	 * => stream B: 1 3 5...
 	 */
 	void Split(unsigned int total, unsigned int id) { m_engine.split(total, id); }
+
+	std::vector<unsigned int> GetRandomIndices(unsigned int size)
+	{
+
+		std::vector<unsigned int> indices;
+		for (unsigned int i = 0; i < size; i++) {
+			indices.push_back(i);
+		}
+
+		std::random_shuffle(indices.begin(), indices.end(), m_engine);
+
+		return indices;
+	}
 
 private:
 	trng::mrg2 m_engine;                         ///< The random number engine.
