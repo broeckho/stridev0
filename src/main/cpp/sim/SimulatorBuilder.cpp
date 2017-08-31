@@ -26,17 +26,17 @@
 #include "core/ContactProfile.h"
 #include "core/Infector.h"
 #include "core/LogMode.h"
-#include "immunity/ImmunityProfile.h"
-#include "immunity/Vaccinator.h"
 #include "pop/Population.h"
 #include "pop/PopulationBuilder.h"
 #include "util/InstallDirs.h"
 
+#include "../immunity/Vaccinator.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <iostream>
 #include <memory>
 #include <omp.h>
+#include <spdlog/spdlog.h>
 #include <stdexcept>
 
 namespace stride {
@@ -91,6 +91,8 @@ shared_ptr<Simulator> SimulatorBuilder::Build(const ptree& pt_config, const ptre
 {
 	auto sim = make_shared<Simulator>();
 
+	const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
+
 	// Initialize config ptree.
 	sim->m_config_pt = pt_config;
 
@@ -119,13 +121,32 @@ shared_ptr<Simulator> SimulatorBuilder::Build(const ptree& pt_config, const ptre
 	InitializeClusters(sim);
 
 	// Initialize population immunity
-	ImmunityProfile::Initialize(sim->m_population, pt_config, pt_disease, rng);
+	Vaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
 
-	// Additional vaccination?
-	Vaccinator::Apply(pt_config.get<string>("run.vaccine_policy"), sim, pt_config, pt_disease, rng);
+	// Additional vaccine administration
+	Vaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
 
 	// Initialize disease profile.
 	sim->m_disease_profile.Initialize(pt_config, pt_disease);
+
+	//------------------------------------------------
+	// Seed infected persons.
+	//------------------------------------------------
+	const double seeding_rate = pt_config.get<double>("run.seeding_rate");
+	double seeding_age_min = pt_config.get<double>("run.seeding_age_min");
+	double seeding_age_max = pt_config.get<double>("run.seeding_age_max");
+	const unsigned int max_population_index = sim->m_population->size() - 1;
+	unsigned int num_infected = floor(static_cast<double>(sim->m_population->size()) * seeding_rate);
+	while (num_infected > 0) {
+		Simulator::PersonType& p = sim->m_population->at(rng(max_population_index));
+		if ((p.GetHealth().IsSusceptible()) && (p.GetAge() >= seeding_age_min) &&
+		    (p.GetAge() <= seeding_age_max)) {
+			p.GetHealth().StartInfection();
+			num_infected--;
+
+			logger->info("[PRIM] {} {} {} {}", -1, p.GetId(), -1, 0);
+		}
+	}
 
 	// Initialize Rng handlers
 	unsigned int new_seed = rng(numeric_limits<unsigned int>::max());

@@ -19,9 +19,12 @@
 #
 #############################################################################
 
+
 rm(list=ls())
 
-opt_data_tag <- 'imm_current'
+opt_data_tag <- '15touch_debug_household_cocoon' ; data_tag <- opt_data_tag
+# opt_data_tag <- paste('15touch_debug',c('_household','_primary_community'),sep = '')
+# opt_data_tag <- paste('15touch_debug_current',c('','_hh'),sep = '')
 #opt_data_tag <- paste('15touch_current',c('cocoon','none','random'),sep = '_')
 
 plot_immunity <- function(data_tag)
@@ -49,11 +52,19 @@ plot_immunity <- function(data_tag)
   data_cases         <- read.table(paste(io_folder,data_tag,'_cases.csv',sep=''),header=FALSE,sep=",")
   data_person	       <- read.table(paste(io_folder,data_tag,'_person.csv',sep=''),header=TRUE,sep=",",stringsAsFactors=F)
   data_logfile       <- read.table(new_logfile,header=FALSE,sep=" ",stringsAsFactors=F)
-     
+  
+  names(data_logfile) <- c('tag','infector_id','infected_id','cluster','day')
+  cluster_levels <- c("household","school","work","primary_community","secondary_community")
+  cluster_levels_proportion <- c(7,5,5,2,5)
+  
+  data_logfile$cluster_cat <- factor(data_logfile$cluster,cluster_levels)
+  data_logfile[data_logfile==-1] <- NA
+  
   if(getPDF)
   pdf(paste0(io_folder,'plot_', data_tag,'_outbreaks.pdf'))
   
   names(data_person)
+  #data_person <- data_person[data_person$age < 85,]
   
   popsize <- dim(data_person)[1]
   pop_age <- table(data_person$age)
@@ -76,33 +87,80 @@ plot_immunity <- function(data_tag)
   vacc_plot_ftr <- 5
   
   plot(matrix(tbl_seroprev[,2]/pop_age),main='age-specific immunity',xlab='age',ylab='seroprevalence',ylim=c(0,1),type='l')
+  lines(age_imm_reg,col=2,lwd=4)
+  lines(matrix(tbl_seroprev[,2]/pop_age),lwd=2)
   lines((diff_imm_scenario)*vacc_plot_ftr,col=3)
   axis(4,c(0:(num_ticks+1))*0.1*vacc_plot_ftr/(num_ticks+1),(0:(num_ticks+1))*0.1/(num_ticks+1),col.axis="green",col="green",cex.axis=0.8)
   abline(h=0.1,lty=3)
   abline(h=0.2,lty=3)
   abline(h=0.3,lty=3)
   mtext('Extra vaccination coverage', side=4, line=3, cex.lab=1, col="green")
-  
   legend('right',c('extra vaccines',paste(round(sum(pop_age * (age_imm_scenario))- sum(pop_age * (age_imm_reg))))),cex=0.8)
+  legend('top',c('current','scenario'),col=2:1,lty=1,cex=0.8,ncol = 2)
   
-  tbl_incidence <- table(data_person$age,data_person$is_recovered)
-  tbl_incidence[85:100,2] <- NA
-  y_max <- max(tbl_incidence[,2]/pop_age,0.01,na.rm=T)
-  plot(matrix(tbl_incidence[,2]/pop_age),main='age-specific incidence',xlab='age',ylab='recovered',ylim=c(0,y_max),type='l')
+  ## INCIDENCE AND SECONDARY CASES
   
-  data_cases[1]
-  plot_legend <- c(paste('prim. cases', (data_cases[1])),
-                    paste('sec. cases', format(sum(data_person[,3]) - data_cases[1],digits=2)),
-                    paste('attack rate', format(sum(data_person[,3]) / popsize,digits=2)),
-                    paste('immunity', format(sum(data_person[,4]) / popsize,digits=4)),
-                    paste('cases <1y', format(tbl_incidence[1,2],digits=0))
-                   )
-  legend('topleft',plot_legend,cex=1)
+  all_infections <- table(data_person$age[data_person$is_recovered==T])
+  all_infections_ages <- as.double(names(all_infections))
+  all_incidence <- all_infections / pop_age[all_infections_ages+1]
+  sum(all_infections)
+  
+  data_infections <- merge(data_logfile,data_person,by.x='infected_id',by.y='id')
+  dim(data_infections)
+  names(data_infections)
+  all_infections        <- table(data_infections$age)
+  seeded_infections     <- table(data_infections$age[is.na(data_infections$infector_id)])
+  secundary_infections  <- table(data_infections$age[!is.na(data_infections$infector_id)])
+  
+  hist_breaks <- -1:99
+  hist_ages   <- 0:99
+  total_infections      <- hist(data_infections$age,hist_breaks,plot=F)$counts
+  seeded_infections     <- hist(data_infections$age[is.na(data_infections$infector_id)],hist_breaks,plot=F)$counts
+  secundary_infections  <- hist(data_infections$age[!is.na(data_infections$infector_id)],hist_breaks,plot=F)$counts
+  
+  total_incidence  <- total_infections / pop_age
+  seeded_incidence <- seeded_infections / pop_age
+  secundary_incidence <- secundary_infections / pop_age
+  
+  y_max <- max(total_incidence,0.05,na.rm=T)
+  plot(hist_ages,total_incidence,main='age-specific incidence',xlab='age',ylab='recovered',ylim=c(0,y_max),type='l')
+  axis(2)
+  lines(seeded_incidence,col=4)
+  lines(hist_ages,total_incidence)
+  
+  plot_legend <- c(paste('prim. cases', sum(seeded_infections)),
+                   paste('immunity', format(sum(data_person[,4]) / popsize,digits=4)),
+                   paste('sec. cases', sum(secundary_infections)),
+                   paste('sec. attack rate', format(sum(secundary_infections) / popsize,digits=2)),
+                   paste('sec. cases <1y', format(secundary_infections[1],digits=0))
+  )
+  legend('topleft',plot_legend,cex=0.8)
+  legend('right',c('total incidence', 'infect. seeds'),col=c(1,4),lty=1,cex=0.8)
   
   par(mar=c(5.1,4.1,4.1,2.1))
   
+  ## CLUSTER IMMUNITY AND INCIDENCE
+  
+  pop_file <- data_summary$pop_file
+  data_pop <- read.table(file=paste0('../data/',pop_file),sep=',',header=T)  
+  names(data_pop)
+  opt_clusters <- c('household_id','school_id', 'work_id', 'primary_community','secundary_community')
+  for(col_tag in opt_clusters)
+  {
+    cluster_size <- table(data_pop[,col_tag])
+    num_clusters <- max(data_pop[,col_tag])#length(cluster_size)
+    
+    flag <- data_person$age > 0
+    hh_num_total <- hist(data_pop[flag,col_tag],breaks=0:num_clusters,plot=F)$counts
+    hh_num_immune <- hist(data_pop[flag & data_person$is_immune==1,col_tag],breaks=0:num_clusters,plot=F)$counts
+    hh_num_recovered <- hist(data_pop[flag & data_person$is_recovered==1,col_tag],breaks=0:num_clusters,plot=F)$counts
+    
+    hist((hh_num_immune / hh_num_total)[hh_num_total > 1],xlab='immunity',main=paste(col_tag,'immunity\n(size>1)'))
+    boxplot((hh_num_immune / hh_num_total)[hh_num_total > 1],main=paste(col_tag,'immunity\n(size>1)'))
+  
+  }
+  
   ## OUTBREAKS
-  names(data_logfile) <- c('tag','infector_id','infected_id','cluster','day')
   
   cluster_levels <- c("household","school","work","primary_community","secondary_community")
   cluster_levels_proportion <- c(7,5,5,2,5)
@@ -110,144 +168,135 @@ plot_immunity <- function(data_tag)
   data_logfile$cluster_cat <- factor(data_logfile$cluster,cluster_levels)
   data_logfile[data_logfile==-1] <- NA
   
-  infector <- table(data_logfile$infector_id)-1
+  infector <- table(data_logfile$infector_id)
   infector_id <- names(infector)
   
   barplot(table(infector),xlab='secundary cases',ylab='count',main='sec. cases',ylim=c(0,2000))
-  barplot(table(infector)/length(infector),xlab='secundary cases',ylab='frequency',main='sec. cases',ylim=c(0,0.8))
+  barplot(table(infector)/length(infector),xlab='secundary cases',ylab='frequency',main='sec. cases',ylim=c(0,1))
   
   ## OUTBREAKS
-
-  ## primary cases
-  data_logfile$outbreak <- 0
-  outbreak_id <- 1
-  transmission_id <- NULL
-  
-  while(sum(data_logfile$outbreak ==0 ) > 0)
+  if(sum(infector) < 20000)
   {
-    
-    flag <- which(data_logfile$outbreak == 0)[1]
-    infctrs <- data_logfile$infector_id[flag]
-    num_infctrs_prev <- 0
-    
-    while(length(infctrs) > num_infctrs_prev)
+    ## primary cases
+    data_logfile$outbreak <- 0
+    outbreak_id <- 938
+  
+    flag <- is.na(data_logfile$infector_id)
+    num_outbreaks <- sum(flag)
+    data_logfile$outbreak[flag] <- 1:num_outbreaks
+    for(outbreak_id in 1:num_outbreaks)
     {
-      num_infctrs_prev <- length(infctrs)
-      case_flag <- data_logfile$infector_id %in% infctrs
-      infctrs <- unique(c(infctrs,data_logfile$infected_id[case_flag]))
+      infctrs <- data_logfile$infected_id[data_logfile$outbreak == outbreak_id]
+      num_infctrs_prev <- 0
+      
+      while(length(infctrs) > num_infctrs_prev)
+      {
+        num_infctrs_prev <- length(infctrs)
+        case_flag <- data_logfile$infector_id %in% infctrs
+        sum(case_flag)
+        data_logfile$outbreak[case_flag] <- outbreak_id
+        
+        infctrs <- data_logfile$infected_id[data_logfile$outbreak == outbreak_id]
+      }
     }
     
-    data_logfile$outbreak[data_logfile$infector_id %in% infctrs] <- outbreak_id
-    transmission_id <- c(transmission_id,infctrs)
-    outbreak_id <- outbreak_id + 1
-  }
-  
-  # remove NA's
-  transmission_id <- transmission_id[!is.na(transmission_id)]
-  
-  ## OUTBREAK SIZE
-  tmp <- table(table(data_logfile$outbreak))
-  tmp_size <- as.double(names(tmp))
-  tmp_frac <- as.numeric(tmp/max(data_logfile$outbreak))
-  
-  plot_out <- matrix(ncol=max(tmp_size))
-  # plot_out[tmp_size] <- tmp_frac
-  plot_out[tmp_size] <- tmp
-  plot_out <- as.numeric(plot_out)
-  barplot(plot_out,xlab="outbreak size",main='outbreak size',ylab='fraction',ylim=c(0,2000))
-  axis(1)
-  legend('topright',c('total number',paste(sum(plot_out,na.rm=T))))
-  
-  
-  ## OUTBREAK SIZE SELECTION
-  plot_out <- as.numeric(plot_out[2:min(40,max(tmp_size))])
-  barplot(plot_out,xlab="outbreak size",main='outbreak size (2-50)',ylab='fraction',ylim=c(0,500))
-  axis(1)
-  legend('topright',c('total number',paste(sum(plot_out,na.rm=T))))
-  
-  plot_out <- matrix(ncol=max(tmp_size))
-  plot_out[tmp_size] <- tmp_frac
-  plot_out <- as.numeric(plot_out)
-  barplot(plot_out,xlab="outbreak size",main='outbreak size\nRELATIVE',ylab='fraction',ylim=c(0,1))
-  axis(1)
-  
-  ## OUTBREAK SIZE SELECTION
-  plot_out <- as.numeric(plot_out[2:min(40,max(tmp_size))])
-  barplot(plot_out,xlab="outbreak size",main='outbreak size (2-50)\nRELATIVE',ylab='fraction',ylim=c(0,0.25))
-  axis(1)
-  
-  
-  ## CLUSTER
-  
-  plot_cluster_context <- function(flag,tag='')
-  {
-    tbl_cluster <- table(data_logfile$cluster_cat[flag])
-    tbl_cluster_proportion <- tbl_cluster/cluster_levels_proportion
-    barplot(tbl_cluster/sum(tbl_cluster),las=1,hor=T,cex.names=0.8,xlab='freq.',ylim=c(6,0.5),main=paste('transmission context\nTOTAL',tag),xlim=c(0,0.5))
-    barplot(tbl_cluster_proportion/sum(tbl_cluster_proportion),las=1,hor=T,cex.names=0.8,xlab='freq.',ylim=c(6,0.5),main=paste('transmission context\nDAILY',tag),xlim=c(0,0.5))
+    table(table(data_logfile$outbreak))
     
-  }
-  
-  # ALL
-  plot_cluster_context(data_logfile$outbreak>-1)
-  
-  ## specific selections
-  outbreak_size <- table(data_logfile$outbreak)
-  selection <- names(outbreak_size[outbreak_size >= 2 & outbreak_size < 4])
-  plot_cluster_context(data_logfile$outbreak %in% selection, '(2 <= size < 4)')
-  
-  selection <- names(outbreak_size[outbreak_size >= 4 & outbreak_size < 10])
-  plot_cluster_context(data_logfile$outbreak %in% selection, '(4 <= size < 10)')
-  
-  selection <- names(outbreak_size[outbreak_size >= 10 ])
-  plot_cluster_context(data_logfile$outbreak %in% selection, '(10 <= size)')
+    ## OUTBREAK SIZE
+    tmp <- table(table(data_logfile$outbreak))
+    tmp_size <- as.double(names(tmp))
+    tmp_frac <- as.numeric(tmp/max(data_logfile$outbreak))
+    
+    plot_out <- matrix(ncol=max(tmp_size))
+    # plot_out[tmp_size] <- tmp_frac
+    plot_out[tmp_size] <- tmp
+    plot_out <- as.numeric(plot_out)
+    barplot(plot_out,xlab="outbreak size",main='outbreak size',ylab='fraction',ylim=c(0,2000))
+    axis(1)
+    legend('topright',c('total number',paste(sum(plot_out,na.rm=T))))
+    
+    
+    ## OUTBREAK SIZE SELECTION
+    plot_out <- as.numeric(plot_out[2:min(40,max(tmp_size))])
+    barplot(plot_out,xlab="outbreak size",main='outbreak size (2-50)',ylab='fraction',ylim=c(0,500))
+    axis(1)
+    legend('topright',c('total number',paste(sum(plot_out,na.rm=T))))
+    
+    plot_out <- matrix(ncol=max(tmp_size))
+    plot_out[tmp_size] <- tmp_frac
+    plot_out <- as.numeric(plot_out)
+    barplot(plot_out,xlab="outbreak size",main='outbreak size\nRELATIVE',ylab='fraction',ylim=c(0,1))
+    axis(1)
+    
+    ## OUTBREAK SIZE SELECTION
+    plot_out <- as.numeric(plot_out[2:min(40,max(tmp_size))])
+    barplot(plot_out,xlab="outbreak size",main='outbreak size (2-50)\nRELATIVE',ylab='fraction',ylim=c(0,0.25))
+    axis(1)
+    
+    
+    ## CLUSTER
+    
+    plot_cluster_context <- function(flag,tag='')
+    {
+      tbl_cluster <- table(data_logfile$cluster_cat[flag])
+      tbl_cluster_proportion <- tbl_cluster/cluster_levels_proportion
+      barplot(tbl_cluster/sum(tbl_cluster),las=1,hor=T,cex.names=0.8,xlab='freq.',ylim=c(6,0.5),main=paste('transmission context\nTOTAL',tag),xlim=c(0,0.5))
+      barplot(tbl_cluster_proportion/sum(tbl_cluster_proportion),las=1,hor=T,cex.names=0.8,xlab='freq.',ylim=c(6,0.5),main=paste('transmission context\nDAILY',tag),xlim=c(0,0.5))
+      
+    }
+    
+    # ALL
+    plot_cluster_context(data_logfile$outbreak>-1)
+    
+    ## specific selections
+    outbreak_size <- table(data_logfile$outbreak)
+    selection <- names(outbreak_size[outbreak_size >= 2 & outbreak_size < 4])
+    plot_cluster_context(data_logfile$outbreak %in% selection, '(2 <= size < 4)')
+    
+    selection <- names(outbreak_size[outbreak_size >= 4 & outbreak_size < 10])
+    plot_cluster_context(data_logfile$outbreak %in% selection, '(4 <= size < 10)')
+    
+    selection <- names(outbreak_size[outbreak_size >= 10 ])
+    plot_cluster_context(data_logfile$outbreak %in% selection, '(10 <= size)')
+    
+    
+    
+    data_logfile_sorted <- data_logfile[order(data_logfile$outbreak),]
+    all_infected_id <- data_logfile_sorted$infected_id
+    num_part <- length(all_infected_id)
   
   par(mfrow=c(1,1))
   ## TRANSMISSION TREE
-  if(length(transmission_id) < 5000)
+  if(num_part < 5000)
   {
-  
-      transmission_id <- unique(transmission_id)
       num_days <- 150
-      num_part <- length(transmission_id)
-  
-      plot(c(1,num_days),c(1,num_part),col=0,xlab='time (days)',ylab='individual',main='transmission tree')
-      i_id <- data_logfile$infector_id[3]
-      data_logfile$infected_id[is.na(data_logfile$infected_id)] <- -1
-      for(i_id in data_logfile$infector_id)
-      {
-        flag      <- i_id == data_logfile$infector_id
-        i_day     <- data_logfile$day[flag]
-        i_case    <- data_logfile$infected_id[flag]
-        i_cluster <- as.numeric(data_logfile$cluster_cat[flag])
-          
-        source <- which(i_id == transmission_id)
-        prim_infection <- unique(data_logfile$day[i_id == data_logfile$infected_id])[1]                ### TODO!!!
-        if(length(prim_infection) == 0)
-        {
-          prim_infection <- 0
-        }
       
-        for(i in 1:length(i_case))
+      plot(c(1,num_days),c(1,num_part),col=0,xlab='time (days)',ylab='individual',main='transmission tree')
+      #data_logfile$infected_id[is.na(data_logfile$infected_id)] <- -1
+      i<- 4
+      for(i in 1:num_part)
+      {
+        
+        i_day      <- data_logfile_sorted$day[i]
+        
+        if(is.na(data_logfile_sorted$infector_id[i]))
         {
-          
-          if(i_case[i] == -1){
-            points(c(prim_infection),c(source),type='p',pch=23,bg=1)
-          } else {
-            case <- which(!is.na(i_case[i]) & i_case[i] == transmission_id)
-            day <- i_day[i]
-            cluster <- i_cluster[i]
-            
-            lines(c(prim_infection,day),c(source,case),type='l',col=cluster)
-            lines(c(prim_infection,day),c(source,case),type='b',col=cluster)
-          }
-          
+          i_infector <- NA
+          i_infector_day <- NA
+          i_cluster <- 1
+        } else {
+          i_infector <- which(all_infected_id %in% data_logfile_sorted$infector_id[i])
+          i_infector_day <- data_logfile_sorted$day[i_infector]
+          i_cluster  <- as.numeric(data_logfile_sorted$cluster_cat[i])
         }
+        points(i_day,i,pch=22,col=i_cluster,bg=i_cluster,cex=0.8)
+        lines(c(i_infector_day,i_day),c(i_infector,i),type='l',pch=23,col=i_cluster,bg=i_cluster)
+        
       }
       legend('bottomright',levels(data_logfile$cluster_cat),col=1:length(data_logfile$cluster_cat),lty=1)
   
-    
-    } # if num infected < 4000
+    } # if num_part < 5000
+  } # if sum(infected) < 20000
   
   
   hist(data_person$start_symptomatic-data_person$start_infectiousness,xlab='days infectious, not symptomatic',main='')
@@ -268,8 +317,10 @@ plot_immunity <- function(data_tag)
   
   if(getPDF)
   dev.off()
+  
 
-}
+
+  }
 
 ## RUN CODE
 for(data_tag in opt_data_tag)
@@ -278,11 +329,4 @@ for(data_tag in opt_data_tag)
 }
 
 
-
-
-
-
-
- 
- 
 

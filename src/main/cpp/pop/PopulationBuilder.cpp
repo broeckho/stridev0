@@ -57,7 +57,6 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	const auto pop = make_shared<Population>();
 	Population& population = *pop;
 	const double seeding_rate = pt_config.get<double>("run.seeding_rate");
-	const double immunity_rate = pt_config.get<double>("run.immunity_rate");
 	const string disease_config_file = pt_config.get<string>("run.disease_config_file");
 
 	//------------------------------------------------
@@ -68,7 +67,7 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 	//------------------------------------------------
 	// Check input.
 	//------------------------------------------------
-	bool status = (seeding_rate <= 1) && (immunity_rate <= 1); // && ((seeding_rate + immunity_rate) <= 1);
+	bool status = (seeding_rate <= 1);
 	if (!status) {
 		throw runtime_error(string(__func__) + "> Bad input data.");
 	}
@@ -147,20 +146,6 @@ shared_ptr<Population> PopulationBuilder::Build(const boost::property_tree::ptre
 					     p.GetClusterId(ClusterType::School), p.GetClusterId(ClusterType::Work));
 				num_samples++;
 			}
-		}
-	}
-
-	//------------------------------------------------
-	// Seed infected persons.
-	//------------------------------------------------
-	unsigned int num_infected = floor(static_cast<double>(population.size()) * seeding_rate);
-	while (num_infected > 0) {
-		Simulator::PersonType& p = population[rng(max_population_index)];
-		if (p.GetHealth().IsSusceptible()) {
-			p.GetHealth().StartInfection();
-			num_infected--;
-
-			logger->info("[PRIM] {} {} {} {}", p.GetId(), -1, -1, 0);
 		}
 	}
 

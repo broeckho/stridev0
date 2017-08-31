@@ -20,7 +20,6 @@
  * Header for the Vaccinator class.
  */
 
-#include "immunity/VaccinePolicy.h"
 #include "sim/Simulator.h"
 #include "util/Random.h"
 
@@ -34,11 +33,18 @@ namespace stride {
 class Vaccinator
 {
 public:
-	template <VaccinePolicy vaccin_policy>
-	static void ApplyPolicy(std::shared_ptr<Simulator> sim, const boost::property_tree::ptree& pt_config,
-				const boost::property_tree::ptree& pt_disease, util::Random& rng);
+	/// Initiate the given immunity distribution in the population, according the given link probability
+	static void Administer(std::vector<Cluster>* clusters, std::vector<double>& immunity_distribution,
+			       double immunity_clustering, util::Random& rng);
 
-	static void Apply(const std::string vaccine_policy, std::shared_ptr<Simulator> sim,
+	/// Administer cocoon immunization for the given rate and target ages [min-max] to protect connected
+	/// individuals of the given age class [min-max]
+	static void AdministerCocoon(std::vector<Cluster>* clusters, double immunity_rate, double adult_age_min,
+				     double adult_age_max, double child_age_min, double child_age_max,
+				     util::Random& rng);
+
+	/// Apply the immunization strategy in the configuration file to the Simulator object.
+	static void Apply(const std::string s, std::shared_ptr<Simulator> sim,
 			  const boost::property_tree::ptree& pt_config, const boost::property_tree::ptree& pt_disease,
 			  util::Random& rng);
 };

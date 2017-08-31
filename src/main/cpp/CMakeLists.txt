@@ -34,9 +34,7 @@ set(LIB_SRC
     core/Infector.cpp
     core/LogMode.cpp
 #---
-	immunity/ImmunityProfile.cpp
 	immunity/Vaccinator.cpp
-	immunity/VaccinePolicy.cpp
 #---
 	output/AdoptedFile.cpp
 	output/CasesFile.cpp
