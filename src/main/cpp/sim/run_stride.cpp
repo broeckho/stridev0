@@ -192,28 +192,10 @@ void run_stride(bool track_index_case, const string& config_file_name)
 						// -----------------------------------------------------------------------------------------
 						// Generate output files
 						// -----------------------------------------------------------------------------------------
-
-						// Cases
-						CasesFile cases_file(output_prefix);
-						cases_file.Print(cases);
-
-						// Adopted
-						AdoptedFile adopted_file(output_prefix);
-						adopted_file.Print(adopted);
-
-
-						// Summary
-						SummaryFile summary_file(output_prefix);
-						summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
-								sim->GetDiseaseProfile().GetTransmissionRate(),
+						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>(
+								output_prefix, cases, adopted, pt_config, sim,
 								duration_cast<milliseconds>(run_clock.Get()).count(),
 								duration_cast<milliseconds>(total_clock.Get()).count());
-
-						// Persons
-						if (pt_config.get<double>("run.generate_person_file") == 1) {
-							PersonFile person_file(output_prefix);
-							person_file.Print(sim->GetPopulation());
-						}
 					}
 
 					// -----------------------------------------------------------------------------------------
@@ -279,28 +261,10 @@ void run_stride(bool track_index_case, const string& config_file_name)
 						// -----------------------------------------------------------------------------------------
 						// Generate output files
 						// -----------------------------------------------------------------------------------------
-
-						// Cases
-						CasesFile cases_file(output_prefix);
-						cases_file.Print(cases);
-
-						// Adopted
-						AdoptedFile adopted_file(output_prefix);
-						adopted_file.Print(adopted);
-
-
-						// Summary
-						SummaryFile summary_file(output_prefix);
-						summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
-								sim->GetDiseaseProfile().GetTransmissionRate(),
+						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>(
+								output_prefix, cases, adopted, pt_config, sim,
 								duration_cast<milliseconds>(run_clock.Get()).count(),
 								duration_cast<milliseconds>(total_clock.Get()).count());
-
-						// Persons
-						if (pt_config.get<double>("run.generate_person_file") == 1) {
-							PersonFile person_file(output_prefix);
-							person_file.Print(sim->GetPopulation());
-						}
 					}
 
 					// -----------------------------------------------------------------------------------------
