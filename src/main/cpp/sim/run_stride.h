@@ -20,7 +20,13 @@
  * Header for the Simulator class.
  */
 
+#include "output/AdoptedFile.h"
+#include "output/CasesFile.h"
+#include "output/PersonFile.h"
+#include "output/SummaryFile.h"
 #include "sim/SimulatorBuilder.h"
+#include "util/Stopwatch.h"
+#include "util/TimeStamp.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <iostream>
@@ -29,7 +35,11 @@
 
 namespace stride {
 
+using namespace output;
 using namespace std;
+using namespace std::chrono;
+using namespace util;
+
 
 /**
  * Run the simulator with config information provided.

@@ -27,14 +27,8 @@
 #include "behaviour/information_policies/LocalDiscussion.h"
 #include "behaviour/information_policies/NoGlobalInformation.h"
 #include "behaviour/information_policies/NoLocalInformation.h"
-#include "output/AdoptedFile.h"
-#include "output/CasesFile.h"
-#include "output/PersonFile.h"
-#include "output/SummaryFile.h"
 #include "util/ConfigInfo.h"
 #include "util/InstallDirs.h"
-#include "util/Stopwatch.h"
-#include "util/TimeStamp.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -146,14 +140,21 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	Stopwatch<> total_clock("total_clock", true);
 
 	if (global_information_policy == "NoGlobalInformation") {
+		using GlobalInformationPolicy = NoGlobalInformation;
 
 		if (local_information_policy == "NoLocalInformation") {
+			using LocalInformationPolicy = NoLocalInformation;
+
 			if (belief_policy == "NoBelief") {
+				using BeliefPolicy = NoBelief;
+
 				if (behaviour_policy == "NoBehaviour") {
-					// -----------------------------------------------------------------------------------------
+					using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+
+					// ------------------------------------------------------------------------------
 					// Create the simulator.
-					//-----------------------------------------------------------------------------------------
-					auto sim = create_simulator<NoGlobalInformation, NoLocalInformation, NoBelief, NoBehaviour<NoBelief> >
+					//------------------------------------------------------------------------------
+					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>
 						(pt_config, num_threads, track_index_case);
 
 					// -----------------------------------------------------------------------------------------
@@ -183,7 +184,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 							cout << "     Done, infected count: ";
 
 							cases[i] = sim->GetPopulation()->GetInfectedCount();
-							adopted[i] = sim->GetPopulation()->GetAdoptedCount<NoBelief>();
+							adopted[i] = sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
 
 							cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i] << endl;
 						}
@@ -191,6 +192,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 						// -----------------------------------------------------------------------------------------
 						// Generate output files
 						// -----------------------------------------------------------------------------------------
+
 						// Cases
 						CasesFile cases_file(output_prefix);
 						cases_file.Print(cases);
@@ -221,20 +223,25 @@ void run_stride(bool track_index_case, const string& config_file_name)
 
 					cout << "  run_time: " << run_clock.ToString() << "  -- total time: " << total_clock.ToString() << endl << endl;
 					cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
+
 				} else {
 					throw std::runtime_error(std::string(__func__) + "No valid behaviour policy!");
 				}
 			} else {
 				throw std::runtime_error(std::string(__func__) + "No valid belief policy!");
 			}
-
 		} else if (local_information_policy == "LocalDiscussion") {
 			if (belief_policy == "NoBelief") {
+				using BeliefPolicy = NoBelief;
+
 				if (behaviour_policy == "NoBehaviour") {
-					// -----------------------------------------------------------------------------------------
+					using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+					using LocalInformationPolicy = LocalDiscussion<Person<BehaviourPolicy, BeliefPolicy> >;
+
+					// ------------------------------------------------------------------------------
 					// Create the simulator.
-					//-----------------------------------------------------------------------------------------
-					auto sim = create_simulator<NoGlobalInformation, LocalDiscussion<Person<NoBehaviour<NoBelief>, NoBelief> >, NoBelief, NoBehaviour<NoBelief> >
+					//------------------------------------------------------------------------------
+					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>
 						(pt_config, num_threads, track_index_case);
 
 					// -----------------------------------------------------------------------------------------
@@ -264,7 +271,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 							cout << "     Done, infected count: ";
 
 							cases[i] = sim->GetPopulation()->GetInfectedCount();
-							adopted[i] = sim->GetPopulation()->GetAdoptedCount<NoBelief>();
+							adopted[i] = sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
 
 							cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i] << endl;
 						}
@@ -272,6 +279,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 						// -----------------------------------------------------------------------------------------
 						// Generate output files
 						// -----------------------------------------------------------------------------------------
+
 						// Cases
 						CasesFile cases_file(output_prefix);
 						cases_file.Print(cases);
