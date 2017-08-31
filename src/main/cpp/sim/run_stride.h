@@ -20,14 +20,37 @@
  * Header for the Simulator class.
  */
 
+#include "sim/SimulatorBuilder.h"
+
+#include <boost/property_tree/ptree.hpp>
+#include <iostream>
+#include <memory>
 #include <string>
 
 namespace stride {
+
+using namespace std;
 
 /**
  * Run the simulator with config information provided.
  */
 void run_stride(bool track_index_case, const std::string& config_file_name);
+
+/**
+ * Create the simulator
+ */
+template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
+shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> > create_simulator(
+		const boost::property_tree::ptree& pt_config, unsigned int num_threads, bool track_index_case = false) {
+
+	cout << "Building the simulator. " << endl;
+
+	auto sim = SimulatorBuilder<global_information_policy, local_information_policy, belief_policy, behaviour_policy>::Build(pt_config, num_threads, track_index_case);
+
+	cout << "Done building the simulator. " << endl;
+
+	return sim;
+}
 
 } // end_of_namespace
 
