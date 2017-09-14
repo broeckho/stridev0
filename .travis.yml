@@ -4,6 +4,13 @@
  
 language: cpp
 dist: trusty
+
+cache:
+  directories:
+    # Cache the boost install
+    - $HOME/boost_1_63_0/boost
+    - $HOME/boost_1_63_0/stage/lib
+    
 addons:
   apt:
     sources: &default_sources
@@ -20,24 +27,24 @@ matrix:
       env: CXX_COMPILER_NAME='g++-6'
       addons:
         apt:
-          sources:  [ *default_sources ]
-          packages: [ *default_packages, g++-6 ]
+          sources:  [*default_sources]
+          packages: [*default_packages, g++-6]
 
     - os: linux
       compiler: clang
       env: CXX_COMPILER_NAME='clang++-3.8'
       addons:
         apt:
-          sources:  [ *default_sources, llvm-toolchain-trusty ]
-          packages: [ *default_packages, clang++-3.8, libstdc++-6-dev ]
+          sources:  [*default_sources, llvm-toolchain-trusty]
+          packages: [*default_packages, clang++-3.8, libstdc++-6-dev]
 
     - os: linux
       compiler: clang
       env: CXX_COMPILER_NAME='clang++-4.0'
       addons:
         apt:
-          sources:  [ *default_sources, llvm-toolchain-trusty-4.0 ]
-          packages: [*default_packages, clang++-4.0, libstdc++-6-dev ]
+          sources:  [*default_sources, llvm-toolchain-trusty-4.0]
+          packages: [*default_packages, clang++-4.0, libstdc++-6-dev]
 
     - os: osx
       osx_image: xcode8.3
@@ -55,6 +62,13 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$CLANGSOURCE" == "LLVM" ]]; then brew update && brew install --with-clang llvm38 && brew link --force --overwrite llvm38; fi
   # This needs to be done because we want to override Travis's definitions of CC and CXX that lead to old Ubuntu-packaged compilers
   - export CXX="$CXX_COMPILER_NAME"
+  # Build and install boost.
+  - echo "using mpi ;" > ~/site-config.jam
+  - python src/resources/travis/install_boost.py --directory ~ --boost-version 1.63.0 --address-model 64 --toolchain=$CC_COMPILER_NAME --stagedir stage atomic chrono date_time filesystem iostreams locale log regex system thread serialization mpi
+  # Set the BOOST_ROOT environment variable.
+  - export BOOST_ROOT=$HOME/boost_1_63_0
+  - if [ $TRAVIS_OS_NAME == "osx" ]; then sudo cp $HOME/boost_1_63_0/stage/lib/* /usr/local/lib/; else export LD_LIBRARY_PATH=$HOME/boost_1_63_0/stage/lib:$LD_LIBRARY_PATH; fi
+  
 
 script:
   - PARALLEL_MAKE=-j2 make install
