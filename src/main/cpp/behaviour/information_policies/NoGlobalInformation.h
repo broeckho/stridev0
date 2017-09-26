@@ -17,6 +17,10 @@
 
 namespace stride {
 
+/**
+ * Class for global information policy 'NoGlobalInformation'.
+ * This means that there is no globally available information about the disease, number of infected, ...
+ */
 class NoGlobalInformation
 {
 };

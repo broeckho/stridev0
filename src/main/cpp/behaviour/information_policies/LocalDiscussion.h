@@ -19,6 +19,11 @@
 
 namespace stride {
 
+/**
+ * Class for local information policy 'LocalDiscussion'.
+ * Upon contact, members of a cluster discuss their beliefs/health status/... with each other with a certain probability.
+ * TODO make this probability configurable
+ */
 template <typename PersonType>
 class LocalDiscussion
 {

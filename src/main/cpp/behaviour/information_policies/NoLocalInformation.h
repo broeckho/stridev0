@@ -17,6 +17,10 @@
 
 namespace stride {
 
+/**
+ * Class for local information policy 'NoLocalInformation'.
+ * This means that no information about beliefs/health status/... is exchanged between individuals upon contact.
+ */
 class NoLocalInformation
 {
 };
