@@ -20,28 +20,43 @@
  * Header for the SimulatorBuilder class.
  */
 
+/*
+#include "core/Cluster.h"
+#include "core/ClusterType.h"
+#include "core/ContactProfile.h"
+#include "core/Infector.h"
+#include "core/LogMode.h"
+#include "pop/Population.h"
+
+#include <iostream>
+#include <omp.h>
+ */
+
+#include "calendar/Calendar.h"
+#include "core/RngHandler.h"
+#include "immunity/Vaccinator.h"
+
+#include "pop/PopulationBuilder.h"
+#include "sim/Simulator.h"
 #include "util/InstallDirs.h"
-#include "Simulator.h"
+#include "util/Random.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <string>
 #include <stdexcept>
-
-#include "calendar/Calendar.h"
-#include "core/RngHandler.h"
-#include "pop/PopulationBuilder.h"
-#include "util/Random.h"
 
 namespace stride {
 
 using namespace::std;
+// using namespace boost::filesystem;
 using namespace boost::property_tree;
 using namespace stride::util;
 
 /**
- * Main class that contains and direct the virtual world.
+ * Class to build the Simulator.
  */
 template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
 class SimulatorBuilder {
@@ -101,6 +116,8 @@ public:
 	{
 		auto sim = make_shared<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> >();
 
+		const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
+
 		// Initialize config ptree.
 		sim->m_config_pt = pt_config;
 
@@ -128,8 +145,32 @@ public:
 		// Initialize clusters.
 		InitializeClusters(sim);
 
+		// Initialize population immunity
+		Vaccinator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>::Apply("immunity", sim, pt_config, pt_disease, rng);
+
+		// Additional vaccine administration
+		Vaccinator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>::Apply("vaccine", sim, pt_config, pt_disease, rng);
+
 		// Initialize disease profile.
 		sim->m_disease_profile.Initialize(pt_config, pt_disease);
+
+		// --------------------------------------------------------------
+		// Seed infected persons.
+		// --------------------------------------------------------------
+		const double seeding_rate = pt_config.get<double>("run.seeding_rate");
+		double seeding_age_min = pt_config.get<double>("run.seeding_age_min");
+		double seeding_age_max = pt_config.get<double>("run.seeding_age_max");
+		const unsigned int max_population_index = sim->m_population->size() - 1;
+		unsigned int num_infected = floor(static_cast<double>(sim->m_population->size()) * seeding_rate);
+		while (num_infected > 0) {
+				Person<behaviour_policy, belief_policy>& p = sim->m_population->at(rng(max_population_index));
+				if (p.GetHealth().IsSusceptible() && (p.GetAge() >= seeding_age_min) && (p.GetAge() <= seeding_age_max)) {
+					p.GetHealth().StartInfection();
+					num_infected--;
+
+					logger->info("[PRIM] {} {} {} {}", -1, p.GetId(), -1, 0);
+				}
+		}
 
 		// Initialize Rng handlers
 		unsigned int new_seed = rng(numeric_limits<unsigned int>::max());

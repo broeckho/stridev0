@@ -47,8 +47,8 @@
 	</time_symptomatic>
 	<transmission>
 		<b0>0</b0>
-		<b1>46.87</b1>
-		<b2>-8.99</b2>
+		<b1>125.22</b1>
+		<b2>-20.28</b2>
     </transmission>
     <immunity_profile>
         <current>
@@ -358,8 +358,8 @@
             <proportion>0.953</proportion>
         </catchup>
         <cocoon_settings>
-            <adult_age_min> 20 </adult_age_min>
-            <adult_age_max> 30 </adult_age_max>
+            <adult_age_min> 18 </adult_age_min>
+            <adult_age_max> 65 </adult_age_max>
             <child_age_min> 0 </child_age_min>
             <child_age_max> 0 </child_age_max>
         </cocoon_settings>

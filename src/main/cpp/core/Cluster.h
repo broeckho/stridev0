@@ -81,6 +81,8 @@ public:
 	/// Add contact profile.
 	static void AddContactProfile(ClusterType cluster_type, const ContactProfile& profile);
 
+	person_type* GetMember(unsigned int index) { return m_members[index].first; }
+
 private:
 	/// Sort members w.r.t. health status (order: exposed/infected/recovered, susceptible, immune).
 	std::tuple<bool, size_t> SortMembers();

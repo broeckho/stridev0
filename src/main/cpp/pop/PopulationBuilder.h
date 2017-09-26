@@ -20,9 +20,28 @@
  * Initialize populations.
  */
 
+/*
+ *
+ * #include "core/Cluster.h"
+#include "core/Health.h"
+#include "pop/Person.h"
+#include "util/PtreeUtils.h"
+
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
+#include <fstream>
+#include <iostream>
+
+using namespace boost::filesystem;
+using namespace boost::property_tree;
+ */
+
 #include "core/ClusterType.h"
 #include "pop/Population.h"
 #include "util/InstallDirs.h"
+#include "util/PtreeUtils.h"
 #include "util/Random.h"
 #include "util/StringUtils.h"
 
@@ -60,7 +79,7 @@ public:
 		Population<person_type>& population = *pop;
 
 		const double seeding_rate = pt_config.get<double>("run.seeding_rate");
-		const double immunity_rate = pt_config.get<double>("run.immunity_rate");
+		//const double immunity_rate = pt_config.get<double>("run.immunity_rate");
 		const string disease_config_file = pt_config.get<string>("run.disease_config_file");
 
 		// ------------------------------------------------
@@ -71,7 +90,7 @@ public:
 		//------------------------------------------------
 		// Check input.
 		//------------------------------------------------
-		bool status = (seeding_rate <= 1) && (immunity_rate <= 1) && ((seeding_rate + immunity_rate) <= 1);
+		bool status = (seeding_rate <= 1);
 		if (!status) {
 			throw runtime_error(string(__func__) + "> Bad input data.");
 		}
@@ -80,7 +99,7 @@ public:
 		// Add persons to population.
 		//------------------------------------------------
 		const auto file_name = pt_config.get<string>("run.population_file");
-		;
+
 		const auto file_path = InstallDirs::GetDataDir() /= file_name;
 		if (!is_regular_file(file_path)) {
 			throw runtime_error(string(__func__) + "> Population file " + file_path.string() + " not present.");
@@ -92,10 +111,10 @@ public:
 			throw runtime_error(string(__func__) + "> Error opening population file " + file_path.string());
 		}
 
-		const auto distrib_start_infectiousness = GetDistribution(pt_disease, "disease.start_infectiousness");
-		const auto distrib_start_symptomatic = GetDistribution(pt_disease, "disease.start_symptomatic");
-		const auto distrib_time_infectious = GetDistribution(pt_disease, "disease.time_infectious");
-		const auto distrib_time_symptomatic = GetDistribution(pt_disease, "disease.time_symptomatic");
+		const auto distrib_start_infectiousness = PtreeUtils::GetDistribution(pt_disease, "disease.start_infectiousness");
+		const auto distrib_start_symptomatic = PtreeUtils::GetDistribution(pt_disease, "disease.start_symptomatic");
+		const auto distrib_time_infectious = PtreeUtils::GetDistribution(pt_disease, "disease.time_infectious");
+		const auto distrib_time_symptomatic = PtreeUtils::GetDistribution(pt_disease, "disease.time_symptomatic");
 
 		string line;
 		getline(pop_file, line); // step over file header
@@ -162,7 +181,7 @@ public:
 			}
 		}
 
-		// ------------------------------------------------
+		/*// ------------------------------------------------
 		// Set population immunity.
 		// ------------------------------------------------
 		unsigned int num_immune = floor(static_cast<double>(population.size()) * immunity_rate);
@@ -186,7 +205,7 @@ public:
 
 				logger->info("[PRIM] {} {} {} {}", p.GetId(), -1, -1, 0);
 			}
-		}
+		}*/
 
 		//------------------------------------------------
 		// Done
@@ -195,19 +214,6 @@ public:
 	}
 
 private:
-	/// Get distribution associated with tag values.
-	static std::vector<double> GetDistribution(const boost::property_tree::ptree& pt_root,
-			const std::string& xml_tag)
-	{
-		vector<double> values;
-		boost::property_tree::ptree subtree = pt_root.get_child(xml_tag);
-		for (const auto& tree : subtree) {
-			values.push_back(tree.second.get<double>(""));
-		}
-		return values;
-	}
-
-
 	/// Sample from the distribution.
 	static unsigned int Sample(util::Random& rng, const std::vector<double>& distribution)
 	{

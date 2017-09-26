@@ -3,7 +3,13 @@
     <rng_seed>1</rng_seed>
     <r0>11</r0>
     <seeding_rate>0.002</seeding_rate>
+    <seeding_age_min>1</seeding_age_min>
+    <seeding_age_max>99</seeding_age_max>
     <immunity_rate>0.8</immunity_rate>
+    <immunity_profile>None</immunity_profile>
+    <vaccine_profile>Random</vaccine_profile>
+    <vaccine_rate>0.8</vaccine_rate>
+    <vaccine_link_probability>0</vaccine_link_probability>
     <population_file>pop_flanders600.csv</population_file>
     <num_days>50</num_days>
     <output_prefix></output_prefix>

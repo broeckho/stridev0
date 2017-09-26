@@ -190,6 +190,8 @@ private:
 	template <class b_global_information_policy, class b_local_information_policy, class b_belief_policy, class b_behaviour_policy>
 	friend class SimulatorBuilder;
 
+	template <class c_global_information_policy, class c_local_information_policy, class c_belief_policy, class c_behaviour_policy>
+	friend class Vaccinator;
 };
 
 } // end_of_namespace

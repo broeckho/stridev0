@@ -18,9 +18,9 @@
 #   Meta makefile calls cmake to do the heavy lifting. It first
 #   includes the file MakeLocalConfig (if it exists) for local
 #   configuration. If no such file exists the defaults below apply.
-#   This file is tracked by the mercurial repository so do not
-#   change this for personal customization. That should be done in
-#   the file MakeLocalConfig.
+#   This file is tracked by the repository so do not change this 
+#   for personal customization. That should be done in the file 
+#   MakeLocalConfig.
 #
 #############################################################################
 
