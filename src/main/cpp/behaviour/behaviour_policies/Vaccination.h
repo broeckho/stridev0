@@ -10,6 +10,11 @@
 
 namespace stride {
 
+/**
+ * Class for behaviour policy 'Vaccination'.
+ * Beliefs and information have an influence on the vaccination behaviour of an individual.
+ * TODO integrate this with new Vaccinator class?
+ */
 template <typename belief_policy>
 class Vaccination
 {
