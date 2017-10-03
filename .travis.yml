@@ -5,11 +5,11 @@
 language: cpp
 dist: trusty
 
-cache:
-  directories:
-    # Cache the boost install
-    - $HOME/boost_1_63_0/boost
-    - $HOME/boost_1_63_0/stage/lib
+#cache:
+#  directories:
+#    # Cache the boost install
+#    - $HOME/boost_1_63_0/boost
+#    - $HOME/boost_1_63_0/stage/lib
     
 addons:
   apt:
@@ -63,12 +63,14 @@ before_install:
   # This needs to be done because we want to override Travis's definitions of CC and CXX that lead to old Ubuntu-packaged compilers
   - export CXX="$CXX_COMPILER_NAME"
   # Build and install boost.
-  - echo "using mpi ;" > ~/site-config.jam
-  - python src/resources/travis/install_boost.py --directory ~ --boost-version 1.63.0 --address-model 64 --toolchain=$CXX --stagedir stage atomic chrono date_time filesystem iostreams locale log regex system thread serialization mpi
+  #- echo "using mpi ;" > ~/site-config.jam
+  #- python src/resources/travis/install_boost.py --directory ~ --boost-version 1.63.0 --address-model 64 --toolchain=$CXX --stagedir stage atomic chrono date_time filesystem iostreams locale log regex system thread serialization mpi
   # Set the BOOST_ROOT environment variable.
-  - export BOOST_ROOT=$HOME/boost_1_63_0
-  - if [ $TRAVIS_OS_NAME == "osx" ]; then sudo cp $HOME/boost_1_63_0/stage/lib/* /usr/local/lib/; else export LD_LIBRARY_PATH=$HOME/boost_1_63_0/stage/lib:$LD_LIBRARY_PATH; fi
-  
+  #- export BOOST_ROOT=$HOME/boost_1_63_0
+  #- if [ $TRAVIS_OS_NAME == "osx" ]; then sudo cp $HOME/boost_1_63_0/stage/lib/* /usr/local/lib/; else export LD_LIBRARY_PATH=$HOME/boost_1_63_0/stage/lib:$LD_LIBRARY_PATH; fi
+
+install:
+    sudo apt-get install libboost1.62-all-dev 
 
 script:
   - PARALLEL_MAKE=-j2 make install
