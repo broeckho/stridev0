@@ -76,6 +76,7 @@ install:
   - sudo ./bootstrap.sh --prefix=/usr/local --with-libraries=atomic chrono date_time filesystem iostreams locale log regex system thread serialization mpi
   - sudo ./b2
   - sudo ./b2 install -d0
+  - cd ..
 
 script:
   - PARALLEL_MAKE=-j2 make install
