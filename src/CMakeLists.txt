@@ -24,14 +24,14 @@ cmake_minimum_required(VERSION 2.8)
 # Macros that need to be set prior to project definition:
 #============================================================================
 set( CMAKE_BUILD_TYPE "Debug"
-	CACHE STRING "Build type: Nones Debug Release RelWithDebInfo MinSizeRel." )
+	CACHE STRING "Build type: None Debug Release RelWithDebInfo MinSizeRel." )
 #
 set( CMAKE_INSTALL_PREFIX  "${CMAKE_BINARY_DIR}/installed" 
 	CACHE PATH "Prefix prepended to install directories" )
 #
 set( CMAKE_PROGRAM_PATH  "/opt/local/bin;/usr/texbin;/usr/local/bin;/usr/bin" 
 	CACHE PATH "Where to look with find_program." )
-	s
+	
 #============================================================================
 # Configuration for CMake, for build & install.
 #============================================================================
