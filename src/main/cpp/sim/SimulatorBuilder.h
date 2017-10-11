@@ -92,6 +92,8 @@ public:
 
 		const auto file_name_d{pt_config.get<string>("run.disease_config_file")};
 
+		InstallDirs::GetDataDir();
+
 		std::cout << "file name obtained for disease file" << std::endl;
 
 		const auto file_path_d{InstallDirs::GetDataDir() /= file_name_d};
