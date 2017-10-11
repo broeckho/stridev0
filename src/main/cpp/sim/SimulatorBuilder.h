@@ -83,6 +83,7 @@ public:
 	Build(const boost::property_tree::ptree& pt_config,
 			unsigned int num_threads, bool track_index_case = false)
 	{
+		std::cout << "Start the building" << std::endl;
 
 		// Disease file.
 		ptree pt_disease;
