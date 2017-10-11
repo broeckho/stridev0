@@ -87,12 +87,22 @@ public:
 
 		// Disease file.
 		ptree pt_disease;
+
+		std::cout << "ptree disease initialized" << std::endl;
+
 		const auto file_name_d{pt_config.get<string>("run.disease_config_file")};
+
+		std::cout << "file name obtained for disease file" << std::endl;
+
 		const auto file_path_d{InstallDirs::GetDataDir() /= file_name_d};
+
+		std::cout << "file path obtained for disease file" << std::endl;
 
 		if (!is_regular_file(file_path_d)) {
 			throw runtime_error(std::string(__func__) + "> No file " + file_path_d.string());
 		}
+
+		std::cout << "disease file found" << std::endl;
 		read_xml(file_path_d.string(), pt_disease);
 
 		std::cout << "Disease config file OK" << std::endl;
