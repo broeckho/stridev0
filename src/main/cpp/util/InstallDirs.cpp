@@ -142,6 +142,7 @@ void InstallDirs::Initialize()
 		//g_data_dir = is_directory(g_data_dir) ? g_data_dir : path();
 		std::cout << "Check if data dir exists" << std::endl;
 		if (! is_directory(g_data_dir)) {
+			std::cout << "Does not exist" << std::endl;
 			g_data_dir = path();
 		}
 
