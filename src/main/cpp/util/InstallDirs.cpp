@@ -133,10 +133,16 @@ void InstallDirs::Initialize()
 	}
 
 	std::cout << "Determined dir for execs" << std::endl;
+	std::cout << "root dir: " << g_root_dir << std::endl;
 
 	//------- Data Dir
 	{
 		g_data_dir = g_root_dir / "data";
+		std::cout << "data dir: " << g_data_dir << std::endl;
+		is_directory(g_data_dir);
+		std::cout << "checked if data dir is already dir" << std::endl;
+		path();
+		std::cout << "boost get current path?" << std::endl;
 		g_data_dir = is_directory(g_data_dir) ? g_data_dir : path();
 	}
 
