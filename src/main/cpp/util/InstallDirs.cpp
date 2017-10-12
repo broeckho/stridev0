@@ -65,6 +65,8 @@ void InstallDirs::Initialize()
 // Returns the full path to the currently running executable, or an empty string in case of failure.
 // http://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe/33249023#33249023
 
+		std::cout << "Initializing install dirs" << std::endl;
+
 #if defined(WIN32)
 		char exePath[MAX_PATH];
 		HMODULE hModule = GetModuleHandle(NULL);
@@ -87,6 +89,8 @@ void InstallDirs::Initialize()
 		}
 #endif
 	}
+
+	std::cout << "Determined exec path" << std::endl;
 
 	//------- Retrieving root and bin directory (the subdirectory of the install root)
 	{
@@ -128,15 +132,20 @@ void InstallDirs::Initialize()
 		}
 	}
 
+	std::cout << "Determined dir for execs" << std::endl;
+
 	//------- Data Dir
 	{
 		g_data_dir = g_root_dir / "data";
 		g_data_dir = is_directory(g_data_dir) ? g_data_dir : path();
 	}
+
+	std::cout << "set data dir" << std::endl;
 	//------- Current Dir
 	{
 		g_current_dir = system_complete(current_path());
 	}
+	std::cout << "set current dir" << std::endl;
 }
 
 path InstallDirs::GetBinDir()
@@ -154,7 +163,6 @@ path InstallDirs::GetCurrentDir()
 path InstallDirs::GetDataDir()
 {
 	Check();
-	std::cout << "Install dirs checked" << std::endl;
 	return g_data_dir;
 }
 

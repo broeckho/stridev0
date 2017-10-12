@@ -83,29 +83,17 @@ public:
 	Build(const boost::property_tree::ptree& pt_config,
 			unsigned int num_threads, bool track_index_case = false)
 	{
-		std::cout << "Start the building" << std::endl;
-
 		// Disease file.
 		ptree pt_disease;
 
-		std::cout << "ptree disease initialized" << std::endl;
-
 		const auto file_name_d{pt_config.get<string>("run.disease_config_file")};
-
-		std::cout << "file name obtained for disease file" << std::endl;
-
 		const auto file_path_d{InstallDirs::GetDataDir() /= file_name_d};
-
-		std::cout << "file path obtained for disease file" << std::endl;
 
 		if (!is_regular_file(file_path_d)) {
 			throw runtime_error(std::string(__func__) + "> No file " + file_path_d.string());
 		}
 
-		std::cout << "disease file found" << std::endl;
 		read_xml(file_path_d.string(), pt_disease);
-
-		std::cout << "Disease config file OK" << std::endl;
 
 		// Contact file.
 		ptree pt_contact;
@@ -115,8 +103,6 @@ public:
 			throw runtime_error(string(__func__) + "> No file " + file_path_c.string());
 		}
 		read_xml(file_path_c.string(), pt_contact);
-
-		std::cout << "Contact matrix file OK" << std::endl;
 
 		// Done.
 		return Build(pt_config, pt_disease, pt_contact, num_threads, track_index_case);
@@ -131,54 +117,35 @@ public:
 	{
 		auto sim = make_shared<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> >();
 
-		std::cout << "Empty simulator created" << std::endl;
-
 		const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
-
-		std::cout << "Logger created" << std::endl;
 
 		// Initialize config ptree.
 		sim->m_config_pt = pt_config;
 
-		std::cout << "Config ptree initialized" << std::endl;
-
 		// Initialize track_index_case policy
 		sim->m_track_index_case = track_index_case;
-
-		std::cout << "Track index case policy initialized" << std::endl;
 
 		// Initialize number of threads.
 		sim->m_num_threads = number_of_threads;
 
-		std::cout << "Num threads initialized" << std::endl;
-
 		// Initialize calendar.
 		sim->m_calendar = make_shared<Calendar>(pt_config);
-
-		std::cout << "Calendar initialized" << std::endl;
 
 		// Get log level.
 		const string l = pt_config.get<string>("run.log_level", "None");
 		sim->m_log_level =
 			IsLogMode(l) ? ToLogMode(l) : throw runtime_error(string(__func__) + "> Invalid input for LogMode.");
 
-		std::cout << "Log mode determined" << std::endl;
-
 		// Rng's.
 		const auto seed = pt_config.get<double>("run.rng_seed");
 		Random rng(seed);
 
-		std::cout << "Rngs initialized" << std::endl;
-
 		// Build population.
 		sim->m_population = PopulationBuilder<Person<behaviour_policy, belief_policy> >::Build(pt_config, pt_disease, rng);
 
-		std::cout << "Population built" << std::endl;
 
 		// Initialize clusters.
 		InitializeClusters(sim);
-
-		std::cout << "Clusters initialized" << std::endl;
 
 		// Initialize population immunity
 		Vaccinator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>::Apply("immunity", sim, pt_config, pt_disease, rng);
@@ -186,12 +153,8 @@ public:
 		// Additional vaccine administration
 		Vaccinator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>::Apply("vaccine", sim, pt_config, pt_disease, rng);
 
-		std::cout << "Vaccinations done" << std::endl;
-
 		// Initialize disease profile.
 		sim->m_disease_profile.Initialize(pt_config, pt_disease);
-
-		std::cout << "Disease profile initialized" << std::endl;
 
 		// --------------------------------------------------------------
 		// Seed infected persons.
@@ -211,15 +174,11 @@ public:
 				}
 		}
 
-		std::cout << "Seeding done" << std::endl;
-
 		// Initialize Rng handlers
 		unsigned int new_seed = rng(numeric_limits<unsigned int>::max());
 		for (size_t i = 0; i < sim->m_num_threads; i++) {
 			sim->m_rng_handler.emplace_back(RngHandler(new_seed, sim->m_num_threads, i));
 		}
-
-		std::cout << "RNG handlers initialized" << std::endl;
 
 		// Initialize contact profiles.
 		Cluster<Person<behaviour_policy, belief_policy> >::AddContactProfile(ClusterType::Household, ContactProfile(ClusterType::Household, pt_contact));
@@ -229,8 +188,6 @@ public:
 					   ContactProfile(ClusterType::PrimaryCommunity, pt_contact));
 		Cluster<Person<behaviour_policy, belief_policy> >::AddContactProfile(ClusterType::SecondaryCommunity,
 					   ContactProfile(ClusterType::SecondaryCommunity, pt_contact));
-
-		std::cout << "Contact profiles initialized" << std::endl;
 
 		// Done.
 		return sim;
