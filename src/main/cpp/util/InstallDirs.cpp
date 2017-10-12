@@ -138,12 +138,14 @@ void InstallDirs::Initialize()
 	//------- Data Dir
 	{
 		g_data_dir = g_root_dir / "data";
-		std::cout << "data dir: " << g_data_dir << std::endl;
-		is_directory(g_data_dir);
-		std::cout << "checked if data dir is already dir" << std::endl;
-		path();
-		std::cout << "boost get current path?" << std::endl;
-		g_data_dir = is_directory(g_data_dir) ? g_data_dir : path();
+
+		//g_data_dir = is_directory(g_data_dir) ? g_data_dir : path();
+		std::cout << "Check if data dir exists" << std::endl;
+		if (! is_directory(g_data_dir)) {
+			g_data_dir = path();
+		}
+
+		std::cout << "checked" << std::endl;
 	}
 
 	std::cout << "set data dir" << std::endl;
