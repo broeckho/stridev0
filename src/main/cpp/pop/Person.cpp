@@ -84,7 +84,7 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 	}
 
 	// Update presence in clusters.
-	if (m_at_home_due_to_illness) {
+	if (m_health.IsSymptomatic()) {
 		m_at_school = false;
 		m_at_work = false;
 		m_at_secondary_community = false;

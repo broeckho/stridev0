@@ -14,76 +14,88 @@
 #
 #  Copyright 2017, Willem L, Kuylen E & Broeckhove J
 #############################################################################
-# IMMUNITY AND SUSCEPTIBILITY
+# susceptiblilty AND SUSCEPTIBILITY
 #
-# 
+# BASED ON DATA FROM:
+#
+# Hens N, Abrams S, Santermans E, Theeten H, Goeyvaerts N, Lernout T, Leuridan E, 
+# Van Kerckhove K, Goossens H, Van Damme P, Beutels P. Assessing the risk of 
+# measles resurgence in a highly vaccinated population: Belgium anno 2013. Euro 
+# Surveill. 2015;20(1):pii=20998.  
+#
 # Author: Lander Willem
-# Last update: 18/08/2017  
+# Last update: 05/10/2017  
 #########################
 rm(list=ls(all=TRUE))
 gc()
 
-tag <- '20170818'
+tag <- '20171005'
 
 ############################################
-## DATA FROM HENS et al. (2015) 	 	      ##
-############################################
 
+#all_data <- read.table('../resources/data/susceptibility_measles_belgium_2013.csv',sep=',')  
+all_data <- read.table('../data/susceptibility_measles_belgium_2013.csv',sep=',')  
+dim(all_data)	   
+num_age_data <- dim(all_data)[1]
 
-## TEMPORARY PROFILE
+susceptiblilty_profile <- rowSums(all_data) / dim(all_data)[2]
+plot(susceptiblilty_profile,ylim=c(0,1),type='l')
+
+# newborns have 3 months maternally immunity => 1/4 protected, 3/4 not protected 
+susceptiblilty_profile[1] <- 3/4
+
+# extend to 99 years of age (from 0 to 99 year, are 100 categories)
 num_age <- 100
-ages <- 0:(num_age-1)
+susceptiblilty_profile <- c(susceptiblilty_profile,rep(susceptiblilty_profile[num_age_data],num_age-num_age_data))
+length(susceptiblilty_profile)	  
 
-suscept_profile <- ages*0
-suscept_profile[1] <- 75
-suscept_profile[2:9] <- 7 + ((1:8)^2)/20
-suscept_profile[10:17] <- suscept_profile[9] - ((1:8)^2)/14
-suscept_profile[18:20] <- suscept_profile[17] + ((1:3)^2)*1.8
-suscept_profile[21:27] <- suscept_profile[20] - ((1:7)/1.5)
-suscept_profile[28:29] <- suscept_profile[27] - ((1:2)*3)
-suscept_profile[30:42] <- suscept_profile[29] - ((1:13)/2)
-suscept_profile[43:num_age] <- suscept_profile[42] 
+# uniform 
+susceptiblilty_profile_uniform <- susceptiblilty_profile
+susceptiblilty_profile_uniform[] <- susceptiblilty_profile[80]
+susceptiblilty_profile_uniform[1] <- susceptiblilty_profile[1]
 
-plot(suscept_profile,ylim=c(0,80),type='l')
- 
+# scare
+susceptiblilty_profile_scare <- susceptiblilty_profile
+susceptiblilty_profile_scare[2:7] <- 0.92-(1:6)*0.02
+susceptiblilty_profile_scare[8:9] <- 0.8
+susceptiblilty_profile_scare[10:15] <- 0.8+(1:6)*0.02
+susceptiblilty_profile_scare[16:(num_age)] <- susceptiblilty_profile[2:(num_age-14)]
 
-immunity_profile <- round((100-suscept_profile)/100,digits=3)
+# regular
+susceptiblilty_profile_regular <- susceptiblilty_profile
+susceptiblilty_profile_regular[3:(num_age)] <- susceptiblilty_profile[2:(num_age-1)]
 
-immunity_profile_uniform <- immunity_profile
-immunity_profile_uniform[] <- immunity_profile[80]
-immunity_profile_uniform[1] <- immunity_profile[1]
+# catchup program for 18-38 year old people
+susceptiblilty_profile_catchup <- susceptiblilty_profile
+catchup_ages <- 20:30
+catchup_fraq <- (susceptiblilty_profile_catchup[catchup_ages])*0.8
+susceptiblilty_profile_catchup[catchup_ages] <- susceptiblilty_profile_catchup[catchup_ages] - catchup_fraq
 
-immunity_profile_scare <- immunity_profile
-immunity_profile_scare[2:7] <- 0.92-(1:6)*0.02
-immunity_profile_scare[8:9] <- 0.8
-immunity_profile_scare[10:15] <- 0.8+(1:6)*0.02
-immunity_profile_scare[16:(num_age)] <- immunity_profile[2:(num_age-14)]
+#susceptiblilty_profile_flu <- susceptiblilty_profile
+# susceptiblilty_profile_flu[] <- 0.6
 
-immunity_profile_regular <- immunity_profile_uniform
-immunity_profile_regular[3:(num_age)] <- immunity_profile[2:(num_age-1)]
-
-immunity_profile_catchup <- immunity_profile_regular
-catchup_ages <- 20:38
-catchup_fraq <- (immunity_profile[2]-immunity_profile_catchup[20:38])*0.8
-
-immunity_profile_flu <- immunity_profile
-immunity_profile_flu[] <- 0.6
+#susceptiblilty_profile_catchup[susceptiblilty_profile_catchup>0.99] <- 0.99
 
 
+plot(susceptiblilty_profile,ylim=0:1,type='l',lwd=7,ylab='susceptibility',xlab='age')
+lines(susceptiblilty_profile_uniform,col=2,lwd=4)
+lines(susceptiblilty_profile_catchup,col=3,lwd=2)
+legend('topright',c('current','uniform','catchup'),lwd=c(7,4,2),col=1:3)
 
-immunity_profile_catchup[catchup_ages] <- immunity_profile_catchup[catchup_ages] + catchup_fraq
-#immunity_profile_catchup[immunity_profile_catchup>0.99] <- 0.99
+immunity_profile <- 1-susceptiblilty_profile
+immunity_profile_uniform <- 1-susceptiblilty_profile_uniform
+immunity_profile_catchup <- 1-susceptiblilty_profile_catchup
+
+plot(immunity_profile,ylim=0:1,type='l',lwd=7,ylab='immunity',xlab='age')
+lines(immunity_profile_uniform,col=2,lwd=4)
+lines(immunity_profile_catchup,col=3,lwd=2)
+legend('bottomright',c('current','uniform','catchup'),lwd=c(7,4,2),col=1:3)
 
 
-plot(immunity_profile,ylim=0:1,type='l')
-lines(immunity_profile_uniform,col=2)
-lines(immunity_profile_scare,col=3)
-lines(immunity_profile_regular,col=4)
-lines(immunity_profile_catchup,col=5)
 
-abline(v=25)
-abline(h=0.95,lty=2)
-legend('bottomright',c('current','uniform','scare','regular','catchup'))
+# pdf('susceptibility_estimate.pdf')
+# plot(1-susceptiblilty_profile,ylim=0:1,type='l',ylab='susceptibility',xlab='age',lwd=4)
+# dev.off()
 
 ############################################
 ## SAVE AS XML  	 	                      ##
@@ -91,7 +103,7 @@ legend('bottomright',c('current','uniform','scare','regular','catchup'))
 
 library(XML)
 
-top = newXMLNode("immunity")
+top = newXMLNode("immunity_profile")
 gen <- newXMLNode("current", parent = top)
 for(i in 1:num_age){
   newXMLNode("proportion", immunity_profile[i], parent = gen)
@@ -104,13 +116,13 @@ for(i in 1:num_age){
 
 # gen <- newXMLNode("scare", parent = top)
 # for(i in 1:num_age){
-#   newXMLNode("proportion", immunity_profile_scare[i], parent = gen)
+#   newXMLNode("proportion", susceptiblilty_profile_scare[i], parent = gen)
 # }
 
-gen <- newXMLNode("regular", parent = top)
-for(i in 1:num_age){
-  newXMLNode("proportion", immunity_profile_regular[i], parent = gen)
-}
+# gen <- newXMLNode("regular", parent = top)
+# for(i in 1:num_age){
+#   newXMLNode("proportion", susceptiblilty_profile_regular[i], parent = gen)
+# }
 
 gen <- newXMLNode("catchup", parent = top)
 for(i in 1:num_age){
@@ -119,21 +131,15 @@ for(i in 1:num_age){
 
 gen <- newXMLNode("cocoon", parent = top)
 for(i in 1:num_age){
-  newXMLNode("proportion", immunity_profile_regular[i], parent = gen)
+  newXMLNode("proportion", immunity_profile[i], parent = gen)
 }
 
-gen <- newXMLNode("flu", parent = top)
-for(i in 1:num_age){
-  newXMLNode("proportion", immunity_profile_flu[i], parent = gen)
-}
-
-top
-
-saveXML(top, file="../resources/data/immunity_out.xml",NewLineOnAttributes=T)
-#saveXML(top, file=paste0(tag,"immunity_measels.xml"),NewLineOnAttributes=T)
+# gen <- newXMLNode("flu", parent = top)
+# for(i in 1:num_age){
+#   newXMLNode("proportion", susceptiblilty_profile_flu[i], parent = gen)
+# }
 
 
-sum(immunity_profile)/num_age
+#saveXML(top, file="../resources/data/immunity_measles.xml",NewLineOnAttributes=T)
+saveXML(top, file="../data/immunity_measles.xml",NewLineOnAttributes=T)
 
-1300000/num_age*0.08
-1300000*0.08

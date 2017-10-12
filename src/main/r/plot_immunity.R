@@ -22,14 +22,16 @@
 
 rm(list=ls())
 
-opt_data_tag <- '15touch_debug_household_cocoon' ; data_tag <- opt_data_tag
+#opt_data_tag <- '15touch_debug_household_cocoon' ; data_tag <- opt_data_tag
 # opt_data_tag <- paste('15touch_debug',c('_household','_primary_community'),sep = '')
 # opt_data_tag <- paste('15touch_debug_current',c('','_hh'),sep = '')
-#opt_data_tag <- paste('15touch_current',c('cocoon','none','random'),sep = '_')
+#opt_data_tag <- paste('current',c('random','clustered','none'),sep = '_')
+opt_data_tag <- paste('current_clustered',c('hh','prim','sec','work','school'),sep = '_')
+#data_tag <- opt_data_tag[3]
+opt_data_tag <- paste('current',c('none'),sep = '_')
 
 plot_immunity <- function(data_tag)
 {
-  
   
   io_folder <- '../' 
 
@@ -68,8 +70,14 @@ plot_immunity <- function(data_tag)
   
   popsize <- dim(data_person)[1]
   pop_age <- table(data_person$age)
-  tbl_seroprev <- table(data_person$age,data_person$is_immune)
-
+  tmp_tbl_seroprev <- table(data_person$age,data_person$is_immune)
+  colnames(tmp_tbl_seroprev)
+  
+  # copy tbl into matrix with immunity status 0 and 1
+  # required for populations without any immunity...
+  tbl_seroprev <- matrix(0,nrow=length(pop_age),ncol=2)
+  tbl_seroprev[,as.double(colnames(tmp_tbl_seroprev))+1] <- tmp_tbl_seroprev
+  
   # COMPARE WITH CURRENT PROFILE => EXTRA VACCINATION ?
   require(XML)
   data <- xmlParse('../data/disease_measles.xml')
@@ -88,8 +96,8 @@ plot_immunity <- function(data_tag)
   
   plot(matrix(tbl_seroprev[,2]/pop_age),main='age-specific immunity',xlab='age',ylab='seroprevalence',ylim=c(0,1),type='l')
   lines(age_imm_reg,col=2,lwd=4)
-  lines(matrix(tbl_seroprev[,2]/pop_age),lwd=2)
   lines((diff_imm_scenario)*vacc_plot_ftr,col=3)
+  lines(matrix(tbl_seroprev[,2]/pop_age),lwd=2)
   axis(4,c(0:(num_ticks+1))*0.1*vacc_plot_ftr/(num_ticks+1),(0:(num_ticks+1))*0.1/(num_ticks+1),col.axis="green",col="green",cex.axis=0.8)
   abline(h=0.1,lty=3)
   abline(h=0.2,lty=3)
@@ -122,8 +130,8 @@ plot_immunity <- function(data_tag)
   seeded_incidence <- seeded_infections / pop_age
   secundary_incidence <- secundary_infections / pop_age
   
-  y_max <- max(total_incidence,0.05,na.rm=T)
-  plot(hist_ages,total_incidence,main='age-specific incidence',xlab='age',ylab='recovered',ylim=c(0,y_max),type='l')
+  y_max <- max(total_incidence,0.01,na.rm=T)
+  plot(hist_ages,total_incidence,main='age-specific incidence',xlab='age',ylab='recovered',ylim=c(0,y_max),type='l',yaxt='n')
   axis(2)
   lines(seeded_incidence,col=4)
   lines(hist_ages,total_incidence)
@@ -134,7 +142,7 @@ plot_immunity <- function(data_tag)
                    paste('sec. attack rate', format(sum(secundary_infections) / popsize,digits=2)),
                    paste('sec. cases <1y', format(secundary_infections[1],digits=0))
   )
-  legend('topleft',plot_legend,cex=0.8)
+  legend('topright',plot_legend,cex=0.8)
   legend('right',c('total incidence', 'infect. seeds'),col=c(1,4),lty=1,cex=0.8)
   
   par(mar=c(5.1,4.1,4.1,2.1))
@@ -156,7 +164,7 @@ plot_immunity <- function(data_tag)
     hh_num_recovered <- hist(data_pop[flag & data_person$is_recovered==1,col_tag],breaks=0:num_clusters,plot=F)$counts
     
     hist((hh_num_immune / hh_num_total)[hh_num_total > 1],xlab='immunity',main=paste(col_tag,'immunity\n(size>1)'))
-    boxplot((hh_num_immune / hh_num_total)[hh_num_total > 1],main=paste(col_tag,'immunity\n(size>1)'))
+    boxplot((hh_num_immune / hh_num_total)[hh_num_total > 1],main=paste(col_tag,'immunity\n(size>1)'),ylim=0:1)
   
   }
   
@@ -171,15 +179,24 @@ plot_immunity <- function(data_tag)
   infector <- table(data_logfile$infector_id)
   infector_id <- names(infector)
   
-  barplot(table(infector),xlab='secundary cases',ylab='count',main='sec. cases',ylim=c(0,2000))
-  barplot(table(infector)/length(infector),xlab='secundary cases',ylab='frequency',main='sec. cases',ylim=c(0,1))
+  barplot(table(infector),xlab='secundary cases / infector',ylab='count',main='sec. cases',ylim=c(0,2000))
+  barplot(table(infector)/length(infector),xlab='secundary cases / infector',ylab='frequency',main='sec. cases',ylim=c(0,1))
+  
+  
+  ## SECUNDARY CASES OVER TIME
+  infector_data <- data.frame(infected_id=names(infector),sec_cases=as.double(infector))
+  infector_data <- merge(infector_data,data_logfile[,c('infected_id','day')])
+  
+  par(mfrow=c(1,1))
+  boxplot(infector_data$sec_cases ~ infector_data$day,xlab='time own infection (days)',ylab='secundary cases / infected')
+  
   
   ## OUTBREAKS
   if(sum(infector) < 20000)
   {
     ## primary cases
     data_logfile$outbreak <- 0
-    outbreak_id <- 938
+    outbreak_id <- 1
   
     flag <- is.na(data_logfile$infector_id)
     num_outbreaks <- sum(flag)
@@ -201,24 +218,25 @@ plot_immunity <- function(data_tag)
     }
     
     table(table(data_logfile$outbreak))
-    
+   
     ## OUTBREAK SIZE
     tmp <- table(table(data_logfile$outbreak))
     tmp_size <- as.double(names(tmp))
     tmp_frac <- as.numeric(tmp/max(data_logfile$outbreak))
     
+    par(mfrow=c(1,2))
     plot_out <- matrix(ncol=max(tmp_size))
     # plot_out[tmp_size] <- tmp_frac
     plot_out[tmp_size] <- tmp
     plot_out <- as.numeric(plot_out)
-    barplot(plot_out,xlab="outbreak size",main='outbreak size',ylab='fraction',ylim=c(0,2000))
+    barplot(plot_out,xlab="outbreak size",main='outbreak size',ylab='fraction',ylim=c(0,20))
     axis(1)
     legend('topright',c('total number',paste(sum(plot_out,na.rm=T))))
     
     
     ## OUTBREAK SIZE SELECTION
     plot_out <- as.numeric(plot_out[2:min(40,max(tmp_size))])
-    barplot(plot_out,xlab="outbreak size",main='outbreak size (2-50)',ylab='fraction',ylim=c(0,500))
+    barplot(plot_out,xlab="outbreak size",main='outbreak size (2-50)',ylab='fraction',ylim=c(0,5))
     axis(1)
     legend('topright',c('total number',paste(sum(plot_out,na.rm=T))))
     
