@@ -24,6 +24,7 @@
 
 #include <boost/filesystem.hpp>
 #include <string>
+#include <iostream>
 
 #if defined(WIN32)
 #include <stdlib.h>
@@ -153,6 +154,7 @@ path InstallDirs::GetCurrentDir()
 path InstallDirs::GetDataDir()
 {
 	Check();
+	std::cout << "Install dirs checked" << std::endl;
 	return g_data_dir;
 }
 
