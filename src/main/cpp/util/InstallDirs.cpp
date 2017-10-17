@@ -143,18 +143,16 @@ void InstallDirs::Initialize()
 		std::cout << "Check if data dir exists" << std::endl;
 		if (! is_directory(g_data_dir)) {
 			std::cout << "Does not exist" << std::endl;
-//			g_data_dir = path();
+			g_data_dir = path();
 		}
 
 		std::cout << "checked" << std::endl;
 	}
 
-	std::cout << "set data dir" << std::endl;
 	//------- Current Dir
 	{
 		g_current_dir = system_complete(current_path());
 	}
-	std::cout << "set current dir" << std::endl;
 }
 
 path InstallDirs::GetBinDir()
