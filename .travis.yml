@@ -78,5 +78,5 @@ install:
   - cd ..
 
 script:
-  - PARALLEL_MAKE=-j2 make install STRIDE_BOOST_ROOT=$HOME/boost_1_64_0/stage/lib
+  - PARALLEL_MAKE=-j2 STRIDE_BOOST_ROOT=$HOME/boost_1_64_0/stage/lib make install
   - make test
