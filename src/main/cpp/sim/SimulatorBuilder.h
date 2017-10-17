@@ -89,11 +89,17 @@ public:
 		const auto file_name_d{pt_config.get<string>("run.disease_config_file")};
 		const auto file_path_d{InstallDirs::GetDataDir() /= file_name_d};
 
+		std::cout << "Disease file path OK" << std::endl;
+
 		if (!is_regular_file(file_path_d)) {
 			throw runtime_error(std::string(__func__) + "> No file " + file_path_d.string());
 		}
 
+		std::cout << "Disease file found" << std::endl;
+
 		read_xml(file_path_d.string(), pt_disease);
+
+		std::cout << "Disease file read" << std::endl;
 
 		// Contact file.
 		ptree pt_contact;
