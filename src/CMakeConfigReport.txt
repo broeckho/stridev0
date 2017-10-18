@@ -56,6 +56,7 @@ endif()
 #
 message( STATUS "" )
 message( STATUS "------> Boost_VERSION               : ${Boost_VERSION} "             )
+message( STATUS "------> Boost_ROOT				    : ${Boost_ROOT}"     			)
 message( STATUS "------> Boost_INCLUDE_DIRS          : ${Boost_INCLUDE_DIRS} "        )
 message( STATUS "------> Boost_Libraries             : ${Boost_LIBRARIES} "           )
 #
