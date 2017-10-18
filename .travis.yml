@@ -73,7 +73,7 @@ install:
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download -q
   - sudo tar xf boost_1_64_0.tar.gz > /dev/null 2>&1
   - cd boost_1_64_0/
-  - sudo ./bootstrap.sh --prefix=$HOME --with-libraries=atomic chrono date_time filesystem iostreams locale log regex system thread serialization mpi
+  - sudo ./bootstrap.sh --with-libraries=atomic chrono date_time filesystem iostreams locale log regex system thread serialization mpi
   - sudo ./b2 -a -q -j2 -d0 --disable-filesystem2 cxxflags="-v -std=c++11" link=static threading=multi install
   - cd ..
 
