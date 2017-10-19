@@ -5,10 +5,10 @@
 language: cpp
 dist: trusty
 
-cache:
-  directories:
-    # Cache the boost install
-    - $HOME/boost_1_64_0/
+#cache:
+#  directories:
+#    # Cache the boost install
+#    - $HOME/boost_1_64_0/
     
 addons:
   apt:
@@ -73,7 +73,7 @@ install:
   #			--with-libraries: only build libraries that we actually need
   - sudo ./bootstrap.sh --prefix=$HOME/boost_1_64_0 --with-libraries=atomic,chrono,date_time,filesystem,iostreams,locale,log,regex,system,thread,serialization,mpi
   # Build boost
-  - sudo ./b2 -q -j2 -d0 cxxflags="-v -std=c++11" link=static threading=multi install
+  - sudo ./b2 -q -a -j2 -d0 --disable-filesystem2 cxxflags="-v -std=c++11" link=static threading=multi install
   - cd ..
 
 script:
