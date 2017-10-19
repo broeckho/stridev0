@@ -20,18 +20,6 @@
  * Header for the SimulatorBuilder class.
  */
 
-/*
-#include "core/Cluster.h"
-#include "core/ClusterType.h"
-#include "core/ContactProfile.h"
-#include "core/Infector.h"
-#include "core/LogMode.h"
-#include "pop/Population.h"
-
-#include <iostream>
-#include <omp.h>
- */
-
 #include "calendar/Calendar.h"
 #include "core/RngHandler.h"
 #include "immunity/Vaccinator.h"
@@ -51,7 +39,6 @@
 namespace stride {
 
 using namespace::std;
-// using namespace boost::filesystem;
 using namespace boost::property_tree;
 using namespace stride::util;
 
@@ -89,17 +76,11 @@ public:
 		const auto file_name_d{pt_config.get<string>("run.disease_config_file")};
 		const auto file_path_d{InstallDirs::GetDataDir() /= file_name_d};
 
-		std::cout << "Disease file path OK" << std::endl;
-
 		if (!is_regular_file(file_path_d)) {
 			throw runtime_error(std::string(__func__) + "> No file " + file_path_d.string());
 		}
 
-		std::cout << "Disease file found" << std::endl;
-
 		read_xml(file_path_d.string(), pt_disease);
-
-		std::cout << "Disease file read" << std::endl;
 
 		// Contact file.
 		ptree pt_contact;
@@ -148,7 +129,6 @@ public:
 
 		// Build population.
 		sim->m_population = PopulationBuilder<Person<behaviour_policy, belief_policy> >::Build(pt_config, pt_disease, rng);
-
 
 		// Initialize clusters.
 		InitializeClusters(sim);
