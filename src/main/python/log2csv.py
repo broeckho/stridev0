@@ -84,7 +84,7 @@ def prepare_csv(log_file_path):
                 dic[c_fieldnames[i]] = value
             c_writer.writerow(dic)
         # else for transmissions
-        if identifier == "[TRAN]":
+        if identifier == "[TRAN]" or identifier == "[PRIM]":
             flag_t = 1
             dic = {}
             for i in range(len(t_fieldnames)):

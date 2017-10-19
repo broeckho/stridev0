@@ -62,21 +62,24 @@ void Health::Update()
 			} else {
 				m_status = HealthStatus::Infectious;
 			}
-		} else if (GetDiseaseCounter() == m_end_infectiousness) {
-			if (m_status == HealthStatus::InfectiousAndSymptomatic) {
-				m_status = HealthStatus::Symptomatic;
-			} else {
-				StopInfection();
-			}
-		} else if (GetDiseaseCounter() == m_start_symptomatic) {
+		}
+		if (GetDiseaseCounter() == m_start_symptomatic) {
 			if (m_status == HealthStatus::Infectious) {
 				m_status = HealthStatus::InfectiousAndSymptomatic;
 			} else {
 				m_status = HealthStatus::Symptomatic;
 			}
-		} else if (GetDiseaseCounter() == m_end_symptomatic) {
+		}
+		if (GetDiseaseCounter() == m_end_symptomatic) {
 			if (m_status == HealthStatus::InfectiousAndSymptomatic) {
 				m_status = HealthStatus::Infectious;
+			} else {
+				StopInfection();
+			}
+		}
+		if (GetDiseaseCounter() == m_end_infectiousness) {
+			if (m_status == HealthStatus::InfectiousAndSymptomatic) {
+				m_status = HealthStatus::Symptomatic;
 			} else {
 				StopInfection();
 			}

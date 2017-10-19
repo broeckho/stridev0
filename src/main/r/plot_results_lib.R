@@ -27,7 +27,7 @@ plot_results <- function(data_tag){
   ######################
   
   data	   <- read.table(paste(data_tag,'_summary.csv',sep=''),header=TRUE,sep=",",stringsAsFactors=F)
-  data_log <-read.table(paste(data_tag,'_cases.csv',sep=''),header=FALSE,sep=",")
+  data_log <- read.table(paste(data_tag,'_cases.csv',sep=''),header=FALSE,sep=",")
   
   if(dim(data_log)[2]>1)
   {
@@ -35,7 +35,7 @@ plot_results <- function(data_tag){
   ######################
   ## START PDF STREAM	##
   ######################
-  pdf(file=paste(data_tag,'_results.pdf'))
+  pdf(file=paste0(data_tag,'_results.pdf'))
   
   
   ######################
@@ -130,7 +130,98 @@ plot_results <- function(data_tag){
   }
   
   
+  # check if there are transmission log files in the experiments directory
+  # 1. get all files
+  exp_files_all <- dir('experiments')
+  # 2. remove other files from the list
+  exp_files_all <- exp_files_all[grepl('transmissions.csv',exp_files_all)]
   
+  # if transmission log files present
+  if(length(exp_files_all)>0){
+    
+    i_exp <- 1
+    data_transmission_all <- NULL
+    outbreak_size_all <- matrix(0,nrow=100)
+    
+    exp_file <- exp_files_all[1]
+    for(exp_file in exp_files_all)
+    {
+      
+      # load transmission data
+      data_transmission <- read.table(paste('experiments/',exp_file,sep=''),header=TRUE,sep=",")
+
+      # rename columns
+      names(data_transmission)[1:2] <- c('infector_id','infected_id')
+      
+      # set 'infector' of seeds to NA
+      data_transmission$infector_id[data_transmission$infector_id==-1] <- NA
+      
+      # count secundary cases and summarise in data.frame: id and sec_cases
+      tmp <- table(data_transmission$infector_id)
+      infector_data <- data.frame(infected_id = names(tmp), sec_cases=as.double(tmp))
+
+      # add infector data to the transmission data.frame (add NA sec_cases if missing)
+      data_transmission <- merge(data_transmission,infector_data, all = TRUE)
+      
+      # set 'NA' secundary cases to 0
+      data_transmission$sec_cases[is.na(data_transmission$sec_cases)] <- 0
+      
+      # add experiment tag
+      data_transmission$exp_file <- exp_file
+      
+      # add data to summary variable
+      data_transmission_all <- rbind(data_transmission_all,data_transmission)
+      
+      
+      ## OUTBREAKS
+      ## primary cases
+      data_transmission$outbreak <- 0
+      outbreak_id <- 1
+      
+      flag <- is.na(data_transmission$infector_id)
+      num_outbreaks <- sum(flag)
+      data_transmission$outbreak[flag] <- 1:num_outbreaks
+      for(outbreak_id in 1:num_outbreaks)
+      {
+        infctrs <- data_transmission$infected_id[data_transmission$outbreak == outbreak_id]
+        num_infctrs_prev <- 0
+        
+        while(length(infctrs) > num_infctrs_prev)
+        {
+          num_infctrs_prev <- length(infctrs)
+          case_flag <- data_transmission$infector_id %in% infctrs
+          sum(case_flag)
+          data_transmission$outbreak[case_flag] <- outbreak_id
+          
+          infctrs <- data_transmission$infected_id[data_transmission$outbreak == outbreak_id]
+        }
+      }
+      
+      outbreak_size_count <- table(table(data_transmission$outbreak))
+      outbreak_size_level <- as.numeric(names(outbreak_size_count))
+      
+      print(outbreak_size_level)
+      print(outbreak_size_level)
+      
+      outbreak_size_all[outbreak_size_level] <- outbreak_size_all[outbreak_size_level] + outbreak_size_count
+  
+    }
+    
+    # plot secundary cases over time
+    boxplot(data_transmission_all$sec_cases ~ data_transmission_all$sim_day, xlab='time infection (days)',ylab='secundary cases / infected')
+  
+    plot(outbreak_size_all)
+    barplot((outbreak_size_all),beside = T,xlab='outbreak size',ylab='count')
+    axis(1)  
+    
+    plot(outbreak_size_all)
+    barplot(outbreak_size_all/sum(outbreak_size_all),beside = T,xlab='outbreak size',ylab='frequency',ylim=0:1)
+    axis(1)  
+    
+
+  }
+    
+
   
   ######################
   ## CLOSE PDF STREAM ##

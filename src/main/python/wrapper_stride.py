@@ -33,7 +33,7 @@ import xml.etree.cElementTree as ET
 # --------------------------------
 # Function that runs the simulator.
 # --------------------------------
-def runSimulator(binary_command, num_days, rng_seed, seeding_rate, r0, population_file, immunity_rate, immunity_profile, vaccine_profile, vaccine_rate, vaccine_link_probability, output_prefix, disease_config_file, generate_person_file, num_participants_survey, start_date, holidays_file, age_contact_matrix_file, log_level,seeding_age_min, seeding_age_max,):
+def runSimulator(binary_command, num_days, rng_seed, seeding_rate, r0, population_file, immunity_rate, immunity_profile, immunity_link_probability, immunity_link_clustertype, vaccine_profile, vaccine_rate, vaccine_link_probability, vaccine_link_clustertype, output_prefix, disease_config_file, generate_person_file, num_participants_survey, start_date, holidays_file, age_contact_matrix_file, log_level,seeding_age_min, seeding_age_max,):
     
     # Write configuration file
     root = ET.Element("run")
@@ -47,9 +47,12 @@ def runSimulator(binary_command, num_days, rng_seed, seeding_rate, r0, populatio
     ET.SubElement(root, "population_file").text = population_file
     ET.SubElement(root, "immunity_rate").text = str(immunity_rate)
     ET.SubElement(root, "immunity_profile").text = str(immunity_profile)
+    ET.SubElement(root, "immunity_link_probability").text = str(immunity_link_probability)
+    ET.SubElement(root, "immunity_link_clustertype").text = str(immunity_link_clustertype)
     ET.SubElement(root, "vaccine_profile").text = str(vaccine_profile)
     ET.SubElement(root, "vaccine_rate").text = str(vaccine_rate)
     ET.SubElement(root, "vaccine_link_probability").text = str(vaccine_link_probability)
+    ET.SubElement(root, "vaccine_link_clustertype").text = str(vaccine_link_clustertype)
     ET.SubElement(root, "output_prefix").text = str(str(output_prefix))
     ET.SubElement(root, "disease_config_file").text = str(str(disease_config_file))
     ET.SubElement(root, "generate_person_file").text = str(str(generate_person_file))
@@ -157,7 +160,7 @@ def main(argv):
         os.putenv('OMP_SCHEDULE' , str(config['omp_schedule']))
         
         # Run the simulator     ('experiment[0]' has been used for the OMP_NUM_THREADS)
-        runSimulator(config['binary_command'], config['num_days'], experiment[1], experiment[2], experiment[3], experiment[4], experiment[5], config['immunity_profile'], config['vaccine_profile'], config['vaccine_rate'], config['vaccine_link_probability'], output_prefix, config['disease_config_file'],config['generate_person_file'],config['num_participants_survey'], config['start_date'], config['holidays_file'], config['age_contact_matrix_file'], config['log_level'], config['seeding_age_min'], config['seeding_age_max'])
+        runSimulator(config['binary_command'], config['num_days'], experiment[1], experiment[2], experiment[3], experiment[4], experiment[5], config['immunity_profile'], config['immunity_link_probability'],config['immunity_link_clustertype'], config['vaccine_profile'], config['vaccine_rate'], config['vaccine_link_probability'], config['vaccine_link_clustertype'], output_prefix, config['disease_config_file'],config['generate_person_file'],config['num_participants_survey'], config['start_date'], config['holidays_file'], config['age_contact_matrix_file'], config['log_level'], config['seeding_age_min'], config['seeding_age_max'])
                
         # Append the aggregated outputs
         if is_first:
