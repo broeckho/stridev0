@@ -14,35 +14,23 @@
 #
 #  Copyright 2016, Willem L, Kuylen E & Broeckhove J
 #################################################################################################
-	
-#================================================================================================
-# Example scripts
-#================================================================================================
-
-add_subdirectory(examples)
 
 #================================================================================================
-# Install Python package.
+# List python example scripts.
 #================================================================================================
 
-SET(PYTHON_TO_INSTALL _pythonInstallPyStride)
-
-add_custom_target(pythonInstallPyStride ALL
-				  DEPENDS
-				  ${PYTHON_TO_INSTALL}
-)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/setupStride.py stride/setupStride.py)
-
-add_custom_command(OUTPUT _pythonInstallPyStride
-				   cd stride &&
-				   python3 setupStride.py install
+SET(PYTHON_EXAMPLES
+    simple.py
 )
 
 #================================================================================================
-# Copy the Python scripts to the bin folder.
+# Copy Python scripts to the bin folder.
 #================================================================================================
 
-INSTALL(DIRECTORY pystride DESTINATION ${BIN_INSTALL_LOCATION})
+INSTALL ( FILES
+		  ${PYTHON_EXAMPLES}
+		  DESTINATION ${BIN_INSTALL_LOCATION}
+		  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_WRITE GROUP_READ
+)
 
 #################################################################################################
