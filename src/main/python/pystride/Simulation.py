@@ -74,7 +74,7 @@ from .SimulationObserver import *
 from .Disease import Disease
 from .stride import Society
 
-class Simulation(SimulationConfig):
+class Simulation():
     def __init__(self, *args, **kwargs):
         self.simulator = None
         self.observer = SimulationObserver(self)
