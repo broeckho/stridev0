@@ -15,3 +15,4 @@
 }
 
 %include "./simulator.i"
+%include "./simulatorbuilder.i"
