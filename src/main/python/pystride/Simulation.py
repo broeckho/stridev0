@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 import pystride
 
-from .stride import Simulator
+from stride.stride import Simulator
 
 class Simulation():
     def __init__(self):
@@ -20,10 +20,23 @@ class Simulation():
     def showConfig(self):
         print (self.config)
 
-    def run(self):
+    def stop(self):
+        """ Stop the simulation if it's running """
+        if self.simulator:
+            self.Simulator.Stop()
+
+    def fork(self, name: str):
         pass
 
-    def _build(self):
+    def registerCallback(self, callback, event):
+        """ Registers a callback to the simulation.
+
+            :param callback: a function appropriate for the event type.
+            :param event: either an event specified in SimulationObserver,
+                            an integer (timestep interval),
+                            list of events, or list of integers
+                            (list of timestep intervals).
+        """
         pass
 
     def getWorkingDirectory(self):
@@ -32,9 +45,24 @@ class Simulation():
     def getOutputDirectory(self):
         return os.path.join(self.getWorkingDirectory(), self.label)
 
-# TODO run
-# TODO stop
-# TODO forks
+    def run(self):
+        pass
+
+    def runForks(self):
+        """ Run all forks, but not the root simulation. """
+        pass
+
+    def runAll(self):
+        """ Run root simulation and forks. """
+        pass
+
+    def __getstate__(self):
+        return dict()
+
+    def __setstate__(self, state):
+        pass
+
+
 # TODO PUQ integration
 
 '''
@@ -45,10 +73,6 @@ from .SimulationObserver import *
 from .Disease import Disease
 from .stride import Society
 
-    def stop(self):
-        """ Stop the simulation if it's running """
-        if self.simulator:
-            self.simulator.Stop()
 
     def registerCallback(self, callback, event):
         """ Registers a callback to the simulation.

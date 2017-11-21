@@ -1,6 +1,8 @@
 //%module(directors="1") Simulator
 %module SimulatorInterface
 
+%rename("Simulator") SimulatorInterface;
+
 // headers for generated file
 %{
 #include "sim/SimulatorInterface.h"
@@ -19,7 +21,6 @@
 //%include "sim/Simulator.h";
 
 %include "sim/SimulatorInterface.h"
-
 
 //%extend stride::Simulator {
 //	void registerObserver(std::shared_ptr<stride::SimulatorObserver> obs){
