@@ -1,4 +1,4 @@
-#############################################################################
+#################################################################################################
 #  This file is part of the Stride software. 
 #  It is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by 
@@ -13,27 +13,38 @@
 #  see http://www.gnu.org/licenses/.
 #
 #  Copyright 2016, Willem L, Kuylen E & Broeckhove J
-#############################################################################
+#################################################################################################
 
-#============================================================================
-# Copy the python script to the bin folder.
-#============================================================================
+#================================================================================================
+# Example scripts
+#================================================================================================
 
-INSTALL( FILES 
-         wrapper_stride.py 
-   	DESTINATION ${BIN_INSTALL_LOCATION}  
-	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_WRITE GROUP_READ
-	)
+# add_subdirectory(examples)
 
-INSTALL( FILES 
-        create_contactmatrix.py 
-        interactive_maps.py 
-        log2csv.py 
-        plot_maps.py 
-   	DESTINATION ${LIB_INSTALL_LOCATION}  
-	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_WRITE GROUP_READ
-	)
+#================================================================================================
+# Install Python package.
+#================================================================================================
 
+SET(PYTHON_TO_INSTALL _pythonInstallPyStride)
 
+add_custom_target(pythonInstallPyStride ALL
+				  DEPENDS
+				  _stride
+				  ${PYTHON_TO_INSTALL}
+)
 
-#############################################################################
+add_custom_command(OUTPUT _pythonInstallPyStride
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/stride pystride/stride
+				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/stride.py pystride/stride/stride.py
+				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/_stride.so pystride/stride/_stride.so
+)
+
+#================================================================================================
+# Copy the Python scripts to the bin folder.
+#================================================================================================
+
+#INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/strideEnv DESTINATION .)
+INSTALL(DIRECTORY pystride DESTINATION ${BIN_INSTALL_LOCATION})
+INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/main/python/pystride/stride DESTINATION ${BIN_INSTALL_LOCATION}/pystride/)
+
+#################################################################################################
