@@ -1,4 +1,4 @@
-//%module(directors="1") Simulator
+
 %module SimulatorInterface
 
 %rename("Simulator") SimulatorInterface;

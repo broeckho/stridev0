@@ -65,14 +65,183 @@ class Simulation():
 
 # TODO PUQ integration
 
+
 '''
+import os
 import argparse
 
-from .stride import getSimulator
-from .SimulationObserver import *
-from .Disease import Disease
-from .stride import Society
+import stride
 
+from .stride import SimulationConfig, getSimulator
+from .SimulationObserver import *
+from .LogLevel import LogLevel
+from .Disease import Disease
+from .Generator import Generator
+from .stride import Society
+from .PUQIntegration import *
+from puq.puq_cmd import load_internal
+
+
+class Simulation(SimulationConfig):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.forks = list()
+        self.simulator = None
+        self.observer = SimulationObserver(self)
+        self.strideUQ = StrideMonteCarlo(num=5)
+        self.uqProperties = dict()
+        self._disease = None        # wraps C++ disease config once set
+
+    @staticmethod
+    def fromFile(filename: str):
+        config = Simulation()
+        config.parseXML(filename)
+        return config
+
+    # Properties
+    @uq_property
+    def rng_seed(self):
+        return self.p_rng_seed.get()
+    @rng_seed.setter
+    def rng_seed(self, value):
+        self.p_rng_seed.set(value)
+
+    @uq_property
+    def r0(self):
+        return self.p_r0.get()
+    @r0.setter
+    def r0(self, value):
+        self.p_r0.set(value)
+
+    @uq_property
+    def seeding_rate(self):
+        return self.p_seeding_rate.get()
+    @seeding_rate.setter
+    def seeding_rate(self, value):
+        self.p_seeding_rate.set(value)
+
+    @uq_property
+    def immunity_rate(self):
+        return self.p_immunity_rate.get()
+    @immunity_rate.setter
+    def immunity_rate(self, value):
+        self.p_immunity_rate.set(value)
+
+    @property
+    def population(self):
+        return self.p_population_file.GetPopulation()
+    @population.setter
+    def population(self, value):
+        if isinstance(value, str):
+            self.p_population_file.set(value)
+            return
+        if isinstance(value, Generator):
+            value.thisown = 0
+            shared_ptr = stride.stride.GeneratorConfigToSharedPtr(value)
+            self.p_population_file.SetGeneratorConfig(shared_ptr)
+
+            return
+        if isinstance(value, Society):
+            pop = value.GetStridePopulation()
+            self.p_population_file.SetPopulation(pop)
+            return
+
+        raise ValueError("Value should be a string, instance of Generator or instance of Society.")
+
+    @property
+    def num_days(self):
+        return self.p_num_days.get()
+    @num_days.setter
+    def num_days(self, value):
+        self.p_num_days.set(value)
+
+    @property
+    def label(self):
+        return self.p_label.get()
+    @label.setter
+    def label(self, value):
+        self.p_label.set(value)
+
+    @property
+    def disease(self):
+        if self._disease is None:
+            self._disease = Disease(config=self.p_disease_config_file.getConfig())
+        return self._disease
+    @disease.setter
+    def disease(self, value):
+        if isinstance(value, str):
+            self.p_disease_config_file.set(value)
+        else:
+            self.p_disease_config_file.setConfig(value)
+        self._disease = Disease(config=self.p_disease_config_file.getConfig())
+
+    @property
+    def generate_person_file(self):
+        return self.p_generate_person_file.get()
+    @generate_person_file.setter
+    def generate_person_file(self, value):
+        self.p_generate_person_file.set(value)
+
+    @property
+    def num_participants_survey(self):
+        return self.p_num_participants_survey.get()
+    @num_participants_survey.setter
+    def num_participants_survey(self, value):
+        self.p_num_participants_survey.set(value)
+
+    @property
+    def start_date(self):
+        return self.p_start_date.get()
+    @start_date.setter
+    def start_date(self, value):
+        self.p_start_date.set(value)
+
+    @property
+    def holidays_file(self):
+        return self.p_holidays_file.get()
+    @holidays_file.setter
+    def holidays_file(self, value):
+        self.p_holidays_file.set(value)
+
+    @property
+    def age_contact_matrix_file(self):
+        return self.p_age_contact_matrix_file.get()
+    @age_contact_matrix_file.setter
+    def age_contact_matrix_file(self, value):
+        self.p_age_contact_matrix_file.set(value)
+
+    @property
+    def log_level(self):
+        return self.p_log_level.get()
+    @log_level.setter
+    def log_level(self, value):
+        if isinstance(value, LogLevel):
+            value = str(value)
+        self.p_log_level.set(value)
+
+    @property
+    def checkpoint_interval(self):
+        return self.p_checkpoint_interval.get()
+    @checkpoint_interval.setter
+    def checkpoint_interval(self, value):
+        self.p_checkpoint_interval.set(value)
+
+    @property
+    def uq(self):
+        return self._uc
+    @uq.setter
+    def uq(self, value):
+        if isinstance(value, PSweep):
+            raise RuntimeError("Can't assign default PUQ UQ methods. User Stride{} variant.")
+        elif isinstance(value, StridePSweep):
+            self.strideUQ = value
+        else:
+            raise RuntimeError("Invalid UQ method. User Stride{} variant of PUQ UQ methods.")
+
+    def stop(self):
+        """ Stop the simulation if it's running """
+        if self.simulator:
+            self.simulator.Stop()
 
     def registerCallback(self, callback, event):
         """ Registers a callback to the simulation.
@@ -98,6 +267,20 @@ from .stride import Society
             self.observer.registerCallback(callback, event)
         else:
             raise RuntimeError("Unknown event type: " + str(event))
+
+    def fork(self, name: str):
+        """ Create a new simulation instance from this one.
+
+            :param str name: name of the fork.
+        """
+        f = Fork(name, self)
+        return f
+
+    def getWorkingDirectory(self):
+        return stride.workspace
+
+    def getOutputDirectory(self):
+        return os.path.join(self.getWorkingDirectory(), self.label)
 
     def _linkData(self):
         dataDir = os.path.join(self.getOutputDirectory(), "data")
@@ -156,4 +339,67 @@ from .stride import Society
             except:
                 print("Exception when running simulator. Closing down.")
                 exit(0)
+
+    def runForks(self, *args, **kwargs):
+        """ Run all forks, but not the root simulation. """
+        self.setup()
+        for fork in self.forks:
+            fork.run(*args, **kwargs)
+
+    def runAll(self, *args, **kwargs):
+        """ Run simulation and forks. """
+        self.run(*args, **kwargs)
+        self.runForks(*args, **kwargs)
+
+    def runPUQ(self, *args, **kwargs):
+        parser = argparse.ArgumentParser(description='Stride')
+        parser.add_argument('action', nargs="?",
+                            help='Indicate to extend the sweep when possible.')
+        parser.add_argument('--num', type=int, nargs='?',
+                            help='Amount of samples to extend sweep with. Not required for Smolyak')
+        commandArgs = parser.parse_args()
+
+        extend = commandArgs.action == "extend"
+        num = commandArgs.num
+
+        parameters = list(self.getUQProperties().values())
+        uq = self.strideUQ.getPSweep(parameters)
+        sweepFile = os.path.join(self.getOutputDirectory(), "sweep.hdf5")
+        if os.path.exists(sweepFile):
+            print("Found existing sweep.")
+            if not extend:
+                print("You can extend it by using the 'extend' command line argument.")
+                exit()
+            sweep = puq.puq_cmd.load_internal([sweepFile])
+            cname = sweep.psweep.__class__.__name__
+            print("Extending {}.hdf5 using {}".format(sweep.fname, cname))
+            if cname == 'MonteCarlo':
+                if not num:
+                    print("Monte Carlo extend requires a valid num argument (--num).")
+                    exit()
+                else:
+                    print("with {} samples".format(num))
+            sweep.prog.simulation = self
+            sweep.prog.fork = None
+            sweep.extend(num=num)
+            sweep.run()
+        else:
+            sweep = SimulationSweep(uq, SimulationProgram(self), *args, **kwargs)
+            success = sweep.run(fn=sweepFile)
+            if success:
+                sweep.analyze()
+
+    def getUQProperties(self):
+        properties = self.uqProperties
+        properties.update(self.disease.uqProperties)
+        return properties
+
+    def __getstate__(self):
+        return dict()
+
+    def __setstate__(self, state):
+        pass
+
 '''
+
+from .Fork import Fork
