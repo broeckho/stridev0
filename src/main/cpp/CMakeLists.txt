@@ -50,11 +50,43 @@ set(MAIN_SRC
 )
 
 #============================================================================
-# Build & install the (OpenMP enabled if OpenMP available) executable.
+# Build the Stride library.
 #============================================================================
-add_library(libstride  OBJECT  ${LIB_SRC})
-add_executable(stride  ${MAIN_SRC} $<TARGET_OBJECTS:libstride> $<TARGET_OBJECTS:trng>)
-target_link_libraries(stride ${LIBS})
+
+add_library(libstride STATIC ${LIB_SRC})
+target_link_libraries(libstride ${LIBS})
+target_compile_options(libstride PUBLIC "-fPIC")
+set_target_properties(libstride PROPERTIES PREFIX "")
+
+#============================================================================
+# Build & install the Swig files.
+#============================================================================
+
+set(SWIG_IFACE
+	swig/simulator.i
+	swig/stride.i
+)
+
+find_package(SWIG REQUIRED)
+include(${SWIG_USE_FILE})
+
+find_package(PythonLibs 3 REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+set_property(SOURCE ${SWIG_IFACE} PROPERTY CPLUSPLUS ON)
+
+swig_add_module(stride python swig/stride.i)
+swig_link_libraries(stride PUBLIC libstride ${PYTHON_LIBRARIES})
+
+#install(TARGETS ${SWIG_MODULE_stride_REAL_NAME} DESTINATION stride)
+#install(FILES ${CMAKE_BINARY_DIR}/main/cpp/stride.py DESTINATION stride)
+
+#============================================================================
+# Build and install the stride executable.
+#============================================================================
+
+add_executable(stride ${MAIN_SRC})
+target_link_libraries(stride ${LIBS} libstride)
 install(TARGETS stride  DESTINATION   ${BIN_INSTALL_LOCATION})
 
 #============================================================================
@@ -62,5 +94,6 @@ install(TARGETS stride  DESTINATION   ${BIN_INSTALL_LOCATION})
 #============================================================================
 unset(LIB_SRC)
 unset(MAIN_SRC)
+unset(SWIG_IFACE)
 
 #############################################################################
