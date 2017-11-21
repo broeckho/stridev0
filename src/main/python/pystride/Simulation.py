@@ -26,7 +26,12 @@ class Simulation():
             self.Simulator.Stop()
 
     def fork(self, name: str):
-        pass
+        """ Create a new simulation instance from this one.
+
+            :param str name: the name of the fork.
+        """
+        f = Fork(name, self)
+        return f
 
     def registerCallback(self, callback, event):
         """ Registers a callback to the simulation.
@@ -268,20 +273,6 @@ class Simulation(SimulationConfig):
         else:
             raise RuntimeError("Unknown event type: " + str(event))
 
-    def fork(self, name: str):
-        """ Create a new simulation instance from this one.
-
-            :param str name: name of the fork.
-        """
-        f = Fork(name, self)
-        return f
-
-    def getWorkingDirectory(self):
-        return stride.workspace
-
-    def getOutputDirectory(self):
-        return os.path.join(self.getWorkingDirectory(), self.label)
-
     def _linkData(self):
         dataDir = os.path.join(self.getOutputDirectory(), "data")
         os.makedirs(dataDir, exist_ok=True)
@@ -350,56 +341,6 @@ class Simulation(SimulationConfig):
         """ Run simulation and forks. """
         self.run(*args, **kwargs)
         self.runForks(*args, **kwargs)
-
-    def runPUQ(self, *args, **kwargs):
-        parser = argparse.ArgumentParser(description='Stride')
-        parser.add_argument('action', nargs="?",
-                            help='Indicate to extend the sweep when possible.')
-        parser.add_argument('--num', type=int, nargs='?',
-                            help='Amount of samples to extend sweep with. Not required for Smolyak')
-        commandArgs = parser.parse_args()
-
-        extend = commandArgs.action == "extend"
-        num = commandArgs.num
-
-        parameters = list(self.getUQProperties().values())
-        uq = self.strideUQ.getPSweep(parameters)
-        sweepFile = os.path.join(self.getOutputDirectory(), "sweep.hdf5")
-        if os.path.exists(sweepFile):
-            print("Found existing sweep.")
-            if not extend:
-                print("You can extend it by using the 'extend' command line argument.")
-                exit()
-            sweep = puq.puq_cmd.load_internal([sweepFile])
-            cname = sweep.psweep.__class__.__name__
-            print("Extending {}.hdf5 using {}".format(sweep.fname, cname))
-            if cname == 'MonteCarlo':
-                if not num:
-                    print("Monte Carlo extend requires a valid num argument (--num).")
-                    exit()
-                else:
-                    print("with {} samples".format(num))
-            sweep.prog.simulation = self
-            sweep.prog.fork = None
-            sweep.extend(num=num)
-            sweep.run()
-        else:
-            sweep = SimulationSweep(uq, SimulationProgram(self), *args, **kwargs)
-            success = sweep.run(fn=sweepFile)
-            if success:
-                sweep.analyze()
-
-    def getUQProperties(self):
-        properties = self.uqProperties
-        properties.update(self.disease.uqProperties)
-        return properties
-
-    def __getstate__(self):
-        return dict()
-
-    def __setstate__(self, state):
-        pass
-
 '''
 
 from .Fork import Fork
