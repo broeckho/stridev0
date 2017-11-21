@@ -3,11 +3,13 @@ import xml.etree.ElementTree as ET
 
 import pystride
 
+from .stride import Simulator
+
 class Simulation():
     def __init__(self):
         # Load default config for simulations
         self.config = ET.parse('run_default.xml').getroot()
-        # TODO self.disease
+        self.disease_config = None
         # TODO self.population
         self.simulator = None
 
@@ -15,45 +17,14 @@ class Simulation():
     def loadConfig(self, filename):
         self.config = ET.parse(filename).getroot()
 
+    def showConfig(self):
+        print (self.config)
 
-    '''
-        @property
-        def disease(self):
-            if self._disease is None:
-                self._disease = Disease(config=self.p_disease_config_file.getConfig())
-            return self._disease
-        @disease.setter
-        def disease(self, value):
-            if isinstance(value, str):
-                self.p_disease_config_file.set(value)
-            else:
-                self.p_disease_config_file.setConfig(value)
-            self._disease = Disease(config=self.p_disease_config_file.getConfig())
-    '''
+    def run(self):
+        pass
 
-    '''
-        @property
-        def population(self):
-            return self.p_population_file.GetPopulation()
-        @population.setter
-        def population(self, value):
-            if isinstance(value, str):
-                self.p_population_file.set(value)
-                return
-            if isinstance(value, Generator):
-                value.thisown = 0
-                shared_ptr = stride.stride.GeneratorConfigToSharedPtr(value)
-                self.p_population_file.SetGeneratorConfig(shared_ptr)
-
-                return
-            if isinstance(value, Society):
-                pop = value.GetStridePopulation()
-                self.p_population_file.SetPopulation(pop)
-                return
-
-            raise ValueError("Value should be a string, instance of Generator or instance of Society.")
-
-    '''
+    def _build(self):
+        pass
 
     def getWorkingDirectory(self):
         return stride.workspace
@@ -73,18 +44,6 @@ from .stride import getSimulator
 from .SimulationObserver import *
 from .Disease import Disease
 from .stride import Society
-
-class Simulation():
-    def __init__(self, *args, **kwargs):
-        self.simulator = None
-        self.observer = SimulationObserver(self)
-        self._disease = None        # wraps C++ disease config once set
-
-    @staticmethod
-    def fromFile(filename: str):
-        config = Simulation()
-        config.parseXML(filename)
-        return config
 
     def stop(self):
         """ Stop the simulation if it's running """

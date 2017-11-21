@@ -29,20 +29,22 @@ SET(PYTHON_TO_INSTALL _pythonInstallPyStride)
 
 add_custom_target(pythonInstallPyStride ALL
 				  DEPENDS
+				  _stride
 				  ${PYTHON_TO_INSTALL}
 )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/setupStride.py stride/setupStride.py)
-
 add_custom_command(OUTPUT _pythonInstallPyStride
-				   cd stride &&
-				   python3 setupStride.py install
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/stride pystride/stride
+				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/stride.py pystride/stride/stride.py
+				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/_stride.so pystride/stride/_stride.so
 )
 
 #================================================================================================
 # Copy the Python scripts to the bin folder.
 #================================================================================================
 
+#INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/strideEnv DESTINATION .)
 INSTALL(DIRECTORY pystride DESTINATION ${BIN_INSTALL_LOCATION})
+INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/main/python/pystride/stride DESTINATION ${BIN_INSTALL_LOCATION}/pystride/)
 
 #################################################################################################

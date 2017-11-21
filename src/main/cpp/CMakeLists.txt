@@ -41,6 +41,7 @@ set(LIB_SRC
     pop/Person.cpp
 #---
 	sim/run_stride.cpp
+	sim/SimulatorInterface.cpp
 #---
 	util/InstallDirs.cpp
 )
@@ -63,6 +64,8 @@ set_target_properties(libstride PROPERTIES PREFIX "")
 #============================================================================
 
 set(SWIG_IFACE
+	swig/boost.i
+	swig/simulator.i
 	swig/stride.i
 )
 
@@ -77,8 +80,8 @@ set_property(SOURCE ${SWIG_IFACE} PROPERTY CPLUSPLUS ON)
 swig_add_module(stride python swig/stride.i)
 swig_link_libraries(stride PUBLIC libstride ${PYTHON_LIBRARIES})
 
-install(TARGETS ${SWIG_MODULE_stride_REAL_NAME} DESTINATION stride)
-install(FILES ${CMAKE_BINARY_DIR}/main/cpp/stride.py DESTINATION stride)
+#install(TARGETS ${SWIG_MODULE_stride_REAL_NAME} DESTINATION stride)
+#install(FILES ${CMAKE_BINARY_DIR}/main/cpp/stride.py DESTINATION stride)
 
 #============================================================================
 # Build and install the stride executable.
