@@ -4,12 +4,15 @@ import xml.etree.ElementTree as ET
 
 import pystride
 
+from pystride.SimulationUtils import SimulationUtils
+
 class Simulation():
     def __init__(self):
         self.forks = list()
         self.simulator = None
         # TODO observer
         self.label = "Default"
+        self.configFile = 'pystride/default_configs/run_default.xml'
         self._runConfig = None      # ETree with run config for simulation
         self._diseaseConfig = None  # ETree with disease config
         self._setDefaultConfig()    # Set default values for run & disease config
@@ -17,6 +20,9 @@ class Simulation():
     def _setDefaultConfig(self):
         # Load run config
         self._runConfig = ET.parse('pystride/default_configs/run_default.xml').getroot()
+        new_label = self.getRunConfigParam('output_prefix')
+        if new_label != None:
+            self.label = new_label
         # Load disease config
         disease_file = self.getRunConfigParam('disease_config_file')
         self._diseaseConfig = ET.parse(os.path.join('pystride/default_configs', disease_file)).getroot()
@@ -25,17 +31,19 @@ class Simulation():
         """ Load a configuration from a file """
         old_disease_file = self.getRunConfigParam('disease_config_file')
         self._config = ET.parse(filename).getroot()
+        if new_label != None:
+            self.label = new_label
         new_disease_file = self.getRunConfigParam('disease_config_file')
         if new_disease_file != old_disease_file:
             self._diseaseConfig = ET.parse(new_disease_file).getroot()
 
     def getRunConfigParam(self, name: str):
         if self._runConfig != None:
-            configParam = self._runConfig.find(name)
+            configParam = self._runConfig.find(name).text
             if configParam != None:
-                return configParam.text
+                return configParam
             else:
-                print("No configuration parameter with name {} could be found", name)
+                print("No configuration parameter with name " + name + " could be found")
         else:
             print("No run configuration found")
 
@@ -80,13 +88,12 @@ class Simulation():
         return pystride.workspace
 
     def getOutputDirectory(self):
-        return os.path.join(self.getWorkingDirectory(),
-                            self.getConfigParam('output_prefix'))
+        pass
 
     def _linkData(self):
         pass
 
-    def _setup(self):
+    def _setup(self, linkData=True):
         """
             Create folder in workspace to run simulation.
             Copy config and link to data.
@@ -94,7 +101,7 @@ class Simulation():
         pass
 
     def _build(self, *args, **kwargs):
-        pass
+        self.simulator = SimulationUtils.getSimulator(self._runConfig)
 
     def run(self, *args, **kwargs):
         """ Run current simulation. """
@@ -131,43 +138,3 @@ class Simulation():
 from .Fork import Fork
 
 #TODO PUQ integration
-
-'''
-    def _linkData(self):
-        dataDir = os.path.join(self.getOutputDirectory(), "data")
-        os.makedirs(dataDir, exist_ok=True)
-        files = [
-            self.p_population_file.get(),
-            self.p_disease_config_file.get(),
-            self.holidays_file,
-            self.age_contact_matrix_file,
-        ]
-        for src in files:
-            dst = os.path.join(dataDir, os.path.basename(src))
-            if os.path.isfile(src) and not os.path.isfile(dst):
-                os.symlink(src, dst)
-
-    def setup(self, linkData=True):
-        """ Create folder in workspace to run simulation. Copy config and link to data. """
-        if linkData:
-            self._linkData()
-
-        # create .sim file to indicate simulation folder (for GUI)
-        open(os.path.join(self.getOutputDirectory(), ".sim"), 'a').close()
-
-        os.makedirs(self.getOutputDirectory(), exist_ok=True)
-        diseasePath = os.path.join(self.getOutputDirectory(), "data", self.disease.label + ".xml")
-        self.disease.toFile(diseasePath)
-
-        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        # only store last part of label (previous dirs already made)
-        oldLabel = self.label
-        self.label = os.path.basename(self.label)
-        self.toFile(configPath)
-        self.label = oldLabel
-
-    def build(self, runParallel=True, trackIndexCase=False, output=True):
-        self.simulator = getSimulator(self, self.getWorkingDirectory(), runParallel, trackIndexCase, output)
-        if self.simulator:
-            self.simulator.registerObserver(self.observer)
-'''

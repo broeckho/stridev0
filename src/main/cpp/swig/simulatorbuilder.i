@@ -11,7 +11,7 @@ namespace stride{
 }
 
 // So we can pass python strings to arguments that require std::string.
-//%include std_string.i
+%include std_string.i
 //%include <std_shared_ptr.i>
 
 // We want to generate code for these modules classes.
