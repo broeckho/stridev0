@@ -93,20 +93,33 @@ class Simulation():
         """
         pass
 
-    def _build(self):
+    def _build(self, *args, **kwargs):
         pass
 
-    def run(self):
+    def run(self, *args, **kwargs):
         """ Run current simulation. """
-        pass
+        # Check if setup is done and if necessary continue previous simulaitons.
+        self._setup()
 
-    def runForks(self):
+        self._build(*args, *kwargs)
+        if self.simulator:
+            try:
+                numDays = self.getRunConfigParam("num_days")
+                self.simulator.Run(numDays)
+            except:
+                print("Exception when running simulator. Closing down.")
+                exit(1)
+
+    def runForks(self, *args, **kwargs):
         """ Run all forks but not the root simulation. """
-        pass
+        self._setup()
+        for fork in self.forks:
+            fork.run(*args, **kwargs)
 
-    def runAll(self):
+    def runAll(self, *args, **kwargs):
         """ Run root simulation and forks. """
-        pass
+        self.run(*args, **kwargs)
+        self.runForks(*args, **kwargs)
 
     def __getstate__(self):
         return dict()
@@ -118,7 +131,6 @@ class Simulation():
 from .Fork import Fork
 
 #TODO PUQ integration
-
 
 '''
     def _linkData(self):
@@ -158,35 +170,4 @@ from .Fork import Fork
         self.simulator = getSimulator(self, self.getWorkingDirectory(), runParallel, trackIndexCase, output)
         if self.simulator:
             self.simulator.registerObserver(self.observer)
-
-    def run(self, *args, numDays=0, **kwargs):
-        """ Run current simulation.
-
-        Check if setup is done and if necessary continue previous simulations. """
-        self.setup()
-
-        if len(self.getUQProperties()) > 0:
-            print("Found PUQ parameters, running PUQ")
-            self.runPUQ(*args, numDays=numDays, **kwargs)
-            return
-
-        self.build(*args, **kwargs)
-
-        if self.simulator:
-            try:
-                self.simulator.Run(numDays)
-            except:
-                print("Exception when running simulator. Closing down.")
-                exit(0)
-
-    def runForks(self, *args, **kwargs):
-        """ Run all forks, but not the root simulation. """
-        self.setup()
-        for fork in self.forks:
-            fork.run(*args, **kwargs)
-
-    def runAll(self, *args, **kwargs):
-        """ Run simulation and forks. """
-        self.run(*args, **kwargs)
-        self.runForks(*args, **kwargs)
 '''
