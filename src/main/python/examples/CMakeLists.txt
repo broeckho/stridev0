@@ -24,6 +24,7 @@ SET(PYTHON_EXAMPLES
 	runBatch.py
 	runCallbackInterval.py
 	runCallbackTimestep.py
+	runDefault.py
 	runFancy.py
 	runManualConfig.py
 	runPUQ_LHS.py
