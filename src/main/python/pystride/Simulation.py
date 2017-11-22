@@ -73,4 +73,6 @@ class Simulation():
         pass
 
 
+from .Fork import Fork
+
 #TODO PUQ integration
