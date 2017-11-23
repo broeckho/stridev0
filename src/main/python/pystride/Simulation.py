@@ -117,7 +117,7 @@ class Simulation():
         ]
         for src in files:
             dst = os.path.join(dataDir, os.path.basename(src))
-            if os.path.isfile(src) and not os.path.isfile(dst):
+            if (os.path.isfile(src)) and (not os.path.isfile(dst)):
                 os.symlink(src, dst)
 
     def _setup(self, linkData=True):
@@ -128,18 +128,14 @@ class Simulation():
         if linkData:
             self._linkData()
 
-    '''
-            os.makedirs(self.getOutputDirectory(), exist_ok=True)
-            diseasePath = os.path.join(self.getOutputDirectory(), "data", self.disease.label + ".xml")
-            self.disease.toFile(diseasePath)
+        os.makedirs(self.getOutputDirectory(), exist_ok=True)
 
-            configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-            # only store last part of label (previous dirs already made)
-            oldLabel = self.label
-            self.label = os.path.basename(self.label)
-            self.toFile(configPath)
-            self.label = oldLabel
-    '''
+        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
+        # only store last part of label (previous dirs already made)
+        oldLabel = self.label
+        self.label = os.path.basename(self.label)
+        ET.ElementTree(self._runConfig).write(configPath)
+        self.label = oldLabel
 
     def _build(self, *args, **kwargs):
         pass
