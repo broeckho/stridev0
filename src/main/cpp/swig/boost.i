@@ -4,8 +4,10 @@
 %{
 %}
 
-
 namespace boost {
+    namespace filesystem {
+
+    }
     namespace property_tree{
         class ptree;
     }

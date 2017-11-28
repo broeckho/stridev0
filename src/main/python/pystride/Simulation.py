@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 import pystride
 
-from pystride.SimulationUtils import SimulationUtils
+from pystride.stride.stride import SimUtils
 
 class Simulation():
     def __init__(self):
@@ -132,48 +132,31 @@ class Simulation():
 
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
         # only store last part of label (previous dirs already made)
-        oldLabel = self.label
+        oldLabel = self.label #TODO correct use of label?
         self.label = os.path.basename(self.label)
         ET.ElementTree(self._runConfig).write(configPath)
         self.label = oldLabel
 
-    def _build(self, *args, **kwargs):
-        pass
-
-    '''
-        def build(self, runParallel=True, trackIndexCase=False, output=True):
-            self.simulator = getSimulator(self, self.getWorkingDirectory(), runParallel, trackIndexCase, output)
-            if self.simulator:
-                self.simulator.registerObserver(self.observer)
-    '''
+    def _build(self, numThreads=1, trackIndexCase=False):
+        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
+        mysim = SimUtils()
+        mysim.Setup(configPath, trackIndexCase)
+        #self.simulator = SimulationUtils.getSimulator(configPath, numThreads, trackIndexCase)
+        #TODO register observer
 
     def run(self, *args, **kwargs):
         """ Run current simulation. """
         # Check if setup is done and if necessary continue previous simulations.
         self._setup()
 
-    '''
+        self._build(*args, **kwargs)
 
-        def run(self, *args, numDays=0, **kwargs):
-            """ Run current simulation.
-
-            Check if setup is done and if necessary continue previous simulations. """
-            self.setup()
-
-            if len(self.getUQProperties()) > 0:
-                print("Found PUQ parameters, running PUQ")
-                self.runPUQ(*args, numDays=numDays, **kwargs)
-                return
-
-            self.build(*args, **kwargs)
-
-            if self.simulator:
-                try:
-                    self.simulator.Run(numDays)
-                except:
-                    print("Exception when running simulator. Closing down.")
-                    exit(0)
-    '''
+        #if self.simulator:
+        #    try:
+        #        self.simulator.Run(50)
+        #    except:
+        #        print("Exception when running simulator. Closing down.")
+        #        exit(0)
 
     def runForks(self, *args, **kwargs):
         """ Run all forks but not the root simulation. """

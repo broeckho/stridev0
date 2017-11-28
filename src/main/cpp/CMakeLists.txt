@@ -66,6 +66,7 @@ set(SWIG_IFACE
 	swig/boost.i
 	swig/simulator.i
 	swig/simulatorbuilder.i
+	swig/simutils.i
 	swig/stride.i
 )
 

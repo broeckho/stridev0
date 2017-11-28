@@ -16,3 +16,4 @@
 
 %include "./simulator.i"
 %include "./simulatorbuilder.i"
+%include "./simutils.i"
