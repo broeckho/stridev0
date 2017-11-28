@@ -7,6 +7,7 @@
 
 // declare this
 namespace stride{
+  namespace output{}
   namespace util{}
 }
 
