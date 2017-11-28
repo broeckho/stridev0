@@ -137,26 +137,24 @@ class Simulation():
         ET.ElementTree(self._runConfig).write(configPath)
         self.label = oldLabel
 
-    def _build(self, numThreads=1, trackIndexCase=False):
+    def _build(self, trackIndexCase=False):
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        mysim = SimUtils()
-        mysim.Setup(configPath, trackIndexCase)
-        #self.simulator = SimulationUtils.getSimulator(configPath, numThreads, trackIndexCase)
+        self.simulator = SimUtils()
+        self.simulator.Setup(configPath, trackIndexCase)
         #TODO register observer
 
     def run(self, *args, **kwargs):
         """ Run current simulation. """
         # Check if setup is done and if necessary continue previous simulations.
         self._setup()
-
         self._build(*args, **kwargs)
 
-        #if self.simulator:
-        #    try:
-        #        self.simulator.Run(50)
-        #    except:
-        #        print("Exception when running simulator. Closing down.")
-        #        exit(0)
+        if self.simulator:
+            try:
+                self.simulator.Run()
+            except:
+                print("Exception when running simulator. Closing down.")
+                exit(1)
 
     def runForks(self, *args, **kwargs):
         """ Run all forks but not the root simulation. """

@@ -19,11 +19,18 @@
  * @file Header file for SimUtils class.
  */
 
+#include "behaviour/behaviour_policies/NoBehaviour.h"
+#include "behaviour/belief_policies/NoBelief.h"
+#include "behaviour/information_policies/NoGlobalInformation.h"
+#include "behaviour/information_policies/NoLocalInformation.h"
+#include "sim/SimulatorBuilder.h"
+#include "util/ConfigInfo.h"
 #include "util/TimeStamp.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <iostream>
+#include <memory>
 #include <omp.h>
 #include <spdlog/spdlog.h>
 
@@ -77,20 +84,17 @@ public:
 		// -----------------------------------------------------------------------------------------
 		// OpenMP.
 		// -----------------------------------------------------------------------------------------
-		unsigned int num_threads;
 
 #pragma omp parallel
 		{
-			num_threads = omp_get_num_threads();
+			m_num_threads = omp_get_num_threads();
 		}
 
-		/*
 		if (ConfigInfo::HaveOpenMP()) {
-			cout << "Using OpenMP threads:  " << num_threads << endl;
+			cout << "Using OpenMP threads:  " << m_num_threads << endl;
 		} else {
 			cout << "Not using OpenMP threads." << endl;
 		}
-		 */
 
 		// -----------------------------------------------------------------------------------------
 		// Set output path prefix.
@@ -111,6 +115,7 @@ public:
 		// -----------------------------------------------------------------------------------------
 		// Track index case setting.
 		// -----------------------------------------------------------------------------------------
+		m_track_index_case = track_index_case;
 		cout << "Setting for track_index_case:  " << boolalpha << track_index_case << endl;
 
 		// -----------------------------------------------------------------------------------------
@@ -125,6 +130,18 @@ public:
 		file_logger->set_pattern("%v"); // Remove meta data from log => time-stamp of logging
 	}
 
+	/// Create the simulator
+	template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
+	shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> > CreateSimulator()
+	{
+		cout << "Building the simulator. " << endl;
+		auto sim = SimulatorBuilder<global_information_policy, local_information_policy, belief_policy, behaviour_policy>
+			::Build(m_pt_config, m_num_threads, m_track_index_case);
+		cout << "Done building the simulator. " << endl;
+
+		return sim;
+	}
+
 	/// Build & run the simulator
 	void Run() {
 		// -----------------------------------------------------------------------------------------
@@ -135,15 +152,36 @@ public:
 		string local_information_policy = m_pt_config.get<string>("run.local_information_policy", "NoLocalInformation");
 		string global_information_policy = m_pt_config.get<string>("run.global_information_policy", "NoGlobalInformation");
 
+		// Stopwatch<> total_clock("total_clock", true);
+
+		if (global_information_policy == "NoGlobalInformation") {
+			using GlobalInformationPolicy = NoGlobalInformation;
+
+			if (local_information_policy == "NoLocalInformation") {
+				using LocalInformationPolicy = NoLocalInformation;
+
+				if (belief_policy == "NoBelief") {
+					using BeliefPolicy = NoBelief;
+
+					if (behaviour_policy == "NoBehaviour") {
+						using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+
+						// Create the simulator
+						CreateSimulator<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>();
+					} else {
+						throw std::runtime_error(std::string(__func__) + "No valid behaviour policy!");
+					}
+				} else {
+					throw std::runtime_error(std::string(__func__) + "No valid belief policy!");
+				}
+			} else {
+				throw std::runtime_error(std::string(__func__) + "No valid local information policy!");
+			}
+		} else {
+			throw std::runtime_error(std::string(__func__) + "No valid global information policy!");
+		}
+
 		/*
-	Stopwatch<> total_clock("total_clock", true);
-
-	if (global_information_policy == "NoGlobalInformation") {
-		using GlobalInformationPolicy = NoGlobalInformation;
-
-		if (local_information_policy == "NoLocalInformation") {
-			using LocalInformationPolicy = NoLocalInformation;
-
 			if (belief_policy == "NoBelief") {
 				using BeliefPolicy = NoBelief;
 
@@ -283,8 +321,6 @@ public:
 			throw std::runtime_error(std::string(__func__) + "No valid local information policy!");
 		}
 
-	} else {
-		throw std::runtime_error(std::string(__func__) + "No valid global information policy!");
 	}
 
 }
@@ -300,6 +336,8 @@ public:
 
 private:
 	ptree m_pt_config;
+	unsigned int m_num_threads;
+	bool m_track_index_case;
 
 };
 
@@ -316,7 +354,6 @@ private:
 #include "sim/SimulatorBuilder.h"
 #include "util/Stopwatch.h"
 
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -324,22 +361,6 @@ using namespace output;
 using namespace std::chrono;
 using namespace util;
 
-
- * Create the simulator.
- *
-template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> > create_simulator(
-		const boost::property_tree::ptree& pt_config, unsigned int num_threads, bool track_index_case = false)
-{
-
-	cout << "Building the simulator. " << endl;
-
-	auto sim = SimulatorBuilder<global_information_policy, local_information_policy, belief_policy, behaviour_policy>::Build(pt_config, num_threads, track_index_case);
-
-	cout << "Done building the simulator. " << endl;
-
-	return sim;
-}
 
 
  * Generate output files (at end of simulation).
@@ -371,20 +392,9 @@ void generate_output_files(const string output_prefix, const vector<unsigned int
 	}
 }
 
-} // end_of_namespace
-
-#include "behaviour/behaviour_policies/NoBehaviour.h"
-#include "behaviour/behaviour_policies/Vaccination.h"
-#include "behaviour/belief_policies/NoBelief.h"
-#include "behaviour/belief_policies/Threshold.h"
-#include "behaviour/information_policies/LocalDiscussion.h"
-#include "behaviour/information_policies/NoGlobalInformation.h"
-#include "behaviour/information_policies/NoLocalInformation.h"
-#include "util/ConfigInfo.h"
 #include "util/InstallDirs.h"
 
 #include <boost/property_tree/xml_parser.hpp>
-
 
 namespace stride {
 
