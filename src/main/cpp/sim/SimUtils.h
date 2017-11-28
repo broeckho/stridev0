@@ -109,8 +109,7 @@ public:
 		// -----------------------------------------------------------------------------------------
 		m_output_prefix = m_pt_config.get<string>("run.output_prefix", "");
 		if (m_output_prefix.length() == 0) {
-			//output_prefix = TimeStamp().ToTag();
-			m_output_prefix = "default";
+			output_prefix = TimeStamp().ToTag();
 		}
 		cout << "Project output tag:  " << m_output_prefix << endl << endl;
 

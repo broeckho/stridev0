@@ -2,6 +2,8 @@ import os
 import argparse
 import xml.etree.ElementTree as ET
 
+from time import gmtime, strftime
+
 import pystride
 
 from pystride.stride.stride import SimUtils
@@ -13,7 +15,7 @@ class Simulation():
         #TODO observer
         self._runConfig = None              # ElementTree with run config
         self._diseaseConfig = None          # ElementTree with disease config
-        self.label = "default"
+        self.label = strftime("%Y%m%d%H%M%S", gmtime())
 
     def loadRunConfig(self, filename: str):
         runConfigFile = os.path.join(self.getWorkingDirectory(), filename)
@@ -132,10 +134,8 @@ class Simulation():
 
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
         # only store last part of label (previous dirs already made)
-        oldLabel = self.label #TODO correct use of label?
-        self.label = os.path.basename(self.label)
+        self._runConfig.find('output_prefix').text = os.path.basename(self.label) + '/'
         ET.ElementTree(self._runConfig).write(configPath)
-        self.label = oldLabel
 
     def _build(self, trackIndexCase=False):
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
