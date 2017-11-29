@@ -61,19 +61,6 @@ public:
 		}
 		read_xml(file_path.string(), pt_config);
 
-		auto output_prefix = pt_config.get<string>("run.output_prefix", "");
-
-		// -----------------------------------------------------------------------------------------
-		// Create logger
-		// Transmissions:     [TRANSMISSION] <infecterID> <infectedID> <clusterID> <day>
-		// General contacts:  [CNT] <person1ID> <person1AGE> <person2AGE>  <at_home> <at_work> <at_school> <at_other>
-		// -----------------------------------------------------------------------------------------
-		spdlog::set_async_mode(1048576);
-		auto file_logger =
-		    spdlog::rotating_logger_mt("contact_logger", output_prefix + "_logfile", std::numeric_limits<size_t>::max(),
-					       std::numeric_limits<size_t>::max());
-		file_logger->set_pattern("%v"); // Remove meta data from log => time-stamp of logging
-
 		// Done.
 		return Build(pt_config, num_threads, track_index_case);
 	}

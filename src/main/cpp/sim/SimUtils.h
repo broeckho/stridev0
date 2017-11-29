@@ -40,6 +40,12 @@
 #include <spdlog/spdlog.h>
 #include <vector>
 
+/*
+#include <string>
+#include "util/InstallDirs.h"
+#include <boost/property_tree/xml_parser.hpp>
+ */
+
 namespace stride {
 
 using namespace boost::filesystem;
@@ -109,7 +115,7 @@ public:
 		// -----------------------------------------------------------------------------------------
 		m_output_prefix = m_pt_config.get<string>("run.output_prefix", "");
 		if (m_output_prefix.length() == 0) {
-			output_prefix = TimeStamp().ToTag();
+			m_output_prefix = TimeStamp().ToTag();
 		}
 		cout << "Project output tag:  " << m_output_prefix << endl << endl;
 
@@ -235,6 +241,9 @@ public:
 			cout << endl;
 		}
 
+		// Clean up.
+		spdlog::drop_all();
+
 		// -----------------------------------------------------------------------------------------
 		// Generate output files
 		// -----------------------------------------------------------------------------------------
@@ -294,11 +303,3 @@ private:
 } /* end of namespace stride */
 
 #endif // end of include-guard
-
-/*
-#include <string>
-
-#include "util/InstallDirs.h"
-
-#include <boost/property_tree/xml_parser.hpp>
- */

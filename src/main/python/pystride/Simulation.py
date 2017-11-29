@@ -9,13 +9,16 @@ import pystride
 from pystride.stride.stride import SimUtils
 
 class Simulation():
-    def __init__(self):
+    def __init__(self, original=None):
         self.forks = list()
         self.simulator = None
         #TODO observer
         self._runConfig = None              # ElementTree with run config
         self._diseaseConfig = None          # ElementTree with disease config
         self.label = strftime("%Y%m%d%H%M%S", gmtime())
+        if original:
+            self._runConfig = original._runConfig
+            self._diseaseConfig = original._diseaseConfig
 
     def loadRunConfig(self, filename: str):
         runConfigFile = os.path.join(self.getWorkingDirectory(), filename)
@@ -48,7 +51,7 @@ class Simulation():
         pass
 
     def setRunConfigParam(self, name: str, value):
-        if _runConfig:
+        if self._runConfig:
             if self._runConfig.find(name):
                 self._runConfig.find(name).text = str(value)
             else:
