@@ -65,6 +65,10 @@ class Simulation():
         else:
             self._runConfig = ET.Element('run')
             ET.SubElement(self._runConfig, name).text = str(value)
+        if name == "disease_config_file":
+            self._updateDiseaseConfig()
+        if name == "output_prefix":
+            self.label = str(value)
 
     def setDiseaseConfigParam(self, name: str, value):
         if self._diseaseConfig:
