@@ -10,7 +10,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -29,8 +29,10 @@ array<ContactProfile, NumOfClusterTypes()> Cluster<person_type>::g_profiles;
 
 template <typename person_type>
 Cluster<person_type>::Cluster(std::size_t cluster_id, ClusterType cluster_type)
-	: m_cluster_id(cluster_id), m_cluster_type(cluster_type), m_index_immune(0),
-	  m_profile(g_profiles.at(ToSizeType(m_cluster_type))) {}
+    : m_cluster_id(cluster_id), m_cluster_type(cluster_type), m_index_immune(0),
+      m_profile(g_profiles.at(ToSizeType(m_cluster_type)))
+{
+}
 
 template <typename person_type>
 void Cluster<person_type>::AddContactProfile(ClusterType cluster_type, const ContactProfile& profile)
@@ -93,9 +95,9 @@ void Cluster<person_type>::UpdateMemberPresence()
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief> >;
-template class Cluster<Person<Vaccination<Threshold<true, false> >, Threshold<true, false> > >;
-template class Cluster<Person<Vaccination<Threshold<false, true> >, Threshold<false, true> > >;
-template class Cluster<Person<Vaccination<Threshold<true, true> >, Threshold<true, true> > >;
+template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief>>;
+template class Cluster<Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>>;
+template class Cluster<Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>>;
+template class Cluster<Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>>;
 
 } // end_of_namespace

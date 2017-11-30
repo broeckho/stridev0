@@ -1,5 +1,4 @@
-#ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLD_H_
-#define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLD_H_
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -16,7 +15,6 @@
  */
 
 #include "behaviour/belief_data/ThresholdData.h"
-//#include "core/Health.h"
 
 namespace stride {
 
@@ -26,7 +24,8 @@ class Threshold
 public:
 	using Data = ThresholdData;
 
-	static void Initialize(Data& belief_data, double risk_averseness) {
+	static void Initialize(Data& belief_data, double risk_averseness)
+	{
 		if (threshold_infected) {
 			belief_data.SetThresholdInfected(1 - risk_averseness);
 		}
@@ -39,12 +38,13 @@ public:
 
 	template <typename BehaviourPolicy>
 	static void Update(Data& belief_data,
-			const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >* p)
+			   const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>* p)
 	{
-		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted> >(p);
+		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>(p);
 	}
 
-	static bool HasAdopted(const Data& belief_data) {
+	static bool HasAdopted(const Data& belief_data)
+	{
 		if (threshold_infected) {
 			if (belief_data.GetFractionInfected() > belief_data.GetThresholdInfected()) {
 				return true;
@@ -60,6 +60,4 @@ public:
 	}
 };
 
-} /* end of namespace stride */
-
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLD_H_ */
+} // end of namespace

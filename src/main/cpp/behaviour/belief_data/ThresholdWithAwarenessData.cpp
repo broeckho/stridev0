@@ -1,4 +1,4 @@
-/*#include "ThresholdWithAwarenessData.h"
+#include "ThresholdWithAwarenessData.h"
 #include "pop/Person.h"
 
 namespace stride {
@@ -32,4 +32,4 @@ template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWithAware
 						  ThresholdWithAwareness<true, true>>(
     const Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>* p);
 
-} /* namespace stride */
+} // end of namespace stride

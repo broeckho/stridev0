@@ -10,7 +10,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2015, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -34,7 +34,6 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <omp.h>
 #include <spdlog/spdlog.h>
-
 
 namespace stride {
 
@@ -86,7 +85,7 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	// -----------------------------------------------------------------------------------------
 	unsigned int num_threads;
 
-	#pragma omp parallel
+#pragma omp parallel
 	{
 		num_threads = omp_get_num_threads();
 	}
@@ -135,7 +134,8 @@ void run_stride(bool track_index_case, const string& config_file_name)
 	string belief_policy = pt_config.get<string>("run.belief_policy", "NoBelief");
 	string behaviour_policy = pt_config.get<string>("run.behaviour_policy", "NoBehaviour");
 	string local_information_policy = pt_config.get<string>("run.local_information_policy", "NoLocalInformation");
-	string global_information_policy = pt_config.get<string>("run.global_information_policy", "NoGlobalInformation");
+	string global_information_policy =
+	    pt_config.get<string>("run.global_information_policy", "NoGlobalInformation");
 
 	Stopwatch<> total_clock("total_clock", true);
 
@@ -154,8 +154,9 @@ void run_stride(bool track_index_case, const string& config_file_name)
 					// ------------------------------------------------------------------------------
 					// Create the simulator.
 					//------------------------------------------------------------------------------
-					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>
-						(pt_config, num_threads, track_index_case);
+					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy,
+								    BeliefPolicy, BehaviourPolicy>(
+					    pt_config, num_threads, track_index_case);
 
 					// -----------------------------------------------------------------------------------------
 					// Check the simulator.
@@ -165,7 +166,8 @@ void run_stride(bool track_index_case, const string& config_file_name)
 						cout << "Done checking the simulator. " << endl << endl;
 					} else {
 						file_logger->info("[ERROR] Invalid configuration");
-						cout << "Invalid configuration => terminate without output" << endl << endl;
+						cout << "Invalid configuration => terminate without output" << endl
+						     << endl;
 					}
 
 					// -----------------------------------------------------------------------------------------
@@ -173,7 +175,8 @@ void run_stride(bool track_index_case, const string& config_file_name)
 					// -----------------------------------------------------------------------------------------
 					Stopwatch<> run_clock("run_clock");
 					if (simulator_is_operational) {
-						const unsigned int num_days = pt_config.get<unsigned int>("run.num_days");
+						const unsigned int num_days =
+						    pt_config.get<unsigned int>("run.num_days");
 						vector<unsigned int> cases(num_days);
 						vector<unsigned int> adopted(num_days);
 						for (unsigned int i = 0; i < num_days; i++) {
@@ -184,18 +187,22 @@ void run_stride(bool track_index_case, const string& config_file_name)
 							cout << "     Done, infected count: ";
 
 							cases[i] = sim->GetPopulation()->GetInfectedCount();
-							adopted[i] = sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
+							adopted[i] =
+							    sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
 
-							cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i] << endl;
+							cout << setw(7) << cases[i]
+							     << "     Adopters count: " << setw(7) << adopted[i]
+							     << endl;
 						}
 
 						// -----------------------------------------------------------------------------------------
 						// Generate output files
 						// -----------------------------------------------------------------------------------------
-						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>(
-								output_prefix, cases, adopted, pt_config, sim,
-								duration_cast<milliseconds>(run_clock.Get()).count(),
-								duration_cast<milliseconds>(total_clock.Get()).count());
+						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy,
+								      BeliefPolicy, BehaviourPolicy>(
+						    output_prefix, cases, adopted, pt_config, sim,
+						    duration_cast<milliseconds>(run_clock.Get()).count(),
+						    duration_cast<milliseconds>(total_clock.Get()).count());
 					}
 
 					// -----------------------------------------------------------------------------------------
@@ -203,7 +210,9 @@ void run_stride(bool track_index_case, const string& config_file_name)
 					// -----------------------------------------------------------------------------------------
 					cout << endl << endl;
 
-					cout << "  run_time: " << run_clock.ToString() << "  -- total time: " << total_clock.ToString() << endl << endl;
+					cout << "  run_time: " << run_clock.ToString()
+					     << "  -- total time: " << total_clock.ToString() << endl
+					     << endl;
 					cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
 
 				} else {
@@ -218,13 +227,15 @@ void run_stride(bool track_index_case, const string& config_file_name)
 
 				if (behaviour_policy == "NoBehaviour") {
 					using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
-					using LocalInformationPolicy = LocalDiscussion<Person<BehaviourPolicy, BeliefPolicy> >;
+					using LocalInformationPolicy =
+					    LocalDiscussion<Person<BehaviourPolicy, BeliefPolicy>>;
 
 					// ------------------------------------------------------------------------------
 					// Create the simulator.
 					//------------------------------------------------------------------------------
-					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>
-						(pt_config, num_threads, track_index_case);
+					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy,
+								    BeliefPolicy, BehaviourPolicy>(
+					    pt_config, num_threads, track_index_case);
 
 					// -----------------------------------------------------------------------------------------
 					// Check the simulator.
@@ -234,7 +245,8 @@ void run_stride(bool track_index_case, const string& config_file_name)
 						cout << "Done checking the simulator. " << endl << endl;
 					} else {
 						file_logger->info("[ERROR] Invalid configuration");
-						cout << "Invalid configuration => terminate without output" << endl << endl;
+						cout << "Invalid configuration => terminate without output" << endl
+						     << endl;
 					}
 
 					// -----------------------------------------------------------------------------------------
@@ -242,7 +254,8 @@ void run_stride(bool track_index_case, const string& config_file_name)
 					// -----------------------------------------------------------------------------------------
 					Stopwatch<> run_clock("run_clock");
 					if (simulator_is_operational) {
-						const unsigned int num_days = pt_config.get<unsigned int>("run.num_days");
+						const unsigned int num_days =
+						    pt_config.get<unsigned int>("run.num_days");
 						vector<unsigned int> cases(num_days);
 						vector<unsigned int> adopted(num_days);
 						for (unsigned int i = 0; i < num_days; i++) {
@@ -253,18 +266,22 @@ void run_stride(bool track_index_case, const string& config_file_name)
 							cout << "     Done, infected count: ";
 
 							cases[i] = sim->GetPopulation()->GetInfectedCount();
-							adopted[i] = sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
+							adopted[i] =
+							    sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
 
-							cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i] << endl;
+							cout << setw(7) << cases[i]
+							     << "     Adopters count: " << setw(7) << adopted[i]
+							     << endl;
 						}
 
 						// -----------------------------------------------------------------------------------------
 						// Generate output files
 						// -----------------------------------------------------------------------------------------
-						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>(
-								output_prefix, cases, adopted, pt_config, sim,
-								duration_cast<milliseconds>(run_clock.Get()).count(),
-								duration_cast<milliseconds>(total_clock.Get()).count());
+						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy,
+								      BeliefPolicy, BehaviourPolicy>(
+						    output_prefix, cases, adopted, pt_config, sim,
+						    duration_cast<milliseconds>(run_clock.Get()).count(),
+						    duration_cast<milliseconds>(total_clock.Get()).count());
 					}
 
 					// -----------------------------------------------------------------------------------------
@@ -272,7 +289,9 @@ void run_stride(bool track_index_case, const string& config_file_name)
 					// -----------------------------------------------------------------------------------------
 					cout << endl << endl;
 
-					cout << "  run_time: " << run_clock.ToString() << "  -- total time: " << total_clock.ToString() << endl << endl;
+					cout << "  run_time: " << run_clock.ToString()
+					     << "  -- total time: " << total_clock.ToString() << endl
+					     << endl;
 					cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
 				} else {
 					throw std::runtime_error(std::string(__func__) + "No valid behaviour policy!");
@@ -283,12 +302,9 @@ void run_stride(bool track_index_case, const string& config_file_name)
 		} else {
 			throw std::runtime_error(std::string(__func__) + "No valid local information policy!");
 		}
-
 	} else {
 		throw std::runtime_error(std::string(__func__) + "No valid global information policy!");
 	}
-
 }
-
 
 } // end_of_namespace

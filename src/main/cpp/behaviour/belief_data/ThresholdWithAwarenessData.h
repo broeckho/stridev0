@@ -1,5 +1,4 @@
-#ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDWITHAWARENESSDATA_H_
-#define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDWITHAWARENESSDATA_H_
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,10 +11,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
-/*#include "behaviour/behaviour_policies/Vaccination.h"
+#include "behaviour/behaviour_policies/Vaccination.h"
 
 namespace stride {
 
@@ -88,6 +87,4 @@ extern template void ThresholdWithAwarenessData::Contact<Vaccination<ThresholdWi
 							 ThresholdWithAwareness<true, true>>(
     const Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>* p);
 
-} /* namespace stride */
-
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDWITHAWARENESSDATA_H_ */
+} // end of namespace

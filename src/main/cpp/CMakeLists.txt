@@ -21,7 +21,7 @@
 set(LIB_SRC
 #---
 	behaviour/belief_data/ThresholdData.cpp
-	behaviour/belief_data/ThresholdWithAwarenessData.cpp
+#	behaviour/belief_data/ThresholdWithAwarenessData.cpp
 #---
     calendar/Calendar.cpp
 #---

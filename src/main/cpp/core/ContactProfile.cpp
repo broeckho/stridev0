@@ -10,7 +10,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2015, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -39,4 +39,4 @@ ContactProfile::ContactProfile(ClusterType cluster_type, const ptree& pt_contact
 	}
 }
 
-} // namespace
+} // end of namespace

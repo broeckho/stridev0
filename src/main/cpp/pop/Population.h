@@ -1,5 +1,4 @@
-#ifndef POPULATION_H_INCLUDED
-#define POPULATION_H_INCLUDED
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,7 +11,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -30,7 +29,7 @@ namespace stride {
  * Container for persons in population.
  */
 template <typename person_type>
-class Population: public std::vector<person_type>
+class Population : public std::vector<person_type>
 {
 public:
 	/// Get the cumulative number of cases.
@@ -60,9 +59,6 @@ public:
 
 		return total;
 	}
-
 };
 
 } // end_of_namespace
-
-#endif // end of include guard

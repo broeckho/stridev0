@@ -1,5 +1,4 @@
-#ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_HBMDATA_H_
-#define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_HBMDATA_H_
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,9 +11,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
-/*namespace stride {
+namespace stride {
 
 enum class VariableState
 {
@@ -24,7 +23,6 @@ enum class VariableState
 
 class HBMData
 {
-
 public:
 	HBMData()
 	    : m_perceived_severity(0), m_perceived_susceptibility(0), m_perceived_benefit(1), m_perceived_barriers(1)
@@ -67,6 +65,5 @@ private:
 	VariableState m_perceived_benefit;
 	VariableState m_perceived_barriers;
 };
-}
-*/
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_HBMDATA_H_ */
+
+} // end of namespace

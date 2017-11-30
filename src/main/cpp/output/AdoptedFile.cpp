@@ -10,7 +10,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 #include "AdoptedFile.h"
@@ -34,5 +34,5 @@ void AdoptedFile::Print(const vector<unsigned int>& adopters)
 
 void AdoptedFile::Initialize(const string& file) { m_fstream.open((file + "_adopted.csv").c_str()); }
 
-} /* namespace output */
-} /* namespace stride */
+} // end of namespace
+} // end of namespace

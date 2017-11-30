@@ -1,5 +1,4 @@
-#ifndef PERSON_H_INCLUDED
-#define PERSON_H_INCLUDED
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,7 +11,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -39,15 +38,15 @@ class Person
 public:
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id, unsigned int work_id,
-			unsigned int primary_community_id, unsigned int secondary_community_id,
-			unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
-			unsigned int time_symptomatic, double risk_averseness = 0)
-		: m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
-		  m_work_id(work_id), m_primary_community_id(primary_community_id),
-		  m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
-		  m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
-		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-		  m_is_participant(false), m_at_home_due_to_illness(false)
+	       unsigned int primary_community_id, unsigned int secondary_community_id,
+	       unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
+	       unsigned int time_symptomatic, double risk_averseness = 0)
+	    : m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
+	      m_work_id(work_id), m_primary_community_id(primary_community_id),
+	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
+	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
+	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
+	      m_is_participant(false), m_at_home_due_to_illness(false)
 	{
 		BeliefPolicy::Initialize(m_belief_data, risk_averseness);
 	}
@@ -124,8 +123,7 @@ extern template class Person<Vaccination<Threshold<true, true>>, Threshold<true,
 /*
 extern template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
 extern template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
-extern template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;*/
+extern template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;
+*/
 
 } // end_of_namespace
-
-#endif // end of include guard

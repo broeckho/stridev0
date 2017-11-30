@@ -1,5 +1,4 @@
-#ifndef POPULATION_BUILDER_H_INCLUDED
-#define POPULATION_BUILDER_H_INCLUDED
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,30 +11,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
  * @file
  * Initialize populations.
- */
-
-/*
- *
- * #include "core/Cluster.h"
-#include "core/Health.h"
-#include "pop/Person.h"
-#include "util/PtreeUtils.h"
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-
-#include <fstream>
-#include <iostream>
-
-using namespace boost::filesystem;
-using namespace boost::property_tree;
  */
 
 #include "core/ClusterType.h"
@@ -66,20 +47,22 @@ public:
 	/**
 	 * Initializes a Population: add persons, set immunity, seed infection.
 	 *
-	 * @param pt_config			Property_tree with general configuration settings.
-	 * @param pt_disease		Property_tree with disease configuration settings.
-	 * @return					Pointer to the initialized population.
+	 * @param pt_config     Property_tree with general configuration settings.
+	 * @param pt_disease    Property_tree with disease configuration settings.
+	 * @return              Pointer to the initialized population.
 	 */
-	static std::shared_ptr<Population<person_type> > Build(const boost::property_tree::ptree& pt_config,
-			const boost::property_tree::ptree& pt_disease, util::Random& rng) {
+	static std::shared_ptr<Population<person_type>> Build(const boost::property_tree::ptree& pt_config,
+							      const boost::property_tree::ptree& pt_disease,
+							      util::Random& rng)
+	{
 		// ------------------------------------------------
 		// Setup.
 		// ------------------------------------------------
-		const auto pop = make_shared<Population<person_type> >();
+		const auto pop = make_shared<Population<person_type>>();
 		Population<person_type>& population = *pop;
 
 		const double seeding_rate = pt_config.get<double>("run.seeding_rate");
-		//const double immunity_rate = pt_config.get<double>("run.immunity_rate");
+		// const double immunity_rate = pt_config.get<double>("run.immunity_rate");
 		const string disease_config_file = pt_config.get<string>("run.disease_config_file");
 
 		// ------------------------------------------------
@@ -102,7 +85,8 @@ public:
 
 		const auto file_path = InstallDirs::GetDataDir() /= file_name;
 		if (!is_regular_file(file_path)) {
-			throw runtime_error(string(__func__) + "> Population file " + file_path.string() + " not present.");
+			throw runtime_error(string(__func__) + "> Population file " + file_path.string() +
+					    " not present.");
 		}
 
 		boost::filesystem::ifstream pop_file;
@@ -111,10 +95,13 @@ public:
 			throw runtime_error(string(__func__) + "> Error opening population file " + file_path.string());
 		}
 
-		const auto distrib_start_infectiousness = PtreeUtils::GetDistribution(pt_disease, "disease.start_infectiousness");
-		const auto distrib_start_symptomatic = PtreeUtils::GetDistribution(pt_disease, "disease.start_symptomatic");
+		const auto distrib_start_infectiousness =
+		    PtreeUtils::GetDistribution(pt_disease, "disease.start_infectiousness");
+		const auto distrib_start_symptomatic =
+		    PtreeUtils::GetDistribution(pt_disease, "disease.start_symptomatic");
 		const auto distrib_time_infectious = PtreeUtils::GetDistribution(pt_disease, "disease.time_infectious");
-		const auto distrib_time_symptomatic = PtreeUtils::GetDistribution(pt_disease, "disease.time_symptomatic");
+		const auto distrib_time_symptomatic =
+		    PtreeUtils::GetDistribution(pt_disease, "disease.time_symptomatic");
 
 		string line;
 		getline(pop_file, line); // step over file header
@@ -141,9 +128,10 @@ public:
 			unsigned int primary_community_id = StringUtils::FromString<unsigned int>(values[4]);
 			unsigned int secondary_community_id = StringUtils::FromString<unsigned int>(values[5]);
 
-			population.emplace_back(person_type(person_id, age, household_id, school_id, work_id, primary_community_id,
-					secondary_community_id, start_infectiousness, start_symptomatic, time_infectious, time_symptomatic,
-					risk_averseness));
+			population.emplace_back(person_type(person_id, age, household_id, school_id, work_id,
+							    primary_community_id, secondary_community_id,
+							    start_infectiousness, start_symptomatic, time_infectious,
+							    time_symptomatic, risk_averseness));
 
 			++person_id;
 		}
@@ -175,7 +163,8 @@ public:
 					p.ParticipateInSurvey();
 					logger->info("[PART] {}", p.GetId());
 					logger->info("[PART] {} {} {} {} {}", p.GetId(), p.GetAge(), p.GetGender(),
-						     p.GetClusterId(ClusterType::School), p.GetClusterId(ClusterType::Work));
+						     p.GetClusterId(ClusterType::School),
+						     p.GetClusterId(ClusterType::Work));
 					num_samples++;
 				}
 			}
@@ -229,5 +218,3 @@ private:
 };
 
 } // end_of_namespace
-
-#endif // include guard

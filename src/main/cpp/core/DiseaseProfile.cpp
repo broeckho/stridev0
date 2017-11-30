@@ -10,7 +10,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2015, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -30,19 +30,19 @@ using namespace boost::property_tree;
 
 void DiseaseProfile::Initialize(const ptree& pt_config, const ptree& pt_disease)
 {
-
-	// Use a quadratic model, fitted to simulation data: Expected(R0) = (0 + b1*transm_rate + b2*transm_rate^2).
+	// Use a quadratic model, fitted to simulation data:
+	// Expected(R0) = (0 + b1*transm_rate + b2*transm_rate^2).
 	const double r0 = pt_config.get<double>("run.r0");
 	const double b0 = pt_disease.get<double>("disease.transmission.b0");
 	const double b1 = pt_disease.get<double>("disease.transmission.b1");
 	const double b2 = pt_disease.get<double>("disease.transmission.b2");
 
-	// find root
+	// Find root
 	const double a = b2;
 	const double b = b1;
 	const double c = b0 - r0;
 
-	// to obtain a real values (instead of complex)
+	// To obtain a real values (instead of complex)
 	if (r0 < (-(b * b) / (4 * a))) {
 		const double determ = (b * b) - 4 * a * c;
 		m_transmission_rate = (-b + sqrt(determ)) / (2 * a);
@@ -54,4 +54,4 @@ void DiseaseProfile::Initialize(const ptree& pt_config, const ptree& pt_disease)
 	}
 }
 
-} // namespace
+} // end of namespace

@@ -189,7 +189,8 @@ TEST_P(BatchDemos, Run)
 	// Initialize the simulation.
 	// -----------------------------------------------------------------------------------------
 	cout << "Building the simulator. " << endl;
-	auto sim = SimulatorBuilder<NoGlobalInformation, NoLocalInformation, NoBelief, NoBehaviour<NoBelief> >::Build(pt_config, num_threads, track_index_case);
+	auto sim = SimulatorBuilder<NoGlobalInformation, NoLocalInformation, NoBelief, NoBehaviour<NoBelief>>::Build(
+	    pt_config, num_threads, track_index_case);
 	cout << "Done building the simulator. " << endl << endl;
 
 	// -----------------------------------------------------------------------------------------
@@ -209,7 +210,7 @@ TEST_P(BatchDemos, Run)
 	// Round up.
 	// -----------------------------------------------------------------------------------------
 	const unsigned int num_cases = sim->GetPopulation()->GetInfectedCount();
-	//ASSERT_NEAR(num_cases, g_results.at(test_tag), g_results.at(test_tag) * 0.1) << "!! CHANGED !!";
+	// ASSERT_NEAR(num_cases, g_results.at(test_tag), g_results.at(test_tag) * 0.1) << "!! CHANGED !!";
 	ASSERT_NEAR(num_cases, g_results.at(test_tag), g_results.at(test_tag)) << "!! CHANGED !!"; // Why * 0.1?
 }
 

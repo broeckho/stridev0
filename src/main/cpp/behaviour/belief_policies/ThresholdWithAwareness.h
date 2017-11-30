@@ -1,5 +1,4 @@
-#ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLDWITHAWARENESS_H_
-#define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLDWITHAWARENESS_H_
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
-/*#include "behaviour/belief_data/ThresholdWithAwarenessData.h"
+#include "behaviour/belief_data/ThresholdWithAwarenessData.h"
 #include "core/Health.h"
 
 namespace stride {
@@ -74,6 +73,4 @@ public:
 	}
 };
 
-} /* namespace stride */
-
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_POLICIES_THRESHOLDWITHAWARENESS_H_ */
+} // end of namespace

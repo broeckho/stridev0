@@ -1,5 +1,4 @@
-#ifndef TIMEKEEPER_TIME_TO_STRING_H_INCLUDED
-#define TIMEKEEPER_TIME_TO_STRING_H_INCLUDED
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,7 +11,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -110,4 +109,3 @@ struct TimeToString
 } // end namespace
 } // end namespace
 
-#endif // end of include guard

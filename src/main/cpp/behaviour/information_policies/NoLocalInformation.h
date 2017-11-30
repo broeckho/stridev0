@@ -1,5 +1,4 @@
-#ifndef SRC_MAIN_CPP_BEHAVIOUR_INFORMATION_POLICIES_NOLOCALINFORMATION_H_
-#define SRC_MAIN_CPP_BEHAVIOUR_INFORMATION_POLICIES_NOLOCALINFORMATION_H_
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,19 +11,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 namespace stride {
 
 /**
  * Class for local information policy 'NoLocalInformation'.
- * This means that no information about beliefs/health status/... is exchanged between individuals upon contact.
+ * This means that no information about beliefs/health status/...
+ * is exchanged between individuals upon contact.
  */
 class NoLocalInformation
 {
 };
 
-} /* namespace stride */
-
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_INFORMATION_POLICIES_NOLOCALINFORMATION_H_ */
+} // end of namespace

@@ -10,7 +10,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -23,8 +23,8 @@
 #include "util/StringUtils.h"
 
 #include <boost/filesystem.hpp>
-#include <string>
 #include <iostream>
+#include <string>
 
 #if defined(WIN32)
 #include <stdlib.h>
@@ -170,5 +170,5 @@ path InstallDirs::GetRootDir()
 	return g_root_dir;
 }
 
-} // namespace
-} // namespace
+} // end of namespace
+} // end of namespace

@@ -1,5 +1,4 @@
-#ifndef CLUSTER_H_INCLUDED
-#define CLUSTER_H_INCLUDED
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,7 +11,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -95,10 +94,10 @@ private:
 	void UpdateMemberPresence();
 
 private:
-	std::size_t m_cluster_id;	///< The ID of the Cluster (for logging purposes).
-	ClusterType m_cluster_type;	///< The type of the Cluster (for logging purposes).
-	std::size_t m_index_immune; ///< Index of the first immune member in the Cluster.
-	std::vector<std::pair<person_type*, bool> > m_members; ///< Container with pointers to Cluster members.
+	std::size_t m_cluster_id;                             ///< The ID of the Cluster (for logging purposes).
+	ClusterType m_cluster_type;                           ///< The type of the Cluster (for logging purposes).
+	std::size_t m_index_immune;                           ///< Index of the first immune member in the Cluster.
+	std::vector<std::pair<person_type*, bool>> m_members; ///< Container with pointers to Cluster members.
 	const ContactProfile& m_profile;
 
 private:
@@ -106,11 +105,9 @@ private:
 };
 
 /// Explicit instantiations in .cpp file
-extern template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief> >;
-extern template class Cluster<Person<Vaccination<Threshold<true, false> >, Threshold<true, false> > >;
-extern template class Cluster<Person<Vaccination<Threshold<false, true> >, Threshold<false, true> > >;
-extern template class Cluster<Person<Vaccination<Threshold<true, true> >, Threshold<true, true> > >;
+extern template class Cluster<Person<NoBehaviour<NoBelief>, NoBelief>>;
+extern template class Cluster<Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>>;
+extern template class Cluster<Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>>;
+extern template class Cluster<Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>>;
 
 } // end_of_namespace
-
-#endif // include-guard

@@ -1,5 +1,4 @@
-#ifndef SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_
-#define SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,7 +11,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 #include "behaviour/behaviour_policies/Vaccination.h"
@@ -40,8 +39,10 @@ class ThresholdData
 public:
 	/// Default constructor
 	ThresholdData()
-		: m_num_contacts(0U), m_num_contacts_infected(0U), m_num_contacts_adopted(0U),
-		  m_threshold_infected(1), m_threshold_adopted(1) {}
+	    : m_num_contacts(0U), m_num_contacts_infected(0U), m_num_contacts_adopted(0U), m_threshold_infected(1),
+	      m_threshold_adopted(1)
+	{
+	}
 
 	void SetThresholdInfected(double threshold) { m_threshold_infected = threshold; }
 
@@ -76,16 +77,15 @@ private:
 	unsigned int m_num_contacts_adopted;  ///<
 
 	double m_threshold_infected; ///< Fraction of contacts that needs to be infected before person adopts belief.
-	double m_threshold_adopted;  ///< Fraction of contacts that needs to have adopted the belief for person to also adopt.
+	double m_threshold_adopted;  ///< Fraction of contacts that needs to have adopted the belief for person to also
+				     /// adopt.
 };
 
-extern template void ThresholdData::Contact<Vaccination<Threshold<true, false> >, Threshold<true, false>>(
-		const Person<Vaccination<Threshold<true, false>>, Threshold<true, false> >* p);
+extern template void ThresholdData::Contact<Vaccination<Threshold<true, false>>, Threshold<true, false>>(
+    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>* p);
 extern template void ThresholdData::Contact<Vaccination<Threshold<false, true>>, Threshold<false, true>>(
     const Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>* p);
 extern template void ThresholdData::Contact<Vaccination<Threshold<true, true>>, Threshold<true, true>>(
     const Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>* p);
 
-} /* end of namespace stride */
-
-#endif /* SRC_MAIN_CPP_BEHAVIOUR_BELIEF_DATA_THRESHOLDDATA_H_ */
+} // end of namespace

@@ -1,5 +1,4 @@
-#ifndef PERSON_FILE_H_INCLUDED
-#define PERSON_FILE_H_INCLUDED
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,7 +11,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
 /**
@@ -43,12 +42,12 @@ public:
 
 	/// Print the given cases with corresponding tag.
 	template <class person_type>
-	void Print(const std::shared_ptr<const Population<person_type> > population)
+	void Print(const std::shared_ptr<const Population<person_type>> population)
 	{
 		for (const auto& p : *population) {
 			const auto& h = p.GetHealth();
-			m_fstream << p.GetId() << "," << p.GetAge() << "," << h.IsRecovered() << "," << h.IsImmune() << ","
-				  << h.GetStartInfectiousness() << "," << h.GetEndInfectiousness() << ","
+			m_fstream << p.GetId() << "," << p.GetAge() << "," << h.IsRecovered() << "," << h.IsImmune()
+				  << "," << h.GetStartInfectiousness() << "," << h.GetEndInfectiousness() << ","
 				  << h.GetStartSymptomatic() << "," << h.GetEndSymptomatic() << std::endl;
 		}
 	}
@@ -63,5 +62,3 @@ private:
 
 } // end_of_namespace
 } // end_of_namespace
-
-#endif // end of include guard

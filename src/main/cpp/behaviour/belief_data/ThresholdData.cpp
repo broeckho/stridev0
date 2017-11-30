@@ -1,5 +1,3 @@
-#include "ThresholdData.h"
-#include "pop/Person.h"
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,9 +10,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the software. If not, see <http://www.gnu.org/licenses/>.
  *
- *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
-
+#include "ThresholdData.h"
 #include "pop/Person.h"
 
 namespace stride {
@@ -32,11 +30,11 @@ void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)
 	}
 }
 
-template void ThresholdData::Contact<Vaccination<Threshold<true, false> >, Threshold<true, false>>(
-    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false> >* p);
+template void ThresholdData::Contact<Vaccination<Threshold<true, false>>, Threshold<true, false>>(
+    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>* p);
 template void ThresholdData::Contact<Vaccination<Threshold<false, true>>, Threshold<false, true>>(
     const Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>* p);
 template void ThresholdData::Contact<Vaccination<Threshold<true, true>>, Threshold<true, true>>(
     const Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>* p);
 
-} /* namespace stride */
+} // end of namespace
