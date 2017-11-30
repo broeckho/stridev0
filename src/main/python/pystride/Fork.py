@@ -29,14 +29,12 @@ class Fork(Simulation):
         self._runConfig.find('output_prefix').text = self.parent.label + '/' + self.label
         ET.ElementTree(self._runConfig).write(configPath)
 
-        '''
-                if self.disease != self.parent.disease:
-                    os.makedirs(os.path.join(self.getOutputDirectory(), "data"), exist_ok=True)
-                    diseasePath = os.path.join(self.getOutputDirectory(), "data", self.disease.label + ".xml")
-                    self.disease.diffToFile(self.parent.disease, diseasePath)
-
-                self.diffToFile(self.parent, configPath)
-        '''
+        # Store disease configuration
+        origDiseasePath = self.getRunConfigParam("disease_config_file")
+        origDiseasePath = origDiseasePath[:-4] # remove .xml
+        diseasePath = origDiseasePath + "_" + self.label + ".xml"
+        ET.ElementTree(self._diseaseConfig).write(diseasePath)
+        self.setRunConfigParam("disease_config_file", diseasePath)
         '''
                 if linkData:
                     self._linkData()

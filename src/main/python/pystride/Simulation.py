@@ -44,11 +44,13 @@ class Simulation():
         if self._runConfig:
             if self._runConfig.find(name).text:
                 return self._runConfig.find(name).text
-        print("No run configuration parameter with namme " + name)
+        print("No run configuration parameter with name " + name)
 
     def getDiseaseConfigParam(self, name: str):
-        # TODO
-        pass
+        if self._diseaseConfig:
+            if self._diseaseConfig.find(name).text:
+                return self._diseaseConfig.find(name).text
+        print("No disease configuration parameter with name " + name)
 
     def setRunConfigParam(self, name: str, value):
         if self._runConfig:
@@ -61,8 +63,27 @@ class Simulation():
             ET.SubElement(self._runConfig, name).text = str(value)
 
     def setDiseaseConfigParam(self, name: str, value):
-        # TODO
-        pass
+        if self._diseaseConfig:
+            if self._diseaseConfig.find(name):
+                self._diseaseConfig.find(name).text = str(value)
+            else:
+                newElems = name.split('/')
+                root = self._diseaseConfig
+                for elem in newElems:
+                    if root.find(elem):
+                        root = elem
+                    else:
+                        newElem = ET.SubElement(root, elem)
+                        root = newElem
+                self._diseaseConfig.find(name).text = str(value)
+        else:
+            self._diseaseConfig = ET.Element('disease')
+            newElems = name.split('/')
+            root = self._diseaseConfig
+            for elem in newElems:
+                newElem = ET.SubElement(root, elem)
+                root = newElem
+            self._diseaseConfig.find(name).text = str(value)
 
     def showRunConfig(self):
         """ Print out the run configuration parameters. """
@@ -135,10 +156,18 @@ class Simulation():
 
         os.makedirs(self.getOutputDirectory(), exist_ok=True)
 
+        # Store run configuration
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
         # only store last part of label (previous dirs already made)
         self._runConfig.find('output_prefix').text = os.path.basename(self.label) + '/'
         ET.ElementTree(self._runConfig).write(configPath)
+
+        # Store disease configuration
+        origDiseasePath = self.getRunConfigParam("disease_config_file")
+        origDiseasePath = origDiseasePath[:-4] # remove .xml
+        diseasePath = origDiseasePath + "_" + self.label + ".xml"
+        ET.ElementTree(self._diseaseConfig).write(diseasePath)
+        self.setRunConfigParam("disease_config_file", diseasePath)
 
     def _build(self, trackIndexCase=False):
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
