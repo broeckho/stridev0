@@ -52,8 +52,7 @@ int main(int argc, char** argv)
 		cerr << "\nEXCEPION THROWN: " << e.what() << endl;
 	} catch (...) {
 		exit_status = EXIT_FAILURE;
-		cerr << "\nEXCEPION THROWN: "
-		     << "Unknown exception." << endl;
+		cerr << "\nEXCEPION THROWN: Unknown exception." << endl;
 	}
 	return exit_status;
 }

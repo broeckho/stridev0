@@ -74,19 +74,17 @@ public:
 	{
 		ptree pt_disease;
 
-		const auto file_name_d{pt_config.get<string>("run.disease_config_file")};
-		const auto file_path_d{InstallDirs::GetDataDir() /= file_name_d};
-
+		const auto file_name_d {pt_config.get<string>("run.disease_config_file")};
+		const auto file_path_d {InstallDirs::GetDataDir() /= file_name_d};
 		if (!is_regular_file(file_path_d)) {
 			throw runtime_error(std::string(__func__) + "> No file " + file_path_d.string());
 		}
-
 		read_xml(file_path_d.string(), pt_disease);
 
 		// Contact file.
 		ptree pt_contact;
-		const auto file_name_c{pt_config.get("run.age_contact_matrix_file", "contact_matrix.xml")};
-		const auto file_path_c{InstallDirs::GetDataDir() /= file_name_c};
+		const auto file_name_c {pt_config.get("run.age_contact_matrix_file", "contact_matrix.xml")};
+		const auto file_path_c {InstallDirs::GetDataDir() /= file_name_c};
 		if (!is_regular_file(file_path_c)) {
 			throw runtime_error(string(__func__) + "> No file " + file_path_c.string());
 		}
@@ -132,8 +130,8 @@ public:
 		// Seed infected persons.
 		// --------------------------------------------------------------
 		const double seeding_rate = pt_config.get<double>("run.seeding_rate");
-		double seeding_age_min = pt_config.get<double>("run.seeding_age_min");
-		double seeding_age_max = pt_config.get<double>("run.seeding_age_max");
+		const double seeding_age_min = pt_config.get<double>("run.seeding_age_min");
+		const double seeding_age_max = pt_config.get<double>("run.seeding_age_max");
 		const unsigned int max_population_index = sim->m_population->size() - 1;
 		unsigned int num_infected = floor(static_cast<double>(sim->m_population->size()) * seeding_rate);
 		while (num_infected > 0) {

@@ -19,25 +19,23 @@
 #
 #############################################################################
 cmake_minimum_required(VERSION 2.8)
-
-#============================================================================
-# Macros that need to be set prior to project definition:
-#============================================================================
-set( CMAKE_BUILD_TYPE "Debug"
-	CACHE STRING "Build type: None Debug Release RelWithDebInfo MinSizeRel." )
-#
-set( CMAKE_INSTALL_PREFIX  "${CMAKE_BINARY_DIR}/installed" 
-	CACHE PATH "Prefix prepended to install directories" )
-#
-set( CMAKE_PROGRAM_PATH  "/opt/local/bin;/usr/texbin;/usr/local/bin;/usr/bin" 
-	CACHE PATH "Where to look with find_program." )
+include( CMakeCMakeConfig.txt )
+include(CMakeLocalConfig.cmake OPTIONAL)
 	
 #============================================================================
 # Configuration for CMake, for build & install.
 #============================================================================
 project( STRIDE )
-include( CMakeCMakeConfig.txt )
-include( CMakeBuildConfig.txt )
+
+#============================================================================
+# INSTALL LOCATION for bin, doc etc.
+#============================================================================
+set( BIN_INSTALL_LOCATION     bin    )
+set( LIB_INSTALL_LOCATION     lib    )
+set( DATA_INSTALL_LOCATION    data   )
+set( CONFIG_INSTALL_LOCATION  config )
+set( DOC_INSTALL_LOCATION     doc    )
+set( TESTS_INSTALL_LOCATION   tests  )
 
 #============================================================================
 # Configuration for CPP.
@@ -53,7 +51,7 @@ if( GIT_FOUND )
 else()
     # This is done to eliminate blank output of undefined CMake variables.
     set( GIT_FOUND FALSE ) 
-	set( STRIDE_WC_REVISION_HASH    "0000-0000-000" )	
+	set( STRIDE_WC_REVISION_HASH       "0000-0000-000" )	
 	set( STRIDE_WC_LAST_CHANGED_DATE   "0000 0000 0000" )
 endif()
 
@@ -63,6 +61,7 @@ endif()
 if( STRIDE_INCLUDE_DOC )
     find_package( Doxygen )	
 endif()
+
 #============================================================================
 # Add subdirs
 #============================================================================
