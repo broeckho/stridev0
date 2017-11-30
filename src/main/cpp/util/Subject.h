@@ -23,8 +23,8 @@
 #include <map>
 #include <memory>
 
-namespace Stride {
-namespace Util {
+namespace stride {
+namespace util {
 
 /**
  * Template for Subject/Observer (or Publish/Subscribe). Offers flexibility

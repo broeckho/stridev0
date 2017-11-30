@@ -16,12 +16,12 @@
  */
 /**
  * @file
- * Header file for SimulationObserver
+ * Header file for SimulatorObserver
  */
 
 namespace stride {
 
-class SimulationObserver
+class SimulatorObserver
 {
 
 };

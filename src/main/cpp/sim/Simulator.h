@@ -29,6 +29,8 @@
 #include "core/RngHandler.h"
 #include "pop/Person.h"
 #include "pop/Population.h"
+#include "sim/SimulatorObserver.h"
+#include "util/Subject.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <omp.h>
@@ -40,7 +42,7 @@ namespace stride {
  * Main class that contains and direct the virtual world.
  */
 template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-class Simulator
+class Simulator: public util::Subject<SimulatorObserver>
 {
 public:
 	/// Information policies
