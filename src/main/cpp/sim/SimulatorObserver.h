@@ -23,6 +23,12 @@ namespace stride {
 
 class SimulatorObserver
 {
+public:
+	/// Destructor
+	virtual ~SimulatorObserver() {}
+
+	///
+	virtual void Update(unsigned int timestep) {}
 
 };
 

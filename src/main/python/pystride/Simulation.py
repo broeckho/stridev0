@@ -7,7 +7,7 @@ from time import gmtime, strftime
 
 import pystride
 
-from pystride.stride.stride import SimUtils
+from pystride.stride.stride import SimUtils, SimulatorObserver
 
 class Simulation():
     def __init__(self, original=None):

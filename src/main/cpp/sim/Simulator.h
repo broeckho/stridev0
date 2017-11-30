@@ -29,7 +29,6 @@
 #include "core/RngHandler.h"
 #include "pop/Person.h"
 #include "pop/Population.h"
-#include "sim/SimulatorObserver.h"
 #include "util/Subject.h"
 
 #include <boost/property_tree/ptree.hpp>
@@ -42,7 +41,7 @@ namespace stride {
  * Main class that contains and direct the virtual world.
  */
 template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-class Simulator: public util::Subject<SimulatorObserver>
+class Simulator: public util::Subject<unsigned int>
 {
 public:
 	/// Information policies
@@ -129,6 +128,9 @@ public:
 		}
 
 		m_calendar->AdvanceDay();
+
+		// Notify observers
+		Notify(m_calendar->GetSimulationDay());
 	}
 
 private:
