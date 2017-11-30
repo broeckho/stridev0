@@ -24,17 +24,18 @@ class Fork(Simulation):
         """" Only write changed parameters """
         os.makedirs(self.getOutputDirectory(), exist_ok=True)
 
-        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        # only store last part of label (previous dirs already made)
-        self._runConfig.find('output_prefix').text = self.parent.label + '/' + self.label
-        ET.ElementTree(self._runConfig).write(configPath)
-
         # Store disease configuration
         origDiseasePath = self.getRunConfigParam("disease_config_file")
         origDiseasePath = origDiseasePath[:-4] # remove .xml
         diseasePath = origDiseasePath + "_" + self.label + ".xml"
         ET.ElementTree(self._diseaseConfig).write(diseasePath)
         self.setRunConfigParam("disease_config_file", diseasePath)
+
+        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
+        # only store last part of label (previous dirs already made)
+        self._runConfig.find('output_prefix').text = self.parent.label + '/' + self.label
+        ET.ElementTree(self._runConfig).write(configPath)
+
         '''
                 if linkData:
                     self._linkData()

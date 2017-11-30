@@ -2,6 +2,7 @@ import os
 import argparse
 import xml.etree.ElementTree as ET
 
+from copy import copy
 from time import gmtime, strftime
 
 import pystride
@@ -16,9 +17,9 @@ class Simulation():
         self._runConfig = None              # ElementTree with run config
         self._diseaseConfig = None          # ElementTree with disease config
         self.label = strftime("%Y%m%d%H%M%S", gmtime())
-        if original:
-            self._runConfig = original._runConfig
-            self._diseaseConfig = original._diseaseConfig
+        if original != None:
+            self._runConfig = ET.fromstring(ET.tostring(original._runConfig))
+            self._diseaseConfig = ET.fromstring(ET.tostring(original._diseaseConfig))
 
     def loadRunConfig(self, filename: str):
         runConfigFile = os.path.join(self.getWorkingDirectory(), filename)
@@ -41,20 +42,23 @@ class Simulation():
             print("Disease configuration file " + diseaseFilename + " could not be found")
 
     def getRunConfigParam(self, name: str):
-        if self._runConfig:
-            if self._runConfig.find(name).text:
-                return self._runConfig.find(name).text
+        if self._runConfig != None:
+            if self._runConfig.find(name) != None:
+                if self._runConfig.find(name).text != None:
+                    return self._runConfig.find(name).text
         print("No run configuration parameter with name " + name)
 
     def getDiseaseConfigParam(self, name: str):
         if self._diseaseConfig:
-            if self._diseaseConfig.find(name).text:
-                return self._diseaseConfig.find(name).text
+            if self._diseaseConfig.find(name) != None:
+                if self._diseaseConfig.find(name).text != None:
+                    return self._diseaseConfig.find(name).text
         print("No disease configuration parameter with name " + name)
 
     def setRunConfigParam(self, name: str, value):
-        if self._runConfig:
-            if self._runConfig.find(name):
+        if self._runConfig != None:
+            elem = self._runConfig.find(name)
+            if self._runConfig.find(name) != None:
                 self._runConfig.find(name).text = str(value)
             else:
                 ET.SubElement(self._runConfig, name).text = str(value)
@@ -64,13 +68,13 @@ class Simulation():
 
     def setDiseaseConfigParam(self, name: str, value):
         if self._diseaseConfig:
-            if self._diseaseConfig.find(name):
+            if self._diseaseConfig.find(name) != None:
                 self._diseaseConfig.find(name).text = str(value)
             else:
                 newElems = name.split('/')
                 root = self._diseaseConfig
                 for elem in newElems:
-                    if root.find(elem):
+                    if root.find(elem) != None:
                         root = elem
                     else:
                         newElem = ET.SubElement(root, elem)
@@ -156,18 +160,19 @@ class Simulation():
 
         os.makedirs(self.getOutputDirectory(), exist_ok=True)
 
-        # Store run configuration
-        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        # only store last part of label (previous dirs already made)
-        self._runConfig.find('output_prefix').text = os.path.basename(self.label) + '/'
-        ET.ElementTree(self._runConfig).write(configPath)
-
         # Store disease configuration
         origDiseasePath = self.getRunConfigParam("disease_config_file")
         origDiseasePath = origDiseasePath[:-4] # remove .xml
         diseasePath = origDiseasePath + "_" + self.label + ".xml"
         ET.ElementTree(self._diseaseConfig).write(diseasePath)
         self.setRunConfigParam("disease_config_file", diseasePath)
+
+        # Store run configuration
+        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
+        # only store last part of label (previous dirs already made)
+        self._runConfig.find('output_prefix').text = os.path.basename(self.label) + '/'
+        ET.ElementTree(self._runConfig).write(configPath)
+
 
     def _build(self, trackIndexCase=False):
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
