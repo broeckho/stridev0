@@ -19,8 +19,8 @@ simulation.run()
 
 from pystride.Simulation import Simulation
 
-def shout(timestep):
-    print("Timestep " + timestep)
+def shout(simulation, timestep):
+    print("Timestep " + str(timestep))
 
 # Build simulation
 simulation = Simulation()

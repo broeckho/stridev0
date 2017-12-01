@@ -129,12 +129,6 @@ class Simulation():
                     TimestepIntervalEvents).
         """
         '''
-            def registerCallback(self, callback, event):
-                """ Registers a callback to the simulation.
-
-                    :param callback: a function appropriate for the event type.
-                    :param event: either an event specified in SimulationObserver, an integer, list of events, or list of integers. A single integer is converted to a TimestepIntervalEvent. A list of integers to a list of TimestepEvents.
-                """
                 if isinstance(event, list):
                     # list of events
                     for e in event:
@@ -154,7 +148,7 @@ class Simulation():
                 else:
                     raise RuntimeError("Unknown event type: " + str(event))
         '''
-        pass
+        self.observer.RegisterCallback(callback)
 
     def fork(self, name:str):
         """
