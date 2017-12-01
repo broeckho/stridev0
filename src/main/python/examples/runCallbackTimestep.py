@@ -16,3 +16,17 @@ simulation.registerCallback(vaccinate, [20])
 
 simulation.run()
 '''
+
+from pystride.Simulation import Simulation
+
+def shout(timestep):
+    print("Timestep " + timestep)
+
+# Build simulation
+simulation = Simulation()
+simulation.loadRunConfig("config/run_default.xml")
+
+# Register
+simulation.registerCallback(shout, None)
+
+simulation.run()

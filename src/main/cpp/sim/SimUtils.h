@@ -28,6 +28,7 @@
 #include "output/PersonFile.h"
 #include "output/SummaryFile.h"
 #include "sim/SimulatorBuilder.h"
+#include "sim/SimulatorObserver.h"
 #include "util/ConfigInfo.h"
 #include "util/Stopwatch.h"
 #include "util/TimeStamp.h"
@@ -40,19 +41,19 @@
 #include <spdlog/spdlog.h>
 #include <vector>
 
-/*
-#include <string>
-#include "util/InstallDirs.h"
-#include <boost/property_tree/xml_parser.hpp>
- */
+///*
+//#include <string>
+//#include "util/InstallDirs.h"
+//#include <boost/property_tree/xml_parser.hpp>
+// */
 
 namespace stride {
 
 using namespace boost::filesystem;
 using namespace boost::property_tree;
-using namespace output;
 using namespace std;
 using namespace util;
+using namespace output;
 
 class SimUtils {
 public:
@@ -62,7 +63,7 @@ public:
 	///
 	virtual ~SimUtils() {}
 
-	/// Setup the simulator configuration, execution environment, ...
+	/// Setup the simulator configuration, execution environmentm, ...
 	void Setup(std::string config_file_name, bool track_index_case) {
 		// -----------------------------------------------------------------------------------------
 		// Print output to command line.
@@ -89,7 +90,7 @@ public:
 
 		if (!is_regular_file(file_path)) {
 			throw runtime_error(string(__func__) + ">Config file " + file_path.string() +
-					    " not present. Aborting.");
+					" not present. Aborting.");
 		}
 
 		read_xml(file_path.string(), m_pt_config);
@@ -98,8 +99,7 @@ public:
 		// -----------------------------------------------------------------------------------------
 		// OpenMP.
 		// -----------------------------------------------------------------------------------------
-
-#pragma omp parallel
+		#pragma omp parallel
 		{
 			m_num_threads = omp_get_num_threads();
 		}
@@ -139,28 +139,12 @@ public:
 		// -----------------------------------------------------------------------------------------
 		spdlog::set_async_mode(1048576);
 		auto file_logger =
-		    spdlog::rotating_logger_mt("contact_logger", m_output_prefix + "/logfile", std::numeric_limits<size_t>::max(),
-					       std::numeric_limits<size_t>::max());
+				spdlog::rotating_logger_mt("contact_logger", m_output_prefix + "/logfile", std::numeric_limits<size_t>::max(),
+						std::numeric_limits<size_t>::max());
 		file_logger->set_pattern("%v"); // Remove meta data from log => time-stamp of logging
 	}
 
-	/// Create the simulator
-	template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-	shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> > CreateSimulator()
-	{
-		cout << "Building the simulator. " << endl;
-		auto sim = SimulatorBuilder<global_information_policy, local_information_policy, belief_policy, behaviour_policy>
-			::Build(m_pt_config, m_num_threads, m_track_index_case);
-		cout << "Done building the simulator. " << endl;
-
-		return sim;
-	}
-
-	/// Build & run the simulator
-	void Run() {
-		// Get logger
-		const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
-
+	void Build() {
 		// -----------------------------------------------------------------------------------------
 		// Get information, belief and behaviour policies to be used
 		// -----------------------------------------------------------------------------------------
@@ -169,11 +153,64 @@ public:
 		string local_information_policy = m_pt_config.get<string>("run.local_information_policy", "NoLocalInformation");
 		string global_information_policy = m_pt_config.get<string>("run.global_information_policy", "NoGlobalInformation");
 
+		m_total_clock = Stopwatch<>("total_clock", true);
+
+		InitializeSimulator(global_information_policy, local_information_policy, belief_policy, behaviour_policy);
+	}
+
+	/// Actually run the simulator
+	void Run() {
+		// Get logger
+		const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
+
 		// Get number of days to simulate
 		const unsigned int num_days = m_pt_config.get<unsigned int>("run.num_days");
 
-		m_total_clock = Stopwatch<>("total_clock", true);
+		// -----------------------------------------------------------------------------------------
+		// Check the simulator.
+		// -----------------------------------------------------------------------------------------
+		bool simulator_is_operational = m_sim->IsOperational();
+		if (simulator_is_operational) {
+			cout << "Done checking the simulator. " << endl << endl;
+		} else {
+			logger->info("[ERROR] Invalid configuration");
+			cout << "Invalid configuration => terminate without output" << endl << endl;
+		}
 
+		// -----------------------------------------------------------------------------------------
+		// Run the simulation (if operational).
+		// -----------------------------------------------------------------------------------------
+		if (simulator_is_operational) {
+			Run(num_days);
+		}
+
+		// Clean up.
+		spdlog::drop_all();
+
+		// -----------------------------------------------------------------------------------------
+		// Print final message to command line.
+		// -----------------------------------------------------------------------------------------
+		cout << endl << endl;
+
+		cout << "  run_time: " << m_run_clock.ToString() << "  -- total time: " << m_total_clock.ToString() << endl << endl;
+		cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
+	}
+
+	void RegisterObserver(std::shared_ptr<SimulatorObserver>& observer)
+	{
+		m_sim->Register(observer);
+	}
+
+	// TODO GetPopulation
+
+	// TODO Stop
+
+private:
+	void InitializeSimulator(std::string global_information_policy, std::string local_information_policy, std::string belief_policy, std::string behaviour_policy)
+	{
+		cout << "Building the simulator. " << endl;
+
+		/// Build the correct simulator
 		if (global_information_policy == "NoGlobalInformation") {
 			using GlobalInformationPolicy = NoGlobalInformation;
 
@@ -185,27 +222,9 @@ public:
 
 					if (behaviour_policy == "NoBehaviour") {
 						using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+						m_sim = SimulatorBuilder<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>
+									::Build(m_pt_config, m_num_threads, m_track_index_case);
 
-						// Create the simulator
-						auto sim = CreateSimulator<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>();
-
-						// -----------------------------------------------------------------------------------------
-						// Check the simulator.
-						// -----------------------------------------------------------------------------------------
-						bool simulator_is_operational = sim->IsOperational();
-						if (simulator_is_operational) {
-							cout << "Done checking the simulator. " << endl << endl;
-						} else {
-							logger->info("[ERROR] Invalid configuration");
-							cout << "Invalid configuration => terminate without output" << endl << endl;
-						}
-
-						// -----------------------------------------------------------------------------------------
-						// Run the simulation (if operational).
-						// -----------------------------------------------------------------------------------------
-						if (simulator_is_operational) {
-							Run<GlobalInformationPolicy, LocalInformationPolicy, BeliefPolicy, BehaviourPolicy>(sim, num_days);
-						}
 					} else {
 						throw std::runtime_error(std::string(__func__) + "No valid behaviour policy!");
 					}
@@ -218,57 +237,42 @@ public:
 		} else {
 			throw std::runtime_error(std::string(__func__) + "No valid global information policy!");
 		}
+
+		cout << "Done building the simulator. " << endl;
 	}
 
-	template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-	void Run(shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> > sim, unsigned int num_days) {
+	void Run(unsigned int num_days)
+	{
 		m_run_clock = Stopwatch<>("run_clock");
+
 		vector<unsigned int> cases(num_days);
 		vector<unsigned int> adopted(num_days);
 
 		for (unsigned int i = 0; i < num_days; i++) {
 			cout << "Simulating day: " << setw(5) << i;
-
 			m_run_clock.Start();
-			sim->TimeStep();
+			m_sim->TimeStep();
 			m_run_clock.Stop();
-
-			cout << "     Done, infected count: ";
-			cases[i] = sim->GetPopulation()->GetInfectedCount();
-			//adopted[i] = sim->GetPopulation()->GetAdoptedCount<belief_policy>();
-			cout << setw(7) << cases[i];
-			//cout << "     Adopters count: " << setw(7) << adopted[i];
-			cout << endl;
+			//cout << "     Done, infected count: ";
+			//cases[i] = sim->GetPopulation()->GetInfectedCount();
+		//			//adopted[i] = sim->GetPopulation()->GetAdoptedCount<belief_policy>();
+		//			cout << setw(7) << cases[i];
+		//			//cout << "     Adopters count: " << setw(7) << adopted[i];
+					cout << endl;
 		}
-
-		// Clean up.
-		spdlog::drop_all();
 
 		// -----------------------------------------------------------------------------------------
 		// Generate output files
 		// -----------------------------------------------------------------------------------------
-		generate_output_files<global_information_policy, local_information_policy, belief_policy, behaviour_policy>(cases, adopted, sim);
-
-		// -----------------------------------------------------------------------------------------
-		// Print final message to command line.
-		// -----------------------------------------------------------------------------------------
-		cout << endl << endl;
-
-		cout << "  run_time: " << m_run_clock.ToString() << "  -- total time: " << m_total_clock.ToString() << endl << endl;
-		cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
+		GenerateOutputFiles(cases, adopted);
 	}
 
-	/// Stop
-
-	/// Callbacks & observers?
-
-	/// Generate output files (at end of simulation).
-	template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-	void generate_output_files(const vector<unsigned int>& cases, const vector<unsigned int>& adopted,
-			const shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy> > sim)
+	/// Generate output files (at end of simulation)
+	void GenerateOutputFiles(const vector<unsigned int>& cases, const vector<unsigned int>& adopted)
 	{
 		unsigned int run_time = chrono::duration_cast<chrono::milliseconds>(m_run_clock.Get()).count();
 		unsigned int total_time = chrono::duration_cast<chrono::milliseconds>(m_total_clock.Get()).count();
+
 		// Cases
 		CasesFile cases_file(m_output_prefix);
 		cases_file.Print(cases);
@@ -279,25 +283,28 @@ public:
 
 		// Summary
 		SummaryFile summary_file(m_output_prefix);
-		summary_file.Print(m_pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
-				sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
-
-		// Persons
-		if (m_pt_config.get<double>("run.generate_person_file") == 1) {
-			PersonFile person_file(m_output_prefix);
-			person_file.Print(sim->GetPopulation());
-		}
 	}
+
+
+	//		summary_file.Print(m_pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
+	//				sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
+	//
+	//		// Persons
+	//		if (m_pt_config.get<double>("run.generate_person_file") == 1) {
+	//			PersonFile person_file(m_output_prefix);
+	//			person_file.Print(sim->GetPopulation());
+	//		}
 
 private:
 	Stopwatch<> m_total_clock;
 	Stopwatch<> m_run_clock;
 
 	ptree m_pt_config;
-	std::string m_output_prefix;
+	string m_output_prefix;
 	unsigned int m_num_threads;
 	bool m_track_index_case;
-
+private:
+	shared_ptr<SimulatorInterface> m_sim;
 };
 
 } /* end of namespace stride */

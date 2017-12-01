@@ -24,6 +24,8 @@ namespace stride {
 class SimulatorObserver
 {
 public:
+	SimulatorObserver() {}
+
 	/// Destructor
 	virtual ~SimulatorObserver() {}
 

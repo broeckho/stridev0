@@ -7,13 +7,14 @@ from time import gmtime, strftime
 
 import pystride
 
-from pystride.stride.stride import SimUtils, SimulatorObserver
+from pystride.stride.stride import SimUtils
+from pystride.SimulationObserver import SimulationObserver
 
 class Simulation():
     def __init__(self, original=None):
         self.forks = list()
-        self.simulator = None
-        #TODO observer
+        self.simulator = SimUtils()
+        self.observer = SimulationObserver(self.simulator)
         self._runConfig = None              # ElementTree with run config
         self._diseaseConfig = None          # ElementTree with disease config
         self.label = strftime("%Y%m%d%H%M%S", gmtime())
@@ -111,6 +112,10 @@ class Simulation():
 
     def stop(self):
         """ Stop the simulation if it's running """
+        '''
+        if self.simulator:
+            self.simulator.Stop()
+        '''
         pass
 
     def registerCallback(self, callback, event):
@@ -123,6 +128,32 @@ class Simulation():
                     events, or list of integers (converted to list of
                     TimestepIntervalEvents).
         """
+        '''
+            def registerCallback(self, callback, event):
+                """ Registers a callback to the simulation.
+
+                    :param callback: a function appropriate for the event type.
+                    :param event: either an event specified in SimulationObserver, an integer, list of events, or list of integers. A single integer is converted to a TimestepIntervalEvent. A list of integers to a list of TimestepEvents.
+                """
+                if isinstance(event, list):
+                    # list of events
+                    for e in event:
+                        # if int -> specific timestep
+                        if isinstance(e, int):
+                            self.observer.registerCallback(callback, TimestepEvent(e))
+                        else:
+                            self.registerCallback(e)
+
+                elif isinstance(event, int):
+                    # convert int to TimestepIntervalEvent
+                    self.observer.registerCallback(callback, TimestepIntervalEvent(event))
+
+                elif isinstance(event, Event):
+                    # event
+                    self.observer.registerCallback(callback, event)
+                else:
+                    raise RuntimeError("Unknown event type: " + str(event))
+        '''
         pass
 
     def fork(self, name:str):
@@ -180,9 +211,10 @@ class Simulation():
 
     def _build(self, trackIndexCase=False):
         configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        self.simulator = SimUtils()
+
         self.simulator.Setup(configPath, trackIndexCase)
-        #TODO register observer
+        self.simulator.Build()
+        self.simulator.RegisterObserver(self.observer)
 
     def run(self, *args, **kwargs):
         """ Run current simulation. """
