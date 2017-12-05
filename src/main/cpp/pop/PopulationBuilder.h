@@ -21,6 +21,7 @@
 
 #include "core/ClusterType.h"
 #include "pop/Population.h"
+#include "util/ContiguousAllocator.h"
 #include "util/InstallDirs.h"
 #include "util/PtreeUtils.h"
 #include "util/Random.h"
