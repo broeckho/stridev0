@@ -47,7 +47,7 @@ public:
 	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
 	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
 	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief_pt(belief_pt)
+	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief_pt(belief_pt), m_belief(nullptr)
 	{
 	}
 
@@ -74,6 +74,10 @@ public:
 
         /// Set person's belief status.
         void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief_pt = pt; }
+
+    Belief* GetBelief() { return m_belief; }
+
+    void SetBelief(Belief* belief) { m_belief = belief; }
 
 	/// Get the id.
 	unsigned int GetId() const { return m_id; }
