@@ -47,7 +47,7 @@ public:
 	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
 	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
 	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief(belief_pt)
+	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief_pt(belief_pt)
 	{
 	}
 
@@ -70,10 +70,10 @@ public:
 	const Health& GetHealth() const { return m_health; }
 
 	/// Return person's belief status.
-	boost::property_tree::ptree GetBeliefData() const { return m_belief; }
+	boost::property_tree::ptree GetBeliefData() const { return m_belief_pt; }
 
         /// Set person's belief status.
-        void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief = pt; }
+        void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief_pt = pt; }
 
 	/// Get the id.
 	unsigned int GetId() const { return m_id; }
@@ -115,7 +115,9 @@ private:
 	bool m_is_participant;         ///< Is participating in the social contact study
 	bool m_at_home_due_to_illness; ///< Is person present home due to illness?
 
-	boost::property_tree::ptree  m_belief;
+	boost::property_tree::ptree  m_belief_pt;
+
+	Belief* m_belief;
 };
 
 } // end_of_namespace
