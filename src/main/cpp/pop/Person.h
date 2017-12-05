@@ -21,8 +21,10 @@
 #include "behaviour/behaviour_policies/NoBehaviour.h"
 #include "behaviour/belief_policies/NoBelief.h"
 #include "behaviour/belief_policies/Threshold.h"
-
+#include "Belief.h"
 #include "core/Health.h"
+
+#include <boost/property_tree/ptree.hpp>
 
 namespace stride {
 
@@ -32,7 +34,6 @@ enum class ClusterType;
 /**
  * Store and handle person data.
  */
-template <class BehaviourPolicy, class BeliefPolicy>
 class Person
 {
 public:
@@ -40,15 +41,14 @@ public:
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id, unsigned int work_id,
 	       unsigned int primary_community_id, unsigned int secondary_community_id,
 	       unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
-	       unsigned int time_symptomatic, double risk_averseness = 0)
+	       unsigned int time_symptomatic, double risk_averseness = 0, boost::property_tree::ptree belief_pt = boost::property_tree::ptree())
 	    : m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
 	      m_work_id(work_id), m_primary_community_id(primary_community_id),
 	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
 	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
 	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-	      m_is_participant(false), m_at_home_due_to_illness(false)
+	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief(belief_pt)
 	{
-		BeliefPolicy::Initialize(m_belief_data, risk_averseness);
 	}
 
 	/// Is this person not equal to the given person?
@@ -70,7 +70,10 @@ public:
 	const Health& GetHealth() const { return m_health; }
 
 	/// Return person's belief status.
-	const typename BeliefPolicy::Data& GetBeliefData() const { return m_belief_data; }
+	boost::property_tree::ptree GetBeliefData() const { return m_belief; }
+
+        /// Set person's belief status.
+        void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief = pt; }
 
 	/// Get the id.
 	unsigned int GetId() const { return m_id; }
@@ -108,22 +111,11 @@ private:
 	bool m_at_secondary_community; ///< Is person present at secundary_community today?
 
 	Health m_health;                           ///< Health info for this person.
-	typename BeliefPolicy::Data m_belief_data; ///< Info w.r.t. this Person's health beliefs
 
 	bool m_is_participant;         ///< Is participating in the social contact study
 	bool m_at_home_due_to_illness; ///< Is person present home due to illness?
+
+	boost::property_tree::ptree  m_belief;
 };
-
-/// Explicit instantiations in .cpp file
-extern template class Person<NoBehaviour<NoBelief>, NoBelief>;
-extern template class Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>;
-extern template class Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>;
-extern template class Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>;
-
-/*
-extern template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
-extern template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
-extern template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;
-*/
 
 } // end_of_namespace

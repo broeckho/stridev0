@@ -20,7 +20,6 @@
 namespace stride {
 
 /// Forward declaration of class Person
-template <typename BehaviourPolicy, typename BeliefPolicy>
 class Person;
 
 template <bool threshold_infected, bool threshold_adopted>
@@ -46,16 +45,13 @@ public:
 		}
 	}
 
-	template <typename BehaviourPolicy>
-	static void Update(
-	    Data& belief_data,
-	    const Person<BehaviourPolicy, ThresholdWithAwareness<threshold_infected, threshold_adopted>>* p)
+	static void Update(const Person* p)
 	{
 		belief_data.Contact(p);
 	}
 
-	static bool HasAdopted(const Data& belief_data)
-	{
+	static bool HasAdopted(const Person* p)
+	{/*
 		if (belief_data.IsAware()) {
 			bool infected_threshold_reached = threshold_infected && (belief_data.GetFractionInfected() >=
 										 belief_data.GetThresholdInfected());
@@ -70,6 +66,7 @@ public:
 		} else {
 			return false;
 		}
+		*/
 	}
 };
 

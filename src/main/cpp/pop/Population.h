@@ -28,8 +28,7 @@ namespace stride {
 /**
  * Container for persons in population.
  */
-template <typename person_type>
-class Population : public std::vector<person_type>
+class Population : public std::vector<Person>
 {
 public:
 	/// Get the cumulative number of cases.
@@ -51,10 +50,10 @@ public:
 		unsigned int total{0U};
 		for (const auto& p : *this) {
 			auto belief_data = p.GetBeliefData();
-			bool adopted = BeliefPolicy::HasAdopted(belief_data);
-			if (adopted) {
-				total++;
-			}
+			// bool adopted = BeliefPolicy::HasAdopted(belief_data);
+			//if (adopted) {
+			//	total++;
+			//}
 		}
 
 		return total;

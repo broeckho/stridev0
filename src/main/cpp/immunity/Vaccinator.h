@@ -47,17 +47,13 @@ namespace stride {
 using namespace std;
 using namespace util;
 
-template <typename behaviour_policy, typename belief_policy>
 class Person;
 
-template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
 class Vaccinator
 {
 public:
-	using person_type = Person<behaviour_policy, belief_policy>;
-
 	/// Initiate the given immunity distribution in the population, according the given link probability
-	static void Administer(std::vector<Cluster<person_type>>* clusters, std::vector<double>& immunity_distribution,
+	static void Administer(std::vector<Cluster>* clusters, std::vector<double>& immunity_distribution,
 			       double immunity_link_probability, util::Random& rng)
 	{
 		// initiate a vector to count the population per age class [0-100]
@@ -71,12 +67,12 @@ public:
 		// number
 		// of immune.
 		for (unsigned int i = 0; i < clusters->size(); i++) {
-			Cluster<person_type>& p_cluster = clusters->at(i);
+			Cluster& p_cluster = clusters->at(i);
 			unsigned int household_size = p_cluster.GetSize();
 
 			// loop over cluster members, in random order
 			for (unsigned int i_p = 0; i_p < household_size; i_p++) {
-				person_type& p = *p_cluster.GetMember(i_p);
+				Person& p = *p_cluster.GetMember(i_p);
 				if (p.GetHealth().IsSusceptible()) {
 					p.GetHealth().SetImmune();
 					population_count_age[p.GetAge()]++;
@@ -96,13 +92,13 @@ public:
 		while (total_num_susceptible > 0) {
 
 			// sample cluster
-			Cluster<person_type>& p_cluster = clusters->at(rng(clusters->size()));
+			Cluster& p_cluster = clusters->at(rng(clusters->size()));
 			unsigned int household_size = p_cluster.GetSize();
 			vector<unsigned int> member_indices = rng.GetRandomIndices(household_size);
 
 			// loop over cluster members, in random order
 			for (unsigned int i_p = 0; i_p < household_size && total_num_susceptible > 0; i_p++) {
-				person_type& p = *p_cluster.GetMember(member_indices[i_p]);
+				Person& p = *p_cluster.GetMember(member_indices[i_p]);
 
 				// if individual is immune and his/her age class has not reached the quota => make
 				// susceptible
@@ -121,16 +117,16 @@ public:
 
 	/// Administer cocoon immunization for the given rate and target ages [min-max] to protect connected
 	/// individuals of the given age class [min-max]
-	static void AdministerCocoon(std::vector<Cluster<person_type>>* clusters, double immunity_rate,
+	static void AdministerCocoon(std::vector<Cluster>* clusters, double immunity_rate,
 				     double adult_age_min, double adult_age_max, double child_age_min,
 				     double child_age_max, util::Random& rng)
 	{
 		for (unsigned int i = 0; i < clusters->size(); i++) {
-			Cluster<person_type>& p_cluster = clusters->at(i);
+			Cluster& p_cluster = clusters->at(i);
 
 			// loop over cluster members
 			for (unsigned int i_p = 0; i_p < p_cluster.GetSize(); i_p++) {
-				person_type& p = *p_cluster.GetMember(i_p);
+				Person& p = *p_cluster.GetMember(i_p);
 
 				if (p.GetHealth().IsSusceptible() && p.GetAge() >= adult_age_min &&
 				    p.GetAge() <= adult_age_max) {
@@ -138,7 +134,7 @@ public:
 					bool is_connected_to_target_age = false;
 					for (unsigned int i_p2 = 0;
 					     i_p2 < p_cluster.GetSize() && !is_connected_to_target_age; i_p2++) {
-						const person_type& p2 = *p_cluster.GetMember(i_p2);
+						const Person& p2 = *p_cluster.GetMember(i_p2);
 						if (p2.GetAge() >= child_age_min && p2.GetAge() <= child_age_max) {
 							is_connected_to_target_age = true;
 						}
@@ -152,10 +148,7 @@ public:
 	}
 
 	/// Apply the immunization strategy in the configuration file to the Simulator object.
-	static void Apply(const std::string s,
-			  std::shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy,
-						    behaviour_policy>>
-			      sim,
+	static void Apply(const std::string s, std::shared_ptr<Simulator> sim,
 			  const boost::property_tree::ptree& pt_config, const boost::property_tree::ptree& pt_disease,
 			  util::Random& rng)
 	{
@@ -169,7 +162,7 @@ public:
 			std::vector<double> immunity_distribution;
 
 			// default
-			std::vector<Cluster<person_type>>* immunity_clusters = &sim->m_households;
+			std::vector<Cluster>* immunity_clusters = &sim->m_households;
 
 			const double immunity_link_probability =
 			    ((immunity_profile == "Cocoon")

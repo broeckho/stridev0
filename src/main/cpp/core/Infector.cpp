@@ -32,31 +32,31 @@ using namespace std;
 /**
  * Primary R0_POLICY: do nothing i.e. track all cases.
  */
-template <bool track_index_case, typename person_type>
+template <bool track_index_case>
 class R0_POLICY
 {
 public:
-	static void Execute(person_type* p) {}
+	static void Execute(Person* p) {}
 };
 
 /**
  * Specialized R0_POLICY: track only the index case.
  */
-template <typename person_type>
-class R0_POLICY<true, person_type>
+template<>
+class R0_POLICY<true>
 {
 public:
-	static void Execute(person_type* p) { p->GetHealth().StopInfection(); }
+	static void Execute(Person* p) { p->GetHealth().StopInfection(); }
 };
 
 /**
  * Primary LOG_POLICY policy, implements LogMode::None.
  */
-template <LogMode log_level, typename person_type>
+template <LogMode log_level>
 class LOG_POLICY
 {
 public:
-	static void Execute(shared_ptr<spdlog::logger> logger, person_type* p1, person_type* p2,
+	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
 			    ClusterType cluster_type, shared_ptr<const Calendar> environ)
 	{
 	}
@@ -65,11 +65,11 @@ public:
 /**
  * Specialized LOG_POLICY policy LogMode::Transmissions.
  */
-template <typename person_type>
-class LOG_POLICY<LogMode::Transmissions, person_type>
+template<>
+class LOG_POLICY<LogMode::Transmissions>
 {
 public:
-	static void Execute(shared_ptr<spdlog::logger> logger, person_type* p1, person_type* p2,
+	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
 			    ClusterType cluster_type, shared_ptr<const Calendar> environ)
 	{
 		logger->info("[TRAN] {} {} {} {}", p1->GetId(), p2->GetId(), ToString(cluster_type),
@@ -80,11 +80,11 @@ public:
 /**
  * Specialized LOG_POLICY policy LogMode::Contacts.
  */
-template <typename person_type>
-class LOG_POLICY<LogMode::Contacts, person_type>
+template<>
+class LOG_POLICY<LogMode::Contacts>
 {
 public:
-	static void Execute(shared_ptr<spdlog::logger> logger, person_type* p1, person_type* p2,
+	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
 			    ClusterType cluster_type, shared_ptr<const Calendar> calendar)
 	{
 		unsigned int home = (cluster_type == ClusterType::Household);
@@ -104,9 +104,9 @@ public:
 // track_index_case false and true.
 // And every local information policy except NoLocalInformation
 //--------------------------------------------------------------------------
-template <LogMode log_level, bool track_index_case, typename local_information_policy, typename person_type>
-void Infector<log_level, track_index_case, local_information_policy, person_type>::Execute(
-    Cluster<person_type>& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
+template <LogMode log_level, bool track_index_case, typename local_information_policy>
+void Infector<log_level, track_index_case, local_information_policy>::Execute(
+    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
     shared_ptr<const Calendar> calendar)
 {
 	cluster.UpdateMemberPresence();
@@ -139,16 +139,16 @@ void Infector<log_level, track_index_case, local_information_policy, person_type
 						if (transmission) {
 							if (p1->GetHealth().IsInfectious() &&
 							    p2->GetHealth().IsSusceptible()) {
-								LOG_POLICY<log_level, person_type>::Execute(
+								LOG_POLICY<log_level>::Execute(
 								    logger, p1, p2, c_type, calendar);
 								p2->GetHealth().StartInfection();
-								R0_POLICY<track_index_case, person_type>::Execute(p2);
+								R0_POLICY<track_index_case>::Execute(p2);
 							} else if (p2->GetHealth().IsInfectious() &&
 								   p1->GetHealth().IsSusceptible()) {
-								LOG_POLICY<log_level, person_type>::Execute(
+								LOG_POLICY<log_level>::Execute(
 								    logger, p2, p1, c_type, calendar);
 								p1->GetHealth().StartInfection();
-								R0_POLICY<track_index_case, person_type>::Execute(p1);
+								R0_POLICY<track_index_case>::Execute(p1);
 							}
 						}
 					}
@@ -161,9 +161,9 @@ void Infector<log_level, track_index_case, local_information_policy, person_type
 //-------------------------------------------------------------------------------------------
 // Definition of partial specialization for LocalInformationPolicy:NoLocalInformation.
 //-------------------------------------------------------------------------------------------
-template <LogMode log_level, bool track_index_case, typename person_type>
-void Infector<log_level, track_index_case, NoLocalInformation, person_type>::Execute(
-    Cluster<person_type>& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
+template <LogMode log_level, bool track_index_case>
+void Infector<log_level, track_index_case, NoLocalInformation>::Execute(
+    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
     shared_ptr<const Calendar> calendar)
 {
 
@@ -211,9 +211,8 @@ void Infector<log_level, track_index_case, NoLocalInformation, person_type>::Exe
 								    p2->GetHealth().IsSusceptible()) {
 
 									p2->GetHealth().StartInfection();
-									R0_POLICY<track_index_case,
-										  person_type>::Execute(p2);
-									LOG_POLICY<log_level, person_type>::Execute(
+									R0_POLICY<track_index_case>::Execute(p2);
+									LOG_POLICY<log_level>::Execute(
 									    logger, p1, p2, c_type, calendar);
 								}
 							}
@@ -228,9 +227,9 @@ void Infector<log_level, track_index_case, NoLocalInformation, person_type>::Exe
 //-------------------------------------------------------------------------------------------
 // Definition of partial specialization for LogMode::Contacts and NoLocalInformation policy.
 //-------------------------------------------------------------------------------------------
-template <bool track_index_case, typename person_type>
-void Infector<LogMode::Contacts, track_index_case, NoLocalInformation, person_type>::Execute(
-    Cluster<person_type>& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
+template <bool track_index_case>
+void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
+    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
     shared_ptr<const Calendar> calendar)
 {
 	cluster.UpdateMemberPresence();
@@ -257,12 +256,12 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation, person_ty
 
 						// log contact, if person 1 is participating in survey
 						if (c_members[i_person1].first->IsParticipatingInSurvey()) {
-							LOG_POLICY<LogMode::Contacts, person_type>::Execute(
+							LOG_POLICY<LogMode::Contacts>::Execute(
 							    logger, p1, p2, c_type, calendar);
 						}
 						// log contact, if person 2 is participating in survey
 						if (c_members[i_person2].first->IsParticipatingInSurvey()) {
-							LOG_POLICY<LogMode::Contacts, person_type>::Execute(
+							LOG_POLICY<LogMode::Contacts>::Execute(
 							    logger, p2, p1, c_type, calendar);
 						}
 
@@ -272,11 +271,11 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation, person_ty
 							if (p1->GetHealth().IsInfectious() &&
 							    p2->GetHealth().IsSusceptible()) {
 								p2->GetHealth().StartInfection();
-								R0_POLICY<track_index_case, person_type>::Execute(p2);
+								R0_POLICY<track_index_case>::Execute(p2);
 							} else if (p2->GetHealth().IsInfectious() &&
 								   p1->GetHealth().IsSusceptible()) {
 								p1->GetHealth().StartInfection();
-								R0_POLICY<track_index_case, person_type>::Execute(p1);
+								R0_POLICY<track_index_case>::Execute(p1);
 							}
 						}
 					}
@@ -289,85 +288,20 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation, person_ty
 //--------------------------------------------------------------------------
 // All explicit instantiations.
 //--------------------------------------------------------------------------
-template class Infector<LogMode::None, false, NoLocalInformation, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::None, false, NoLocalInformation, PersonVaccinationThresholdTF>;
-template class Infector<LogMode::None, false, NoLocalInformation, PersonVaccinationThresholdFT>;
-template class Infector<LogMode::None, false, NoLocalInformation, PersonVaccinationThresholdTT>;
+template class Infector<LogMode::None, false, NoLocalInformation>;
+template class Infector<LogMode::None, false, LocalDiscussion>;
+template class Infector<LogMode::None, true, NoLocalInformation>;
+template class Infector<LogMode::None, true, LocalDiscussion>;
 
-template class Infector<LogMode::None, false, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::None, false, LocalDiscussion<PersonVaccinationThresholdTF>,
-			PersonVaccinationThresholdTF>;
-template class Infector<LogMode::None, false, LocalDiscussion<PersonVaccinationThresholdFT>,
-			PersonVaccinationThresholdFT>;
-template class Infector<LogMode::None, false, LocalDiscussion<PersonVaccinationThresholdTT>,
-			PersonVaccinationThresholdTT>;
+template class Infector<LogMode::Transmissions, false, NoLocalInformation>;
+template class Infector<LogMode::Transmissions, false, LocalDiscussion>;
+template class Infector<LogMode::Transmissions, true, NoLocalInformation>;
+template class Infector<LogMode::Transmissions, true, LocalDiscussion>;
 
-template class Infector<LogMode::None, true, NoLocalInformation, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::None, true, NoLocalInformation, PersonVaccinationThresholdTF>;
-template class Infector<LogMode::None, true, NoLocalInformation, PersonVaccinationThresholdFT>;
-template class Infector<LogMode::None, true, NoLocalInformation, PersonVaccinationThresholdTT>;
+template class Infector<LogMode::Contacts, false, NoLocalInformation>;
+template class Infector<LogMode::Contacts, false, LocalDiscussion>;
+template class Infector<LogMode::Contacts, true, NoLocalInformation>;
+template class Infector<LogMode::Contacts, true, LocalDiscussion>;
 
-template class Infector<LogMode::None, true, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::None, true, LocalDiscussion<PersonVaccinationThresholdTF>,
-			PersonVaccinationThresholdTF>;
-template class Infector<LogMode::None, true, LocalDiscussion<PersonVaccinationThresholdFT>,
-			PersonVaccinationThresholdFT>;
-template class Infector<LogMode::None, true, LocalDiscussion<PersonVaccinationThresholdTT>,
-			PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Transmissions, false, NoLocalInformation, PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonNoBehaviourNoBelief>,
-			PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonVaccinationThresholdTF>,
-			PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonVaccinationThresholdFT>,
-			PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Transmissions, false, LocalDiscussion<PersonVaccinationThresholdTT>,
-			PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Transmissions, true, NoLocalInformation, PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonNoBehaviourNoBelief>,
-			PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonVaccinationThresholdTF>,
-			PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonVaccinationThresholdFT>,
-			PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Transmissions, true, LocalDiscussion<PersonVaccinationThresholdTT>,
-			PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Contacts, false, NoLocalInformation, PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonNoBehaviourNoBelief>,
-			PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonVaccinationThresholdTF>,
-			PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonVaccinationThresholdFT>,
-			PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Contacts, false, LocalDiscussion<PersonVaccinationThresholdTT>,
-			PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Contacts, true, NoLocalInformation, PersonVaccinationThresholdTT>;
-
-template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonNoBehaviourNoBelief>, PersonNoBehaviourNoBelief>;
-template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonVaccinationThresholdTF>,
-			PersonVaccinationThresholdTF>;
-template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonVaccinationThresholdFT>,
-			PersonVaccinationThresholdFT>;
-template class Infector<LogMode::Contacts, true, LocalDiscussion<PersonVaccinationThresholdTT>,
-			PersonVaccinationThresholdTT>;
 
 } // end_of_namespace

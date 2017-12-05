@@ -22,7 +22,6 @@
 
 namespace stride {
 
-template <typename BehaviourPolicy, typename BeliefPolicy>
 class Person;
 
 // p(behaviour) = OR0 * (OR1^x1 * OR2^x2 * OR3^x3 * OR4^x4)/ (1 + OR0 * (prod ORi^xi))
@@ -35,7 +34,7 @@ public:
 	static void Update(Data& belief_data, Health& health_data) {}
 
 	template <typename BehaviourPolicy>
-	static void Update(Data& belief_data, const Person<BehaviourPolicy, HBM>* p)
+	static void Update(Data& belief_data, const Person* p)
 	{
 	}
 

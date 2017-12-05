@@ -46,48 +46,13 @@ using namespace util;
 void run_stride(bool track_index_case, const std::string& config_file_name);
 
 /**
- * Create the simulator.
- */
-template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
-shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>>
-create_simulator(const boost::property_tree::ptree& pt_config, unsigned int num_threads, bool track_index_case = false)
-{
-	cout << "Building the simulator. " << endl;
-	auto sim = SimulatorBuilder<global_information_policy, local_information_policy, belief_policy,
-				    behaviour_policy>::Build(pt_config, num_threads, track_index_case);
-	cout << "Done building the simulator. " << endl;
-	return sim;
-}
-
-/**
  * Generate output files (at end of simulation).
  */
-template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
 void generate_output_files(
     const string& output_prefix, const vector<unsigned int>& cases, const vector<unsigned int>& adopted,
     const boost::property_tree::ptree& pt_config,
-    const shared_ptr<Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>>
+    const shared_ptr<Simulator>
 	sim,
-    const unsigned int run_time, const unsigned int total_time)
-{
-	// Cases
-	CasesFile cases_file(output_prefix);
-	cases_file.Print(cases);
-
-	// Adopted
-	AdoptedFile adopted_file(output_prefix);
-	adopted_file.Print(adopted);
-
-	// Summary
-	SummaryFile summary_file(output_prefix);
-	summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
-			   sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
-
-	// Persons
-	if (pt_config.get<double>("run.generate_person_file") == 1) {
-		PersonFile person_file(output_prefix);
-		person_file.Print(sim->GetPopulation());
-	}
-}
+    const unsigned int run_time, const unsigned int total_time);
 
 } // end_of_namespace

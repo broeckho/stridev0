@@ -41,8 +41,7 @@ public:
 	~PersonFile();
 
 	/// Print the given cases with corresponding tag.
-	template <class person_type>
-	void Print(const std::shared_ptr<const Population<person_type>> population)
+	void Print(const std::shared_ptr<const Population> population)
 	{
 		for (const auto& p : *population) {
 			const auto& h = p.GetHealth();

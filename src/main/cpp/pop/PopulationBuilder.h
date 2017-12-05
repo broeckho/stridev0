@@ -40,7 +40,6 @@ using namespace stride::util;
 /**
  * Initializes Population objects.
  */
-template <typename person_type>
 class PopulationBuilder
 {
 public:
@@ -51,15 +50,15 @@ public:
 	 * @param pt_disease    Property_tree with disease configuration settings.
 	 * @return              Pointer to the initialized population.
 	 */
-	static std::shared_ptr<Population<person_type>> Build(const boost::property_tree::ptree& pt_config,
-							      const boost::property_tree::ptree& pt_disease,
-							      util::Random& rng)
+	static std::shared_ptr<Population> Build(const boost::property_tree::ptree& pt_config,
+						 const boost::property_tree::ptree& pt_disease,
+						 util::Random& rng)
 	{
 		// ------------------------------------------------
 		// Setup.
 		// ------------------------------------------------
-		const auto pop = make_shared<Population<person_type>>();
-		Population<person_type>& population = *pop;
+		const auto pop = make_shared<Population>();
+		Population& population = *pop;
 
 		const double seeding_rate = pt_config.get<double>("run.seeding_rate");
 		// const double immunity_rate = pt_config.get<double>("run.immunity_rate");
@@ -128,7 +127,7 @@ public:
 			unsigned int primary_community_id = StringUtils::FromString<unsigned int>(values[4]);
 			unsigned int secondary_community_id = StringUtils::FromString<unsigned int>(values[5]);
 
-			population.emplace_back(person_type(person_id, age, household_id, school_id, work_id,
+			population.emplace_back(Person(person_id, age, household_id, school_id, work_id,
 							    primary_community_id, secondary_community_id,
 							    start_infectiousness, start_symptomatic, time_infectious,
 							    time_symptomatic, risk_averseness));
@@ -158,7 +157,7 @@ public:
 			// A for loop will not do because we might draw the same person twice.
 			unsigned int num_samples = 0;
 			while (num_samples < num_participants) {
-				person_type& p = population[rng(max_population_index)];
+				Person& p = population[rng(max_population_index)];
 				if (!p.IsParticipatingInSurvey()) {
 					p.ParticipateInSurvey();
 					logger->info("[PART] {}", p.GetId());
@@ -169,32 +168,6 @@ public:
 				}
 			}
 		}
-
-		/*// ------------------------------------------------
-		// Set population immunity.
-		// ------------------------------------------------
-		unsigned int num_immune = floor(static_cast<double>(population.size()) * immunity_rate);
-		while (num_immune > 0) {
-			person_type& p = population[rng(max_population_index)];
-			if (p.GetHealth().IsSusceptible()) {
-				p.GetHealth().SetImmune();
-				num_immune--;
-			}
-		}
-
-		//------------------------------------------------
-		// Seed infected persons.
-		//------------------------------------------------
-		unsigned int num_infected = floor(static_cast<double>(population.size()) * seeding_rate);
-		while (num_infected > 0) {
-			person_type& p = population[rng(max_population_index)];
-			if (p.GetHealth().IsSusceptible()) {
-				p.GetHealth().StartInfection();
-				num_infected--;
-
-				logger->info("[PRIM] {} {} {} {}", p.GetId(), -1, -1, 0);
-			}
-		}*/
 
 		//------------------------------------------------
 		// Done

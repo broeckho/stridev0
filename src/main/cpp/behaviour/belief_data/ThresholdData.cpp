@@ -17,9 +17,9 @@
 
 namespace stride {
 
-template <typename BehaviourPolicy, typename BeliefPolicy>
-void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)
+void ThresholdData::Contact(const Person* p)
 {
+        /*
 	m_num_contacts++;
 	if (p->GetHealth().IsSymptomatic()) {
 		m_num_contacts_infected++;
@@ -28,13 +28,7 @@ void ThresholdData::Contact(const Person<BehaviourPolicy, BeliefPolicy>* p)
 	if (BeliefPolicy::HasAdopted(other_belief_data)) {
 		m_num_contacts_adopted++;
 	}
+	*/
 }
-
-template void ThresholdData::Contact<Vaccination<Threshold<true, false>>, Threshold<true, false>>(
-    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>* p);
-template void ThresholdData::Contact<Vaccination<Threshold<false, true>>, Threshold<false, true>>(
-    const Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>* p);
-template void ThresholdData::Contact<Vaccination<Threshold<true, true>>, Threshold<true, true>>(
-    const Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>* p);
 
 } // end of namespace

@@ -25,7 +25,6 @@
  */
 namespace stride {
 
-template <typename BehaviourPolicy, typename BeliefPolicy>
 class Person;
 
 template <bool threshold_infected, bool threshold_adopted>
@@ -68,8 +67,7 @@ public:
 		return (double)m_num_contacts_adopted / m_num_contacts;
 	}
 
-	template <typename BehaviourPolicy, typename BeliefPolicy>
-	void Contact(const Person<BehaviourPolicy, BeliefPolicy>* p);
+	void Contact(const Person* p);
 
 private:
 	unsigned int m_num_contacts;          ///<
@@ -80,12 +78,5 @@ private:
 	double m_threshold_adopted;  ///< Fraction of contacts that needs to have adopted the belief for person to also
 				     /// adopt.
 };
-
-extern template void ThresholdData::Contact<Vaccination<Threshold<true, false>>, Threshold<true, false>>(
-    const Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>* p);
-extern template void ThresholdData::Contact<Vaccination<Threshold<false, true>>, Threshold<false, true>>(
-    const Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>* p);
-extern template void ThresholdData::Contact<Vaccination<Threshold<true, true>>, Threshold<true, true>>(
-    const Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>* p);
 
 } // end of namespace

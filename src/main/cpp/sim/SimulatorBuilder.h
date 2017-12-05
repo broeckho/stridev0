@@ -44,18 +44,10 @@ using namespace stride::util;
 /**
  * Class to build the simulator.
  */
-template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
 class SimulatorBuilder
 {
 public:
-	using TSimulator =
-	    Simulator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>;
-	using TPerson = Person<behaviour_policy, belief_policy>;
-	using TVaccinator =
-	    Vaccinator<global_information_policy, local_information_policy, belief_policy, behaviour_policy>;
-
-public:
-	static std::shared_ptr<TSimulator> Build(const string& config_file_name, unsigned int num_threads,
+	static std::shared_ptr<Simulator> Build(const string& config_file_name, unsigned int num_threads,
 						 bool track_index_case)
 	{
 		ptree pt_config;
@@ -69,7 +61,7 @@ public:
 	}
 
 	/// Build simulator
-	static std::shared_ptr<TSimulator> Build(const ptree& pt_config, unsigned int num_threads,
+	static std::shared_ptr<Simulator> Build(const ptree& pt_config, unsigned int num_threads,
 						 bool track_index_case = false)
 	{
 		ptree pt_disease;
@@ -94,11 +86,11 @@ public:
 	}
 
 	/// Build simulator.
-	static std::shared_ptr<TSimulator> Build(const ptree& pt_config, const ptree& pt_disease,
+	static std::shared_ptr<Simulator> Build(const ptree& pt_config, const ptree& pt_disease,
 						 const ptree& pt_contact, unsigned int number_of_threads = 1U,
 						 bool track_index_case = false)
 	{
-		auto sim = make_shared<TSimulator>();
+		auto sim = make_shared<Simulator>();
 		const shared_ptr<spdlog::logger> logger = spdlog::get("contact_logger");
 
 		sim->m_config_pt = pt_config;                       // Initialize config ptree.
@@ -114,14 +106,14 @@ public:
 
 		// Build population.
 		Random rng(pt_config.get<double>("run.rng_seed"));
-		sim->m_population = PopulationBuilder<TPerson>::Build(pt_config, pt_disease, rng);
+		sim->m_population = PopulationBuilder::Build(pt_config, pt_disease, rng);
 
 		// Initialize clusters.
 		InitializeClusters(sim);
 
 		// Initialize population immunity
-		TVaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
-		TVaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
+		Vaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
+		Vaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
 
 		// Initialize disease profile.
 		sim->m_disease_profile.Initialize(pt_config, pt_disease);
@@ -135,7 +127,7 @@ public:
 		const unsigned int max_population_index = sim->m_population->size() - 1;
 		unsigned int num_infected = floor(static_cast<double>(sim->m_population->size()) * seeding_rate);
 		while (num_infected > 0) {
-			Person<behaviour_policy, belief_policy>& p = sim->m_population->at(rng(max_population_index));
+			Person& p = sim->m_population->at(rng(max_population_index));
 			if (p.GetHealth().IsSusceptible() && (p.GetAge() >= seeding_age_min) &&
 			    (p.GetAge() <= seeding_age_max)) {
 				p.GetHealth().StartInfection();
@@ -151,14 +143,14 @@ public:
 		}
 
 		// Initialize contact profiles.
-		Cluster<TPerson>::AddContactProfile(ClusterType::Household,
+		Cluster::AddContactProfile(ClusterType::Household,
 						    ContactProfile(ClusterType::Household, pt_contact));
-		Cluster<TPerson>::AddContactProfile(ClusterType::School,
+		Cluster::AddContactProfile(ClusterType::School,
 						    ContactProfile(ClusterType::School, pt_contact));
-		Cluster<TPerson>::AddContactProfile(ClusterType::Work, ContactProfile(ClusterType::Work, pt_contact));
-		Cluster<TPerson>::AddContactProfile(ClusterType::PrimaryCommunity,
+		Cluster::AddContactProfile(ClusterType::Work, ContactProfile(ClusterType::Work, pt_contact));
+		Cluster::AddContactProfile(ClusterType::PrimaryCommunity,
 						    ContactProfile(ClusterType::PrimaryCommunity, pt_contact));
-		Cluster<TPerson>::AddContactProfile(ClusterType::SecondaryCommunity,
+		Cluster::AddContactProfile(ClusterType::SecondaryCommunity,
 						    ContactProfile(ClusterType::SecondaryCommunity, pt_contact));
 
 		// Done.
@@ -167,7 +159,7 @@ public:
 
 private:
 	/// Initialize the clusters.
-	static void InitializeClusters(std::shared_ptr<TSimulator> sim)
+	static void InitializeClusters(std::shared_ptr<Simulator> sim)
 	{
 		// Determine the number of clusters.
 		unsigned int max_id_households{0U};
@@ -175,7 +167,7 @@ private:
 		unsigned int max_id_work_clusters{0U};
 		unsigned int max_id_primary_community{0U};
 		unsigned int max_id_secondary_community{0U};
-		Population<TPerson>& population{*sim->m_population};
+		Population& population{*sim->m_population};
 
 		for (const auto& p : population) {
 			max_id_households = std::max(max_id_households, p.GetClusterId(ClusterType::Household));
@@ -191,24 +183,24 @@ private:
 		unsigned int c_id = 1;
 
 		for (size_t i = 0; i <= max_id_households; i++) {
-			sim->m_households.emplace_back(Cluster<TPerson>(c_id, ClusterType::Household));
+			sim->m_households.emplace_back(Cluster(c_id, ClusterType::Household));
 			c_id++;
 		}
 		for (size_t i = 0; i <= max_id_school_clusters; i++) {
-			sim->m_school_clusters.emplace_back(Cluster<TPerson>(c_id, ClusterType::School));
+			sim->m_school_clusters.emplace_back(Cluster(c_id, ClusterType::School));
 			c_id++;
 		}
 		for (size_t i = 0; i <= max_id_work_clusters; i++) {
-			sim->m_work_clusters.emplace_back(Cluster<TPerson>(c_id, ClusterType::Work));
+			sim->m_work_clusters.emplace_back(Cluster(c_id, ClusterType::Work));
 			c_id++;
 		}
 		for (size_t i = 0; i <= max_id_primary_community; i++) {
-			sim->m_primary_community.emplace_back(Cluster<TPerson>(c_id, ClusterType::PrimaryCommunity));
+			sim->m_primary_community.emplace_back(Cluster(c_id, ClusterType::PrimaryCommunity));
 			c_id++;
 		}
 		for (size_t i = 0; i <= max_id_secondary_community; i++) {
 			sim->m_secondary_community.emplace_back(
-			    Cluster<TPerson>(c_id, ClusterType::SecondaryCommunity));
+			    Cluster(c_id, ClusterType::SecondaryCommunity));
 			c_id++;
 		}
 

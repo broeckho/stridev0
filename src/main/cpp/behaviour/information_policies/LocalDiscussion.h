@@ -14,6 +14,7 @@
  *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
 
+#include "pop/Person.h"
 #include "util/RNG.h"
 
 namespace stride {
@@ -24,11 +25,10 @@ namespace stride {
  * with each other with a certain probability.
  * TODO make this probability configurable
  */
-template <typename PersonType>
 class LocalDiscussion
 {
 public:
-	static void Update(PersonType* p1, PersonType* p2)
+	static void Update(Person* p1, Person* p2)
 	{
 		if (RNG::GetInstance().NextDouble() < 1.0) {
 			p1->Update(p2);

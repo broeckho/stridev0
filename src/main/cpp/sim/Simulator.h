@@ -38,22 +38,10 @@ namespace stride {
 /**
  * Main class that contains and direct the virtual world.
  */
-template <class global_information_policy, class local_information_policy, class belief_policy, class behaviour_policy>
 class Simulator
 {
 public:
-	/// Information policies
-	using GlobalInformationPolicy = global_information_policy;
-	using LocalInformationPolicy = local_information_policy;
-
-	/// Belief policy
-	using BeliefPolicy = belief_policy;
-
-	/// Behaviour policy
-	using BehaviourPolicy = behaviour_policy;
-
-	/// Person type
-	using PersonType = Person<BehaviourPolicy, BeliefPolicy>;
+        using LocalInformationPolicy = NoLocalInformation;
 
 public:
 	/// Default constructor for empty Simulator.
@@ -64,7 +52,7 @@ public:
 	}
 
 	/// Get the population.
-	const std::shared_ptr<const Population<PersonType>> GetPopulation() const { return m_population; }
+	const std::shared_ptr<const Population> GetPopulation() const { return m_population; }
 
 	/// Get the disease profile.
 	const DiseaseProfile GetDiseaseProfile() const { return m_disease_profile; }
@@ -138,25 +126,25 @@ private:
 
 #pragma omp for schedule(runtime)
 			for (size_t i = 0; i < m_households.size(); i++) {
-				Infector<log_level, track_index_case, LocalInformationPolicy, PersonType>::Execute(
+				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
 				    m_households[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 			}
 
 #pragma omp for schedule(runtime)
 			for (size_t i = 0; i < m_school_clusters.size(); i++) {
-				Infector<log_level, track_index_case, LocalInformationPolicy, PersonType>::Execute(
+				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
 				    m_school_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 			}
 
 #pragma omp for schedule(runtime)
 			for (size_t i = 0; i < m_work_clusters.size(); i++) {
-				Infector<log_level, track_index_case, LocalInformationPolicy, PersonType>::Execute(
+				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
 				    m_work_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 			}
 
 #pragma omp for schedule(runtime)
 			for (size_t i = 0; i < m_secondary_community.size(); i++) {
-				Infector<log_level, track_index_case, LocalInformationPolicy, PersonType>::Execute(
+				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
 				    m_secondary_community[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 			}
 		}
@@ -172,24 +160,19 @@ private:
 	std::shared_ptr<Calendar> m_calendar;  ///< Management of calendar.
 
 private:
-	std::shared_ptr<Population<PersonType>> m_population; ///< Pointer to the Population.
+	std::shared_ptr<Population> m_population; ///< Pointer to the Population.
 
-	std::vector<Cluster<PersonType>> m_households;          ///< Container with household Clusters.
-	std::vector<Cluster<PersonType>> m_school_clusters;     ///< Container with school Clusters.
-	std::vector<Cluster<PersonType>> m_work_clusters;       ///< Container with work Clusters.
-	std::vector<Cluster<PersonType>> m_primary_community;   ///< Container with primary community Clusters.
-	std::vector<Cluster<PersonType>> m_secondary_community; ///< Container with secondary community  Clusters.
+	std::vector<Cluster> m_households;          ///< Container with household Clusters.
+	std::vector<Cluster> m_school_clusters;     ///< Container with school Clusters.
+	std::vector<Cluster> m_work_clusters;       ///< Container with work Clusters.
+	std::vector<Cluster> m_primary_community;   ///< Container with primary community Clusters.
+	std::vector<Cluster> m_secondary_community; ///< Container with secondary community  Clusters.
 
 	DiseaseProfile m_disease_profile; ///< Profile of disease.
 	bool m_track_index_case;          ///< General simulation or tracking index case.
 
 private:
-	template <class b_global_information_policy, class b_local_information_policy, class b_belief_policy,
-		  class b_behaviour_policy>
 	friend class SimulatorBuilder;
-
-	template <class c_global_information_policy, class c_local_information_policy, class c_belief_policy,
-		  class c_behaviour_policy>
 	friend class Vaccinator;
 };
 

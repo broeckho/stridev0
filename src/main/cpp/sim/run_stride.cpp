@@ -44,6 +44,34 @@ using namespace boost::property_tree;
 using namespace std;
 using namespace std::chrono;
 
+void generate_output_files(
+    const string& output_prefix, const vector<unsigned int>& cases, const vector<unsigned int>& adopted,
+    const boost::property_tree::ptree& pt_config,
+    const shared_ptr<Simulator>
+        sim,
+    const unsigned int run_time, const unsigned int total_time)
+{
+        // Cases
+        CasesFile cases_file(output_prefix);
+        cases_file.Print(cases);
+
+        // Adopted
+        AdoptedFile adopted_file(output_prefix);
+        adopted_file.Print(adopted);
+
+        // Summary
+        SummaryFile summary_file(output_prefix);
+        summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
+                           sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
+
+        // Persons
+        if (pt_config.get<double>("run.generate_person_file") == 1) {
+                PersonFile person_file(output_prefix);
+                person_file.Print(sim->GetPopulation());
+        }
+}
+
+
 /// Run the stride simulator.
 void run_stride(bool track_index_case, const string& config_file_name)
 {
@@ -139,172 +167,74 @@ void run_stride(bool track_index_case, const string& config_file_name)
 
 	Stopwatch<> total_clock("total_clock", true);
 
-	if (global_information_policy == "NoGlobalInformation") {
-		using GlobalInformationPolicy = NoGlobalInformation;
+	using GlobalInformationPolicy = NoGlobalInformation;
+	using LocalInformationPolicy = NoLocalInformation;
+	using BeliefPolicy = NoBelief;
+	using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
 
-		if (local_information_policy == "NoLocalInformation") {
-			using LocalInformationPolicy = NoLocalInformation;
 
-			if (belief_policy == "NoBelief") {
-				using BeliefPolicy = NoBelief;
+        // ------------------------------------------------------------------------------
+        // Create the simulator.
+        //------------------------------------------------------------------------------
+        cout << "Building the simulator. " << endl;
+        auto sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
+        cout << "Done building the simulator. " << endl;
 
-				if (behaviour_policy == "NoBehaviour") {
-					using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
+        // -----------------------------------------------------------------------------------------
+        // Check the simulator.
+        // -----------------------------------------------------------------------------------------
+        bool simulator_is_operational = sim->IsOperational();
+        if (simulator_is_operational) {
+                cout << "Done checking the simulator. " << endl << endl;
+        } else {
+                file_logger->info("[ERROR] Invalid configuration");
+                cout << "Invalid configuration => terminate without output" << endl
+                        << endl;
+        }
 
-					// ------------------------------------------------------------------------------
-					// Create the simulator.
-					//------------------------------------------------------------------------------
-					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy,
-								    BeliefPolicy, BehaviourPolicy>(
-					    pt_config, num_threads, track_index_case);
+        // -----------------------------------------------------------------------------------------
+        // Run the simulation (if operational).
+        // -----------------------------------------------------------------------------------------
+        Stopwatch<> run_clock("run_clock");
+        if (simulator_is_operational) {
+                const unsigned int num_days =
+                        pt_config.get<unsigned int>("run.num_days");
+                vector<unsigned int> cases(num_days);
+                vector<unsigned int> adopted(num_days);
+                for (unsigned int i = 0; i < num_days; i++) {
+                        cout << "Simulating day: " << setw(5) << i;
+                        run_clock.Start();
+                        sim->TimeStep();
+                        run_clock.Stop();
+                        cout << "     Done, infected count: ";
 
-					// -----------------------------------------------------------------------------------------
-					// Check the simulator.
-					// -----------------------------------------------------------------------------------------
-					bool simulator_is_operational = sim->IsOperational();
-					if (simulator_is_operational) {
-						cout << "Done checking the simulator. " << endl << endl;
-					} else {
-						file_logger->info("[ERROR] Invalid configuration");
-						cout << "Invalid configuration => terminate without output" << endl
-						     << endl;
-					}
+                        cases[i] = sim->GetPopulation()->GetInfectedCount();
+                        adopted[i] =
+                                sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
 
-					// -----------------------------------------------------------------------------------------
-					// Run the simulation (if operational).
-					// -----------------------------------------------------------------------------------------
-					Stopwatch<> run_clock("run_clock");
-					if (simulator_is_operational) {
-						const unsigned int num_days =
-						    pt_config.get<unsigned int>("run.num_days");
-						vector<unsigned int> cases(num_days);
-						vector<unsigned int> adopted(num_days);
-						for (unsigned int i = 0; i < num_days; i++) {
-							cout << "Simulating day: " << setw(5) << i;
-							run_clock.Start();
-							sim->TimeStep();
-							run_clock.Stop();
-							cout << "     Done, infected count: ";
+                        cout << setw(7) << cases[i]
+                                << "     Adopters count: " << setw(7) << adopted[i]
+                                << endl;
+                }
 
-							cases[i] = sim->GetPopulation()->GetInfectedCount();
-							adopted[i] =
-							    sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
+                // -----------------------------------------------------------------------------------------
+                // Generate output files
+                // -----------------------------------------------------------------------------------------
+                generate_output_files(
+                        output_prefix, cases, adopted, pt_config, sim,
+                        duration_cast<milliseconds>(run_clock.Get()).count(),
+                        duration_cast<milliseconds>(total_clock.Get()).count());
+        }
 
-							cout << setw(7) << cases[i]
-							     << "     Adopters count: " << setw(7) << adopted[i]
-							     << endl;
-						}
+        // -----------------------------------------------------------------------------------------
+        // Print final message to command line.
+        // -----------------------------------------------------------------------------------------
+        cout << endl << endl;
 
-						// -----------------------------------------------------------------------------------------
-						// Generate output files
-						// -----------------------------------------------------------------------------------------
-						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy,
-								      BeliefPolicy, BehaviourPolicy>(
-						    output_prefix, cases, adopted, pt_config, sim,
-						    duration_cast<milliseconds>(run_clock.Get()).count(),
-						    duration_cast<milliseconds>(total_clock.Get()).count());
-					}
-
-					// -----------------------------------------------------------------------------------------
-					// Print final message to command line.
-					// -----------------------------------------------------------------------------------------
-					cout << endl << endl;
-
-					cout << "  run_time: " << run_clock.ToString()
-					     << "  -- total time: " << total_clock.ToString() << endl
-					     << endl;
-					cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
-
-				} else {
-					throw std::runtime_error(std::string(__func__) + "No valid behaviour policy!");
-				}
-			} else {
-				throw std::runtime_error(std::string(__func__) + "No valid belief policy!");
-			}
-		} else if (local_information_policy == "LocalDiscussion") {
-			if (belief_policy == "NoBelief") {
-				using BeliefPolicy = NoBelief;
-
-				if (behaviour_policy == "NoBehaviour") {
-					using BehaviourPolicy = NoBehaviour<BeliefPolicy>;
-					using LocalInformationPolicy =
-					    LocalDiscussion<Person<BehaviourPolicy, BeliefPolicy>>;
-
-					// ------------------------------------------------------------------------------
-					// Create the simulator.
-					//------------------------------------------------------------------------------
-					auto sim = create_simulator<GlobalInformationPolicy, LocalInformationPolicy,
-								    BeliefPolicy, BehaviourPolicy>(
-					    pt_config, num_threads, track_index_case);
-
-					// -----------------------------------------------------------------------------------------
-					// Check the simulator.
-					// -----------------------------------------------------------------------------------------
-					bool simulator_is_operational = sim->IsOperational();
-					if (simulator_is_operational) {
-						cout << "Done checking the simulator. " << endl << endl;
-					} else {
-						file_logger->info("[ERROR] Invalid configuration");
-						cout << "Invalid configuration => terminate without output" << endl
-						     << endl;
-					}
-
-					// -----------------------------------------------------------------------------------------
-					// Run the simulation (if operational).
-					// -----------------------------------------------------------------------------------------
-					Stopwatch<> run_clock("run_clock");
-					if (simulator_is_operational) {
-						const unsigned int num_days =
-						    pt_config.get<unsigned int>("run.num_days");
-						vector<unsigned int> cases(num_days);
-						vector<unsigned int> adopted(num_days);
-						for (unsigned int i = 0; i < num_days; i++) {
-							cout << "Simulating day: " << setw(5) << i;
-							run_clock.Start();
-							sim->TimeStep();
-							run_clock.Stop();
-							cout << "     Done, infected count: ";
-
-							cases[i] = sim->GetPopulation()->GetInfectedCount();
-							adopted[i] =
-							    sim->GetPopulation()->GetAdoptedCount<BeliefPolicy>();
-
-							cout << setw(7) << cases[i]
-							     << "     Adopters count: " << setw(7) << adopted[i]
-							     << endl;
-						}
-
-						// -----------------------------------------------------------------------------------------
-						// Generate output files
-						// -----------------------------------------------------------------------------------------
-						generate_output_files<GlobalInformationPolicy, LocalInformationPolicy,
-								      BeliefPolicy, BehaviourPolicy>(
-						    output_prefix, cases, adopted, pt_config, sim,
-						    duration_cast<milliseconds>(run_clock.Get()).count(),
-						    duration_cast<milliseconds>(total_clock.Get()).count());
-					}
-
-					// -----------------------------------------------------------------------------------------
-					// Print final message to command line.
-					// -----------------------------------------------------------------------------------------
-					cout << endl << endl;
-
-					cout << "  run_time: " << run_clock.ToString()
-					     << "  -- total time: " << total_clock.ToString() << endl
-					     << endl;
-					cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
-				} else {
-					throw std::runtime_error(std::string(__func__) + "No valid behaviour policy!");
-				}
-			} else {
-				throw std::runtime_error(std::string(__func__) + "No valid belief policy!");
-			}
-		} else {
-			throw std::runtime_error(std::string(__func__) + "No valid local information policy!");
-		}
-	} else {
-		throw std::runtime_error(std::string(__func__) + "No valid global information policy!");
-	}
+        cout << "  run_time: " << run_clock.ToString()
+                << "  -- total time: " << total_clock.ToString() << endl
+                << endl;
+        cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
 }
 
 } // end_of_namespace

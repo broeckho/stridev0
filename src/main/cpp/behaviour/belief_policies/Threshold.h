@@ -36,15 +36,13 @@ public:
 
 	static void Update(Data& belief_data, Health& health_data) {}
 
-	template <typename BehaviourPolicy>
-	static void Update(Data& belief_data,
-			   const Person<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>* p)
+	static void Update(const Person* p)
 	{
-		belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>(p);
+		// belief_data.Contact<BehaviourPolicy, Threshold<threshold_infected, threshold_adopted>>(p);
 	}
 
-	static bool HasAdopted(const Data& belief_data)
-	{
+	static bool HasAdopted(const Person* p)
+	{/*
 		if (threshold_infected) {
 			if (belief_data.GetFractionInfected() > belief_data.GetThresholdInfected()) {
 				return true;
@@ -57,6 +55,7 @@ public:
 		}
 
 		return false;
+		*/
 	}
 };
 

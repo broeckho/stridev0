@@ -29,8 +29,7 @@ namespace stride {
 
 using namespace std;
 
-template <class BehaviourPolicy, class BeliefPolicy>
-unsigned int Person<BehaviourPolicy, BeliefPolicy>::GetClusterId(ClusterType cluster_type) const
+unsigned int Person::GetClusterId(ClusterType cluster_type) const
 {
 	switch (cluster_type) {
 	case ClusterType::Household:
@@ -48,8 +47,7 @@ unsigned int Person<BehaviourPolicy, BeliefPolicy>::GetClusterId(ClusterType clu
 	}
 }
 
-template <class BehaviourPolicy, class BeliefPolicy>
-bool Person<BehaviourPolicy, BeliefPolicy>::IsInCluster(ClusterType c) const
+bool Person::IsInCluster(ClusterType c) const
 {
 	switch (c) {
 	case ClusterType::Household:
@@ -67,8 +65,7 @@ bool Person<BehaviourPolicy, BeliefPolicy>::IsInCluster(ClusterType c) const
 	}
 }
 
-template <class BehaviourPolicy, class BeliefPolicy>
-void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_school_off, double fraction_infected)
+void Person::Update(bool is_work_off, bool is_school_off, double fraction_infected)
 {
 	m_health.Update();
 
@@ -76,9 +73,11 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 	// As long as people are susceptible to a disease
 	// (or think they are: they have been infected but are not yet symptomatic) they can choose to get vaccinated
 	if (m_health.IsSusceptible() || (m_health.IsInfected() && (!m_health.IsSymptomatic()))) {
+	        /*
 		if (BehaviourPolicy::PracticesVaccination(m_belief_data)) {
 			m_health.SetImmune();
 		}
+		*/
 	}
 
 	// Update presence in clusters.
@@ -99,26 +98,12 @@ void Person<BehaviourPolicy, BeliefPolicy>::Update(bool is_work_off, bool is_sch
 		m_at_primary_community = false;
 	}
 
-	BeliefPolicy::Update(m_belief_data, m_health);
+	/* BeliefPolicy::Update(m_belief_data, m_health); */
 }
 
-template <class BehaviourPolicy, class BeliefPolicy>
-void Person<BehaviourPolicy, BeliefPolicy>::Update(const Person* p)
+void Person::Update(const Person* p)
 {
-	BeliefPolicy::Update(m_belief_data, p);
+	// BeliefPolicy::Update(m_belief_data, p);
 }
-
-//--------------------------------------------------------------------------
-// All explicit instantiations.
-//--------------------------------------------------------------------------
-template class Person<NoBehaviour<NoBelief>, NoBelief>;
-template class Person<Vaccination<Threshold<true, false>>, Threshold<true, false>>;
-template class Person<Vaccination<Threshold<false, true>>, Threshold<false, true>>;
-template class Person<Vaccination<Threshold<true, true>>, Threshold<true, true>>;
-
-/*
-template class Person<Vaccination<ThresholdWithAwareness<true, false>>, ThresholdWithAwareness<true, false>>;
-template class Person<Vaccination<ThresholdWithAwareness<false, true>>, ThresholdWithAwareness<false, true>>;
-template class Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>;*/
 
 } // end_of_namespace
