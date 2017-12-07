@@ -28,17 +28,17 @@ namespace stride {
  */
 class Belief
 {
-//public:
-//	///
-//    Belief(const boost::property_tree::ptree& pt) : m_pt(pt) {}
-//
-//    ///
-//    boost::property_tree::ptree Get() {return m_pt;}
-//
-//    ///
-//    void Set(const boost::property_tree::ptree& pt) { m_pt = pt;}
-//private:
-//    boost::property_tree::ptree  m_pt;			///<
+public:
+	///
+    Belief(const boost::property_tree::ptree& pt) : m_pt(pt) {}
+
+    ///
+    boost::property_tree::ptree Get() {return m_pt;}
+
+    ///
+    void Set(const boost::property_tree::ptree& pt) { m_pt = pt;}
+private:
+    boost::property_tree::ptree  m_pt;			///<
 };
 
 } // end_of_namespace

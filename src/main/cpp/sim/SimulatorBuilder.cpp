@@ -29,8 +29,8 @@
 //#include "calendar/Calendar.h"
 //#include "core/RngHandler.h"
 //#include "immunity/Vaccinator.h"
-//
-//#include "pop/PopulationBuilder.h"
+
+#include "pop/PopulationBuilder.h"
 //#include "util/Random.h"
 
 //#include <stdexcept>
@@ -106,35 +106,35 @@ std::shared_ptr<Simulator> SimulatorBuilder::Build(const boost::property_tree::p
 
 	// Build population.
 	Random rng(pt_config.get<double>("run.rng_seed"));
-	//		sim->m_population = PopulationBuilder::Build(pt_config, pt_disease, rng);
-	//
-	//		// Initialize clusters.
-	//		InitializeClusters(sim);
-	//
+	sim->m_population = PopulationBuilder::Build(pt_config, pt_disease, rng);
+
+	// Initialize clusters.
+	InitializeClusters(sim);
+
 	//		// Initialize population immunity
 	//		Vaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
 	//		Vaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
-	//
-	//		// Initialize disease profile.
-	//		sim->m_disease_profile.Initialize(pt_config, pt_disease);
-	//
-	//		// --------------------------------------------------------------
-	//		// Seed infected persons.
-	//		// --------------------------------------------------------------
-	//		const double seeding_rate = pt_config.get<double>("run.seeding_rate");
-	//		const double seeding_age_min = pt_config.get<double>("run.seeding_age_min");
-	//		const double seeding_age_max = pt_config.get<double>("run.seeding_age_max");
-	//		const unsigned int max_population_index = sim->m_population->size() - 1;
-	//		unsigned int num_infected = floor(static_cast<double>(sim->m_population->size()) * seeding_rate);
-	//		while (num_infected > 0) {
-	//			Person& p = sim->m_population->at(rng(max_population_index));
-	//			if (p.GetHealth().IsSusceptible() && (p.GetAge() >= seeding_age_min) &&
-	//			    (p.GetAge() <= seeding_age_max)) {
-	//				p.GetHealth().StartInfection();
-	//				num_infected--;
-	//				logger->info("[PRIM] {} {} {} {}", -1, p.GetId(), -1, 0);
-	//			}
-	//		}
+
+	// Initialize disease profile.
+	sim->m_disease_profile.Initialize(pt_config, pt_disease);
+
+	// --------------------------------------------------------------
+	// Seed infected persons.
+	// --------------------------------------------------------------
+	const double seeding_rate = pt_config.get<double>("run.seeding_rate");
+	const double seeding_age_min = pt_config.get<double>("run.seeding_age_min", 1);
+	const double seeding_age_max = pt_config.get<double>("run.seeding_age_max", 99);
+	const unsigned int max_population_index = sim->m_population->size() - 1;
+	unsigned int num_infected = floor(static_cast<double>(sim->m_population->size()) * seeding_rate);
+	while (num_infected > 0) {
+		Person& p = sim->m_population->at(rng(max_population_index));
+		if (p.GetHealth().IsSusceptible() && (p.GetAge() >= seeding_age_min) &&
+			(p.GetAge() <= seeding_age_max)) {
+			p.GetHealth().StartInfection();
+			num_infected--;
+			logger->info("[PRIM] {} {} {} {}", -1, p.GetId(), -1, 0);
+		}
+	}
 
 	// Initialize Rng handlers
 	unsigned int new_seed = rng(numeric_limits<unsigned int>::max());
@@ -142,16 +142,12 @@ std::shared_ptr<Simulator> SimulatorBuilder::Build(const boost::property_tree::p
 		sim->m_rng_handler.emplace_back(RngHandler(new_seed, sim->m_num_threads, i));
 	}
 
-	//		// Initialize contact profiles.
-	//		Cluster::AddContactProfile(ClusterType::Household,
-	//						    ContactProfile(ClusterType::Household, pt_contact));
-	//		Cluster::AddContactProfile(ClusterType::School,
-	//						    ContactProfile(ClusterType::School, pt_contact));
-	//		Cluster::AddContactProfile(ClusterType::Work, ContactProfile(ClusterType::Work, pt_contact));
-	//		Cluster::AddContactProfile(ClusterType::PrimaryCommunity,
-	//						    ContactProfile(ClusterType::PrimaryCommunity, pt_contact));
-	//		Cluster::AddContactProfile(ClusterType::SecondaryCommunity,
-	//						    ContactProfile(ClusterType::SecondaryCommunity, pt_contact));
+	// Initialize contact profiles.
+	Cluster::AddContactProfile(ClusterType::Household, ContactProfile(ClusterType::Household, pt_contact));
+	Cluster::AddContactProfile(ClusterType::School, ContactProfile(ClusterType::School, pt_contact));
+	Cluster::AddContactProfile(ClusterType::Work, ContactProfile(ClusterType::Work, pt_contact));
+	Cluster::AddContactProfile(ClusterType::PrimaryCommunity, ContactProfile(ClusterType::PrimaryCommunity, pt_contact));
+	Cluster::AddContactProfile(ClusterType::SecondaryCommunity, ContactProfile(ClusterType::SecondaryCommunity, pt_contact));
 
 	// Done.
 	return sim;
@@ -203,27 +199,26 @@ void SimulatorBuilder::InitializeClusters(std::shared_ptr<Simulator> sim)
 
 	// Cluster id '0' means "not present in any cluster of that type".
 	for (auto& p : population) {
-	//			const auto hh_id = p.GetClusterId(ClusterType::Household);
-	//			if (hh_id > 0) {
-	//				sim->m_households[hh_id].AddPerson(&p);
-	//			}
-	//			const auto sc_id = p.GetClusterId(ClusterType::School);
-	//			if (sc_id > 0) {
-	//				sim->m_school_clusters[sc_id].AddPerson(&p);
-	//			}
-	//			const auto wo_id = p.GetClusterId(ClusterType::Work);
-	//			if (wo_id > 0) {
-	//				sim->m_work_clusters[wo_id].AddPerson(&p);
-	//			}
-	//			const auto primCom_id = p.GetClusterId(ClusterType::PrimaryCommunity);
-	//			if (primCom_id > 0) {
-	//				sim->m_primary_community[primCom_id].AddPerson(&p);
-	//			}
-	//			const auto secCom_id = p.GetClusterId(ClusterType::SecondaryCommunity);
-	//			if (secCom_id > 0) {
-	//				sim->m_secondary_community[secCom_id].AddPerson(&p);
-	//			}
-	//		}
+		const auto hh_id = p.GetClusterId(ClusterType::Household);
+		if (hh_id > 0) {
+			sim->m_households[hh_id].AddPerson(&p);
+		}
+		const auto sc_id = p.GetClusterId(ClusterType::School);
+		if (sc_id > 0) {
+			sim->m_school_clusters[sc_id].AddPerson(&p);
+		}
+		const auto wo_id = p.GetClusterId(ClusterType::Work);
+		if (wo_id > 0) {
+			sim->m_work_clusters[wo_id].AddPerson(&p);
+		}
+		const auto primCom_id = p.GetClusterId(ClusterType::PrimaryCommunity);
+		if (primCom_id > 0) {
+			sim->m_primary_community[primCom_id].AddPerson(&p);
+		}
+		const auto secCom_id = p.GetClusterId(ClusterType::SecondaryCommunity);
+		if (secCom_id > 0) {
+			sim->m_secondary_community[secCom_id].AddPerson(&p);
+		}
 	}
 }
 
