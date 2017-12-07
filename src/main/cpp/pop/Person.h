@@ -54,8 +54,11 @@ public:
 	/// Get the age.
 	double GetAge() const { return m_age; }
 
-        ///
-        Belief* GetBelief() { return m_belief; }
+    ///
+    Belief* GetBelief() { return m_belief; }
+
+    ///
+    Belief const* GetBelief() const { return m_belief; }
 
 	/// Get cluster ID of cluster_type
 	unsigned int GetClusterId(ClusterType cluster_type) const;
@@ -66,8 +69,8 @@ public:
 	/// Return person's health status.
 	Health& GetHealth() { return m_health; }
 
-//	/// Return person's health status.
-//	const Health& GetHealth() const { return m_health; }
+	/// Return person's health status.
+	const Health& GetHealth() const { return m_health; }
 
 //	/// Get the id.
 //	unsigned int GetId() const { return m_id; }
