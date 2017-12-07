@@ -23,12 +23,8 @@
 #include "behaviour/information_policies/LocalDiscussion.h"
 #include "behaviour/information_policies/NoLocalInformation.h"
 #include "calendar/DaysOffStandard.h"
-//#include "core/Infector.h"
-//#include "core/RngHandler.h"
-//#include "pop/Person.h"
-//#include "pop/Population.h"
-//
-//#include <boost/property_tree/ptree.hpp>
+#include "core/Infector.h"
+
 #include <omp.h>
 
 namespace stride {
@@ -134,26 +130,26 @@ void Simulator::UpdateClusters()
 
 		#pragma omp for schedule(runtime)
 		for (size_t i = 0; i < m_households.size(); i++) {
-	//				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
-	//				    m_households[i], m_disease_profile, m_rng_handler[thread], m_calendar);
+			Infector<log_level, track_index_case, local_information_policy>::Execute(
+					m_households[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 		}
 
 		#pragma omp for schedule(runtime)
 		for (size_t i = 0; i < m_school_clusters.size(); i++) {
-	//				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
-	//				    m_school_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
+			Infector<log_level, track_index_case, local_information_policy>::Execute(
+					m_school_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 		}
 
 		#pragma omp for schedule(runtime)
 		for (size_t i = 0; i < m_work_clusters.size(); i++) {
-	//				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
-	//				    m_work_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
+			Infector<log_level, track_index_case, local_information_policy>::Execute(
+					m_work_clusters[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 		}
 
 		#pragma omp for schedule(runtime)
 		for (size_t i = 0; i < m_secondary_community.size(); i++) {
-	//				Infector<log_level, track_index_case, LocalInformationPolicy>::Execute(
-	//				    m_secondary_community[i], m_disease_profile, m_rng_handler[thread], m_calendar);
+			Infector<log_level, track_index_case, local_information_policy>::Execute(
+					m_secondary_community[i], m_disease_profile, m_rng_handler[thread], m_calendar);
 		}
 	}
 }
