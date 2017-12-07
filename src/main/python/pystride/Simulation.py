@@ -1,331 +1,260 @@
-
-'''
 import os
 import argparse
+import xml.etree.ElementTree as ET
 
-import stride
+from copy import copy
+from time import gmtime, strftime
 
-from .stride import SimulationConfig, getSimulator
-from .SimulationObserver import *
-from .LogLevel import LogLevel
-from .Disease import Disease
-from .Generator import Generator
-from .stride import Society
-from .PUQIntegration import *
-from puq.puq_cmd import load_internal
+import pystride
 
-
-class Simulation(SimulationConfig):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class Simulation:
+    def __init__(self):
         self.forks = list()
-        self.simulator = None
-        self.observer = SimulationObserver(self)
-        self.strideUQ = StrideMonteCarlo(num=5)
-        self.uqProperties = dict()
-        self._disease = None        # wraps C++ disease config once set
+        # TODO simulator or stride runner
+        # TODO observer
+        self._runConfig = None              # ElementTree with run config
+        self._diseaseConfig = None          # ElementTree with disease config
+        # TODO copy config params if necessary
 
-    @staticmethod
-    def fromFile(filename: str):
-        config = Simulation()
-        config.parseXML(filename)
-        return config
-
-    # Properties
-    @uq_property
-    def rng_seed(self):
-        return self.p_rng_seed.get()
-    @rng_seed.setter
-    def rng_seed(self, value):
-        self.p_rng_seed.set(value)
-
-    @uq_property
-    def r0(self):
-        return self.p_r0.get()
-    @r0.setter
-    def r0(self, value):
-        self.p_r0.set(value)
-
-    @uq_property
-    def seeding_rate(self):
-        return self.p_seeding_rate.get()
-    @seeding_rate.setter
-    def seeding_rate(self, value):
-        self.p_seeding_rate.set(value)
-
-    @uq_property
-    def immunity_rate(self):
-        return self.p_immunity_rate.get()
-    @immunity_rate.setter
-    def immunity_rate(self, value):
-        self.p_immunity_rate.set(value)
-
-    @property
-    def population(self):
-        return self.p_population_file.GetPopulation()
-    @population.setter
-    def population(self, value):
-        if isinstance(value, str):
-            self.p_population_file.set(value)
-            return
-        if isinstance(value, Generator):
-            value.thisown = 0
-            shared_ptr = stride.stride.GeneratorConfigToSharedPtr(value)
-            self.p_population_file.SetGeneratorConfig(shared_ptr)
-
-            return
-        if isinstance(value, Society):
-            pop = value.GetStridePopulation()
-            self.p_population_file.SetPopulation(pop)
-            return
-
-        raise ValueError("Value should be a string, instance of Generator or instance of Society.")
-
-    @property
-    def num_days(self):
-        return self.p_num_days.get()
-    @num_days.setter
-    def num_days(self, value):
-        self.p_num_days.set(value)
-
-    @property
-    def label(self):
-        return self.p_label.get()
-    @label.setter
-    def label(self, value):
-        self.p_label.set(value)
-
-    @property
-    def disease(self):
-        if self._disease is None:
-            self._disease = Disease(config=self.p_disease_config_file.getConfig())
-        return self._disease
-    @disease.setter
-    def disease(self, value):
-        if isinstance(value, str):
-            self.p_disease_config_file.set(value)
+    def loadRunConfig(self, filename: str):
+        '''runConfigFile = os.path.join(self.getWorkingDirectory(), filename)
+        if os.path.isfile(runConfigFile):
+            self._runConfig = ET.parse(runConfigFile).getroot()
+            #TODO  Update disease configuration
+            #self._updateDiseaseConfig()
+            #TODO Update label
+            #if self._runConfig.find("output_prefix").text:
+            #    self.label = self._runConfig.find("output_prefix").text
         else:
-            self.p_disease_config_file.setConfig(value)
-        self._disease = Disease(config=self.p_disease_config_file.getConfig())
+            print("Run configuration file " + filename + " could not be found")
+        '''
+        pass
 
-    @property
-    def generate_person_file(self):
-        return self.p_generate_person_file.get()
-    @generate_person_file.setter
-    def generate_person_file(self, value):
-        self.p_generate_person_file.set(value)
+    def _updateDiseaseConfig(self):
+        '''
+            diseaseFilename = self._runConfig.find("disease_config_file").text
+            diseaseFile = os.path.join(self.getWorkingDirectory(), diseaseFilename)
+            if os.path.isfile(diseaseFile):
+                    self._diseaseConfig = ET.parse(diseaseFile).getroot()
+            else:
+                    print("Disease configuration file " + diseaseFilename + " could not be found")
+        '''
+        pass
 
-    @property
-    def num_participants_survey(self):
-        return self.p_num_participants_survey.get()
-    @num_participants_survey.setter
-    def num_participants_survey(self, value):
-        self.p_num_participants_survey.set(value)
 
-    @property
-    def start_date(self):
-        return self.p_start_date.get()
-    @start_date.setter
-    def start_date(self, value):
-        self.p_start_date.set(value)
+    def getRunConfigParam(self, name: str):
+        '''
+                    if self._runConfig != None:
+                        if self._runConfig.find(name) != None:
+                            if self._runConfig.find(name).text != None:
+                                return self._runConfig.find(name).text
+                    print("No run configuration parameter with name " + name)
+        '''
+        pass
 
-    @property
-    def holidays_file(self):
-        return self.p_holidays_file.get()
-    @holidays_file.setter
-    def holidays_file(self, value):
-        self.p_holidays_file.set(value)
+    def getDiseaseConfigParam(self, name: str):
+        '''
+                    if self._diseaseConfig:
+                        if self._diseaseConfig.find(name) != None:
+                            if self._diseaseConfig.find(name).text != None:
+                                return self._diseaseConfig.find(name).text
+                    print("No disease configuration parameter with name " + name)
+        '''
+        pass
 
-    @property
-    def age_contact_matrix_file(self):
-        return self.p_age_contact_matrix_file.get()
-    @age_contact_matrix_file.setter
-    def age_contact_matrix_file(self, value):
-        self.p_age_contact_matrix_file.set(value)
+    def setRunConfigParam(self, name: str, value):
+        '''
+                    if self._runConfig != None:
+                        elem = self._runConfig.find(name)
+                        if self._runConfig.find(name) != None:
+                            self._runConfig.find(name).text = str(value)
+                        else:
+                            ET.SubElement(self._runConfig, name).text = str(value)
+                    else:
+                        self._runConfig = ET.Element('run')
+                        ET.SubElement(self._runConfig, name).text = str(value)
+                    if name == "disease_config_file":
+                        self._updateDiseaseConfig()
+                    if name == "output_prefix":
+                        self.label = str(value)
+        '''
+        pass
 
-    @property
-    def log_level(self):
-        return self.p_log_level.get()
-    @log_level.setter
-    def log_level(self, value):
-        if isinstance(value, LogLevel):
-            value = str(value)
-        self.p_log_level.set(value)
+    def setDiseaseConfigParam(self, name: str, value):
+        '''
+                    if self._diseaseConfig:
+                        if self._diseaseConfig.find(name) != None:
+                            self._diseaseConfig.find(name).text = str(value)
+                        else:
+                            newElems = name.split('/')
+                            root = self._diseaseConfig
+                            for elem in newElems:
+                                if root.find(elem) != None:
+                                    root = elem
+                                else:
+                                    newElem = ET.SubElement(root, elem)
+                                    root = newElem
+                            self._diseaseConfig.find(name).text = str(value)
+                    else:
+                        self._diseaseConfig = ET.Element('disease')
+                        newElems = name.split('/')
+                        root = self._diseaseConfig
+                        for elem in newElems:
+                            newElem = ET.SubElement(root, elem)
+                            root = newElem
+                        self._diseaseConfig.find(name).text = str(value)'''
+        pass
 
-    @property
-    def checkpoint_interval(self):
-        return self.p_checkpoint_interval.get()
-    @checkpoint_interval.setter
-    def checkpoint_interval(self, value):
-        self.p_checkpoint_interval.set(value)
+    def showRunConfig(self):
+        """ Print out the run configuration parameters. """
+        '''            if self._runConfig:
+                        print("Run configuration: ")
+                        print(ET.tostring(self._runConfig))
+                    else:
+                        print("No run configuration found!")'''
+        pass
 
-    @property
-    def uq(self):
-        return self._uc
-    @uq.setter
-    def uq(self, value):
-        if isinstance(value, PSweep):
-            raise RuntimeError("Can't assign default PUQ UQ methods. User Stride{} variant.")
-        elif isinstance(value, StridePSweep):
-            self.strideUQ = value
-        else:
-            raise RuntimeError("Invalid UQ method. User Stride{} variant of PUQ UQ methods.")
+    def showDiseaseConfig(self):
+        """ Print out the disease configuration parameters specified in the disease file. """
+        ''' if self._diseaseConfig:
+                        print("Disease configuration: ")
+                        print(ET.tostring(self._diseaseConfig))
+                    else:
+                        print("No disease configuration found!")'''
+        pass
 
     def stop(self):
         """ Stop the simulation if it's running """
-        if self.simulator:
-            self.simulator.Stop()
+
+        '''if self.simulator:
+            self.simulator.Stop()'''
+        pass
 
     def registerCallback(self, callback, event):
-        """ Registers a callback to the simulation.
-
-            :param callback: a function appropriate for the event type.
-            :param event: either an event specified in SimulationObserver, an integer, list of events, or list of integers. A single integer is converted to a TimestepIntervalEvent. A list of integers to a list of TimestepEvents.
         """
-        if isinstance(event, list):
-            # list of events
-            for e in event:
-                # if int -> specific timestep
-                if isinstance(e, int):
-                    self.observer.registerCallback(callback, TimestepEvent(e))
-                else:
-                    self.registerCallback(e)
+            Registers a callback to the simulation
+            :param callback: a function appropriate for the event type.
+            :param event: either an event specified in SimulatorObserver,
+                    an integer (converted to TimestepIntervalEvent), list of
+                    events, or list of integers (converted to list of
+                    TimestepIntervalEvents).
+        """
+        '''
+                            if isinstance(event, list):
+                                # list of events
+                                for e in event:
+                                    # if int -> specific timestep
+                                    if isinstance(e, int):
+                                        self.observer.registerCallback(callback, TimestepEvent(e))
+                                    else:
+                                        self.registerCallback(e)
+                            elif isinstance(event, int):
+                                # convert int to TimestepIntervalEvent
+                                self.observer.registerCallback(callback, TimestepIntervalEvent(event))
+                            elif isinstance(event, Event):
+                                # event
+                                self.observer.registerCallback(callback, event)
+                            else:
+                                raise RuntimeError("Unknown event type: " + str(event))
 
-        elif isinstance(event, int):
-            # convert int to TimestepIntervalEvent
-            self.observer.registerCallback(callback, TimestepIntervalEvent(event))
+                    self.observer.RegisterCallback(callback)'''
+        pass
 
-        elif isinstance(event, Event):
-            # event
-            self.observer.registerCallback(callback, event)
-        else:
-            raise RuntimeError("Unknown event type: " + str(event))
-
-    def fork(self, name: str):
-        """ Create a new simulation instance from this one.
-
-            :param str name: name of the fork.
+    def fork(self, name:str):
+        """
+            Create a new simulation instance from this one.
+                :param str name: the name of the fork.
         """
         f = Fork(name, self)
         return f
 
     def getWorkingDirectory(self):
-        return stride.workspace
+        '''return pystride.workspace'''
+        pass
 
     def getOutputDirectory(self):
-        return os.path.join(self.getWorkingDirectory(), self.label)
+        '''return os.path.join(self.getWorkingDirectory(), self.label)'''
+        pass
 
     def _linkData(self):
-        dataDir = os.path.join(self.getOutputDirectory(), "data")
-        os.makedirs(dataDir, exist_ok=True)
-        files = [
-            self.p_population_file.get(),
-            self.p_disease_config_file.get(),
-            self.holidays_file,
-            self.age_contact_matrix_file,
-        ]
-        for src in files:
-            dst = os.path.join(dataDir, os.path.basename(src))
-            if os.path.isfile(src) and not os.path.isfile(dst):
-                os.symlink(src, dst)
+        '''
+            dataDir = os.path.join(self.getOutputDirectory(), "data")
+            os.makedirs(dataDir, exist_ok=True)
+            files = [
+                self.getRunConfigParam('population_file'),
+                self.getRunConfigParam('disease_config_file'),
+                self.getRunConfigParam('holidays_file'),
+                self.getRunConfigParam('age_contact_matrix_file'),
+            ]
+            for src in files:
+                dst = os.path.join(dataDir, os.path.basename(src))
+                if (os.path.isfile(src)) and (not os.path.isfile(dst)):
+                    os.symlink(src, dst)'''
+        pass
 
-    def setup(self, linkData=True):
-        """ Create folder in workspace to run simulation. Copy config and link to data. """
-        if linkData:
-            self._linkData()
+    def _setup(self, linkData=True):
+        """
+            Create folder in workspace to run simulation.
+            Copy config and link to data.
+        """
+        '''            if linkData:
+                        self._linkData()
 
-        # create .sim file to indicate simulation folder (for GUI)
-        open(os.path.join(self.getOutputDirectory(), ".sim"), 'a').close()
+                    os.makedirs(self.getOutputDirectory(), exist_ok=True)
 
-        os.makedirs(self.getOutputDirectory(), exist_ok=True)
-        diseasePath = os.path.join(self.getOutputDirectory(), "data", self.disease.label + ".xml")
-        self.disease.toFile(diseasePath)
+                    # Store disease configuration
+                    origDiseasePath = self.getRunConfigParam("disease_config_file")
+                    origDiseasePath = origDiseasePath[:-4] # remove .xml
+                    diseasePath = origDiseasePath + "_" + self.label + ".xml"
+                    ET.ElementTree(self._diseaseConfig).write(diseasePath)
+                    self.setRunConfigParam("disease_config_file", diseasePath)
 
-        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        # only store last part of label (previous dirs already made)
-        oldLabel = self.label
-        self.label = os.path.basename(self.label)
-        self.toFile(configPath)
-        self.label = oldLabel
+                    # Store run configuration
+                    configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
+                    # only store last part of label (previous dirs already made)
+                    self._runConfig.find('output_prefix').text = os.path.basename(self.label) + '/'
+                    ET.ElementTree(self._runConfig).write(configPath)'''
+        pass
 
-    def build(self, runParallel=True, trackIndexCase=False, output=True):
-        self.simulator = getSimulator(self, self.getWorkingDirectory(), runParallel, trackIndexCase, output)
-        if self.simulator:
-            self.simulator.registerObserver(self.observer)
 
-    def run(self, *args, numDays=0, **kwargs):
-        """ Run current simulation.
+    def _build(self, trackIndexCase=False):
+        '''
+            configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
 
-        Check if setup is done and if necessary continue previous simulations. """
-        self.setup()
+            self.simulator.Setup(configPath, trackIndexCase)
+            self.simulator.Build()
+            self.simulator.RegisterObserver(self.observer)
+        '''
+        pass
 
-        if len(self.getUQProperties()) > 0:
-            print("Found PUQ parameters, running PUQ")
-            self.runPUQ(*args, numDays=numDays, **kwargs)
-            return
 
-        self.build(*args, **kwargs)
+    def run(self, *args, **kwargs):
+        """ Run current simulation. """
+        # Check if setup is done and if necessary continue previous simulations.
+        '''self._setup()
+        self._build(*args, **kwargs)
 
         if self.simulator:
             try:
-                self.simulator.Run(numDays)
+                self.simulator.Run()
             except:
                 print("Exception when running simulator. Closing down.")
-                exit(0)
+                exit(1)'''
+        pass
 
     def runForks(self, *args, **kwargs):
-        """ Run all forks, but not the root simulation. """
-        self.setup()
+        """ Run all forks but not the root simulation. """
+        '''self._setup()
         for fork in self.forks:
-            fork.run(*args, **kwargs)
+            fork.run(*args, **kwargs)'''
+        pass
 
     def runAll(self, *args, **kwargs):
-        """ Run simulation and forks. """
+        """ Run root simulation and forks. """
+        '''
         self.run(*args, **kwargs)
-        self.runForks(*args, **kwargs)
-
-    def runPUQ(self, *args, **kwargs):
-        parser = argparse.ArgumentParser(description='Stride')
-        parser.add_argument('action', nargs="?",
-                            help='Indicate to extend the sweep when possible.')
-        parser.add_argument('--num', type=int, nargs='?',
-                            help='Amount of samples to extend sweep with. Not required for Smolyak')
-        commandArgs = parser.parse_args()
-
-        extend = commandArgs.action == "extend"
-        num = commandArgs.num
-
-        parameters = list(self.getUQProperties().values())
-        uq = self.strideUQ.getPSweep(parameters)
-        sweepFile = os.path.join(self.getOutputDirectory(), "sweep.hdf5")
-        if os.path.exists(sweepFile):
-            print("Found existing sweep.")
-            if not extend:
-                print("You can extend it by using the 'extend' command line argument.")
-                exit()
-            sweep = puq.puq_cmd.load_internal([sweepFile])
-            cname = sweep.psweep.__class__.__name__
-            print("Extending {}.hdf5 using {}".format(sweep.fname, cname))
-            if cname == 'MonteCarlo':
-                if not num:
-                    print("Monte Carlo extend requires a valid num argument (--num).")
-                    exit()
-                else:
-                    print("with {} samples".format(num))
-            sweep.prog.simulation = self
-            sweep.prog.fork = None
-            sweep.extend(num=num)
-            sweep.run()
-        else:
-            sweep = SimulationSweep(uq, SimulationProgram(self), *args, **kwargs)
-            success = sweep.run(fn=sweepFile)
-            if success:
-                sweep.analyze()
-
-    def getUQProperties(self):
-        properties = self.uqProperties
-        properties.update(self.disease.uqProperties)
-        return properties
+        self.runForks(*args, **kwargs)'''
+        pass
 
     def __getstate__(self):
         return dict()
@@ -335,5 +264,3 @@ class Simulation(SimulationConfig):
 
 
 from .Fork import Fork
-
-'''
