@@ -74,22 +74,19 @@ public:
 
 	/// Get the id.
 	unsigned int GetId() const { return m_id; }
-//
-//	/// Check if a person is present today in a given cluster
-//	bool IsInCluster(ClusterType c) const;
-//
-//	/// Does this person participates in the social contact study?
-//	bool IsParticipatingInSurvey() const { return m_is_participant; }
 
-/// Participate in social contact study and log person details
-void ParticipateInSurvey() { m_is_participant = true; }
+	/// Check if a person is present today in a given cluster
+	bool IsInCluster(ClusterType c) const;
 
-//	/// Update the health status and presence in clusters.
-//	void Update(bool is_work_off, bool is_school_off, double fraction_infected);
-//
-//	/// Update belief & behaviour upon meeting another Person
-//	void Update(const Person* p);
-//
+	/// Does this person participates in the social contact study?
+	bool IsParticipatingInSurvey() const { return m_is_participant; }
+
+	/// Participate in social contact study and log person details
+	void ParticipateInSurvey() { m_is_participant = true; }
+
+	/// Update the health status and presence in clusters.
+	void Update(bool is_work_off, bool is_school_off);
+
 private:
 	unsigned int m_id; ///< The id.
 	double m_age;      ///< The age.

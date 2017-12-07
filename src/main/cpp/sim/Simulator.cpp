@@ -52,11 +52,10 @@ void Simulator::TimeStep()
 	const bool is_work_off{days_off->IsWorkOff()};
 	const bool is_school_off{days_off->IsSchoolOff()};
 
-	//		double fraction_infected = m_population->GetFractionInfected();
-	//
-	//		for (auto& p : *m_population) {
-	//			p.Update(is_work_off, is_school_off, fraction_infected);
-	//		}
+	// Update individual's health status & presence in clusters.
+	for (auto& p : *m_population) {
+		p.Update(is_work_off, is_school_off);
+	}
 
 	if (m_local_information_policy == "NoLocalInformation") {
 		if (m_track_index_case) {
