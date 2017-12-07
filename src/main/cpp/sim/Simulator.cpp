@@ -20,17 +20,16 @@
 
 #include "Simulator.h"
 
+#include "behaviour/information_policies/LocalDiscussion.h"
+#include "behaviour/information_policies/NoLocalInformation.h"
 #include "calendar/DaysOffStandard.h"
-//#include "core/DiseaseProfile.h"
 //#include "core/Infector.h"
-//#include "core/LogMode.h"
 //#include "core/RngHandler.h"
 //#include "pop/Person.h"
 //#include "pop/Population.h"
 //
 //#include <boost/property_tree/ptree.hpp>
 #include <omp.h>
-//#include <string>
 
 namespace stride {
 
@@ -63,89 +62,61 @@ void Simulator::TimeStep()
 		if (m_track_index_case) {
 			switch(m_log_level) {
 			case LogMode::Contacts:
+				UpdateClusters<LogMode::Contacts, NoLocalInformation, true>();
 				break;
 			case LogMode::Transmissions:
+				UpdateClusters<LogMode::Transmissions, NoLocalInformation, true>();
 				break;
 			case LogMode::None:
+				UpdateClusters<LogMode::None, NoLocalInformation, true>();
 				break;
 			default:
 				throw std::runtime_error(std::string(__func__) + "Log mode screwed up!");
 			}
-		//			switch (m_log_level) {
-		//			case LogMode::Contacts:
-		//				UpdateClusters<LogMode::Contacts, true>();
-		//				break;
-		//			case LogMode::Transmissions:
-		//				UpdateClusters<LogMode::Transmissions, true>();
-		//				break;
-		//			case LogMode::None:
-		//				UpdateClusters<LogMode::None, true>();
-		//				break;
 		} else {
 			switch (m_log_level) {
 			case LogMode::Contacts:
+				UpdateClusters<LogMode::Contacts, NoLocalInformation, false>();
 				break;
 			case LogMode::Transmissions:
+				UpdateClusters<LogMode::Transmissions, NoLocalInformation, false>();
 				break;
 			case LogMode::None:
+				UpdateClusters<LogMode::None, NoLocalInformation, false>();
 				break;
 			default:
 				throw std::runtime_error(std::string(__func__) + "Log mode screwed up!");
 			}
-		//			switch (m_log_level) {
-		//			case LogMode::Contacts:
-		//				UpdateClusters<LogMode::Contacts, false>();
-		//				break;
-		//			case LogMode::Transmissions:
-		//				UpdateClusters<LogMode::Transmissions, false>();
-		//				break;
-		//			case LogMode::None:
-		//				UpdateClusters<LogMode::None, false>();
-		//				break;
 		}
 	} else if (m_local_information_policy == "LocalDiscussion") {
 		if (m_track_index_case) {
 			switch (m_log_level) {
 			case LogMode::Contacts:
+				UpdateClusters<LogMode::Contacts, LocalDiscussion, true>();
 				break;
 			case LogMode::Transmissions:
+				UpdateClusters<LogMode::Transmissions, LocalDiscussion, true>();
 				break;
 			case LogMode::None:
+				UpdateClusters<LogMode::None, LocalDiscussion, true>();
 				break;
 			default:
 				throw std::runtime_error(std::string(__func__) + "Log mode screwed up!");
 			}
-		//			switch (m_log_level) {
-		//			case LogMode::Contacts:
-		//				UpdateClusters<LogMode::Contacts, true>();
-		//				break;
-		//			case LogMode::Transmissions:
-		//				UpdateClusters<LogMode::Transmissions, true>();
-		//				break;
-		//			case LogMode::None:
-		//				UpdateClusters<LogMode::None, true>();
-		//				break;
 		} else {
 			switch (m_log_level) {
 			case LogMode::Contacts:
+				UpdateClusters<LogMode::Contacts, LocalDiscussion, false>();
 				break;
 			case LogMode::Transmissions:
+				UpdateClusters<LogMode::Transmissions, LocalDiscussion, false>();
 				break;
 			case LogMode::None:
+				UpdateClusters<LogMode::None, LocalDiscussion, false>();
 				break;
 			default:
 				throw std::runtime_error(std::string(__func__) + "Log mode screwed up!");
 			}
-		//			switch (m_log_level) {
-		//			case LogMode::Contacts:
-		//				UpdateClusters<LogMode::Contacts, false>();
-		//				break;
-		//			case LogMode::Transmissions:
-		//				UpdateClusters<LogMode::Transmissions, false>();
-		//				break;
-		//			case LogMode::None:
-		//				UpdateClusters<LogMode::None, false>();
-		//				break;
 		}
 	} else {
 		throw std::runtime_error(std::string(__func__) + "No valid local information policy!");
