@@ -72,8 +72,8 @@ public:
 	/// Return person's health status.
 	const Health& GetHealth() const { return m_health; }
 
-//	/// Get the id.
-//	unsigned int GetId() const { return m_id; }
+	/// Get the id.
+	unsigned int GetId() const { return m_id; }
 //
 //	/// Check if a person is present today in a given cluster
 //	bool IsInCluster(ClusterType c) const;
