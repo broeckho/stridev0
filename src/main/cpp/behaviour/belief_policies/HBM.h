@@ -29,12 +29,11 @@ namespace stride {
 
 class HBM: public Belief
 {
+public:
+	HBM(const boost::property_tree::ptree& pt): Belief(pt) {}
 
 };
 
-//public:
-//	using Data = HBMData;
-//
 //	static void Update(Data& belief_data, Health& health_data) {}
 //
 //	template <typename BehaviourPolicy>

@@ -20,6 +20,7 @@
  */
 
 
+#include "behaviour/belief_policies/NoBelief.h"
 #include "pop/Person.h"
 #include "util/SegmentedVector.h"
 
@@ -66,8 +67,25 @@ public:
 		return total;
 	}
 
-	template <typename BeliefPolicy>
 	void CreatePerson(unsigned int id, double age, unsigned int household_id, unsigned int school_id,
+	        unsigned int work_id, unsigned int primary_community_id, unsigned int secondary_community_id,
+	        unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
+	        unsigned int time_symptomatic, double risk_averseness = 0,
+	        boost::property_tree::ptree belief_pt = boost::property_tree::ptree())
+	{
+		std::string belief_policy = "NoBelief"; //TODO read this from belief_pt
+		if (belief_policy == "NoBelief") {
+			NewPerson<NoBelief>(id, age, household_id, school_id, work_id, primary_community_id,
+					secondary_community_id, start_infectiousness, start_symptomatic, time_infectious,
+					time_symptomatic, risk_averseness, belief_pt);
+		} else { //TODO add other belief policies
+			throw std::runtime_error(std::string(__func__) + "No valid belief policy!");
+		}
+	}
+
+private:
+	template <typename BeliefPolicy>
+	void NewPerson(unsigned int id, double age, unsigned int household_id, unsigned int school_id,
 	        unsigned int work_id, unsigned int primary_community_id, unsigned int secondary_community_id,
 	        unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
 	        unsigned int time_symptomatic, double risk_averseness = 0,
@@ -84,7 +102,6 @@ public:
                                                 time_symptomatic, risk_averseness, bp));
 	        assert( this->size() == beliefs_container.size() && "Person and Beliefs container sizes not equal!");
 	}
-
 };
 
 } // end_of_namespace

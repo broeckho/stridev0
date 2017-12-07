@@ -29,7 +29,9 @@ namespace stride {
 //
 class NoBelief: public Belief
 {
-//public:
+public:
+	NoBelief(const boost::property_tree::ptree& pt): Belief(pt) {}
+
 //	static void Initialize(Data& belief_data, double risk_averseness) {}
 //
 //	static void Update(Data& belief_data, Health& health_data) {}

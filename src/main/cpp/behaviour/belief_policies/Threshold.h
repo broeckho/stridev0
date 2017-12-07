@@ -26,7 +26,8 @@ namespace stride {
 //TODO templates for infected/adopted threshold?
 class Threshold: public Belief
 {
-
+public:
+	Threshold(const boost::property_tree::ptree& pt): Belief(pt) {}
 };
 
 } // end_of_namespace
