@@ -29,9 +29,8 @@
 #include <utility>
 #include <vector>
 
-namespace SimPT_Sim {
-namespace Container {
-
+namespace stride {
+namespace util {
 /**
  * Container that stores objects "almost contiguously" and guarantees that
  * pointers/iterators are not invalidated when the container grows.

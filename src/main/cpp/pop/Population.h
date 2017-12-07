@@ -72,12 +72,12 @@ public:
 	        unsigned int time_symptomatic, double risk_averseness = 0,
 	        boost::property_tree::ptree belief_pt = boost::property_tree::ptree())
 	{
-	        static SegmentedVector<BeliefPolicy> beliefs_container;
+	        static util::SegmentedVector<BeliefPolicy> beliefs_container;
 	        const BeliefPolicy b(belief_pt);
 
 	        assert( this->size() == beliefs_container.size() && "Person and Beliefs container sizes not equal!");
 	        BeliefPolicy* bp = beliefs_container.emplace_back(b);
-	        this->emplace_back(Person(person_id, age, household_id, school_id, work_id,
+	        this->emplace_back(Person(id, age, household_id, school_id, work_id,
                                                 primary_community_id, secondary_community_id,
                                                 start_infectiousness, start_symptomatic, time_infectious,
                                                 time_symptomatic, risk_averseness, bp));
