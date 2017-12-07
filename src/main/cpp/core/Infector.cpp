@@ -1,114 +1,115 @@
-///*
-// *  This is free software: you can redistribute it and/or modify it
-// *  under the terms of the GNU General Public License as published by
-// *  the Free Software Foundation, either version 3 of the License, or
-// *  any later version.
-// *  The software is distributed in the hope that it will be useful,
-// *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-// *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// *  GNU General Public License for more details.
-// *  You should have received a copy of the GNU General Public License
-// *  along with the software. If not, see <http://www.gnu.org/licenses/>.
-// *
-// *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
-// */
-//
-///**
-// * @file
-// * Implementation of Infector algorithms.
-// */
-//
-//#include "Infector.h"
-//
-//#include "core/Cluster.h"
-//#include "core/ClusterType.h"
-//
-//#include <spdlog/spdlog.h>
-//
-//namespace stride {
-//
-//using namespace std;
-//
-///**
-// * Primary R0_POLICY: do nothing i.e. track all cases.
-// */
-//template <bool track_index_case>
-//class R0_POLICY
-//{
-//public:
-//	static void Execute(Person* p) {}
-//};
-//
-///**
-// * Specialized R0_POLICY: track only the index case.
-// */
-//template<>
-//class R0_POLICY<true>
-//{
-//public:
-//	static void Execute(Person* p) { p->GetHealth().StopInfection(); }
-//};
-//
-///**
-// * Primary LOG_POLICY policy, implements LogMode::None.
-// */
-//template <LogMode log_level>
-//class LOG_POLICY
-//{
-//public:
-//	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
-//			    ClusterType cluster_type, shared_ptr<const Calendar> environ)
-//	{
-//	}
-//};
-//
-///**
-// * Specialized LOG_POLICY policy LogMode::Transmissions.
-// */
-//template<>
-//class LOG_POLICY<LogMode::Transmissions>
-//{
-//public:
-//	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
-//			    ClusterType cluster_type, shared_ptr<const Calendar> environ)
-//	{
-//		logger->info("[TRAN] {} {} {} {}", p1->GetId(), p2->GetId(), ToString(cluster_type),
-//			     environ->GetSimulationDay());
-//	}
-//};
-//
-///**
-// * Specialized LOG_POLICY policy LogMode::Contacts.
-// */
-//template<>
-//class LOG_POLICY<LogMode::Contacts>
-//{
-//public:
-//	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
-//			    ClusterType cluster_type, shared_ptr<const Calendar> calendar)
-//	{
-//		unsigned int home = (cluster_type == ClusterType::Household);
-//		unsigned int work = (cluster_type == ClusterType::Work);
-//		unsigned int school = (cluster_type == ClusterType::School);
-//		unsigned int primary_community = (cluster_type == ClusterType::PrimaryCommunity);
-//		unsigned int secundary_community = (cluster_type == ClusterType::SecondaryCommunity);
-//
-//		logger->info("[CONT] {} {} {} {} {} {} {} {} {}", p1->GetId(), p1->GetAge(), p2->GetAge(), home, school,
-//			     work, primary_community, secundary_community, calendar->GetSimulationDay());
-//	}
-//};
-//
-////--------------------------------------------------------------------------
-//// Definition for primary template covers the situation for
-//// LogMode::None & LogMode::Transmissions, both with
-//// track_index_case false and true.
-//// And every local information policy except NoLocalInformation
-////--------------------------------------------------------------------------
-//template <LogMode log_level, bool track_index_case, typename local_information_policy>
-//void Infector<log_level, track_index_case, local_information_policy>::Execute(
-//    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
-//    shared_ptr<const Calendar> calendar)
-//{
+/*
+ *  This is free software: you can redistribute it and/or modify it
+ *  under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *  The software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  You should have received a copy of the GNU General Public License
+ *  along with the software. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
+ */
+
+/**
+ * @file
+ * Implementation of Infector algorithms.
+ */
+
+#include "Infector.h"
+
+#include "core/Cluster.h"
+#include "core/ClusterType.h"
+#include "pop/Person.h"
+
+#include <spdlog/spdlog.h>
+
+namespace stride {
+
+using namespace std;
+
+/**
+ * Primary R0_POLICY: do nothing i.e. track all cases.
+ */
+template <bool track_index_case>
+class R0_POLICY
+{
+public:
+	static void Execute(Person* p) {}
+};
+
+/**
+ * Specialized R0_POLICY: track only the index case.
+ */
+template<>
+class R0_POLICY<true>
+{
+public:
+	static void Execute(Person* p) { p->GetHealth().StopInfection(); }
+};
+
+/**
+ * Primary LOG_POLICY policy, implements LogMode::None.
+ */
+template <LogMode log_level>
+class LOG_POLICY
+{
+public:
+	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
+			    ClusterType cluster_type, shared_ptr<const Calendar> environ)
+	{
+	}
+};
+
+/**
+ * Specialized LOG_POLICY policy LogMode::Transmissions.
+ */
+template<>
+class LOG_POLICY<LogMode::Transmissions>
+{
+public:
+	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
+			    ClusterType cluster_type, shared_ptr<const Calendar> environ)
+	{
+		logger->info("[TRAN] {} {} {} {}", p1->GetId(), p2->GetId(), ToString(cluster_type),
+			     environ->GetSimulationDay());
+	}
+};
+
+/**
+ * Specialized LOG_POLICY policy LogMode::Contacts.
+ */
+template<>
+class LOG_POLICY<LogMode::Contacts>
+{
+public:
+	static void Execute(shared_ptr<spdlog::logger> logger, Person* p1, Person* p2,
+			    ClusterType cluster_type, shared_ptr<const Calendar> calendar)
+	{
+		unsigned int home = (cluster_type == ClusterType::Household);
+		unsigned int work = (cluster_type == ClusterType::Work);
+		unsigned int school = (cluster_type == ClusterType::School);
+		unsigned int primary_community = (cluster_type == ClusterType::PrimaryCommunity);
+		unsigned int secundary_community = (cluster_type == ClusterType::SecondaryCommunity);
+
+		logger->info("[CONT] {} {} {} {} {} {} {} {} {}", p1->GetId(), p1->GetAge(), p2->GetAge(), home, school,
+			     work, primary_community, secundary_community, calendar->GetSimulationDay());
+	}
+};
+
+//--------------------------------------------------------------------------
+// Definition for primary template covers the situation for
+// LogMode::None & LogMode::Transmissions, both with
+// track_index_case false and true.
+// And every local information policy except NoLocalInformation
+//--------------------------------------------------------------------------
+template <LogMode log_level, bool track_index_case, typename local_information_policy>
+void Infector<log_level, track_index_case, local_information_policy>::Execute(
+    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
+    shared_ptr<const Calendar> calendar)
+{
 //	cluster.UpdateMemberPresence();
 //
 //	// set up some stuff
@@ -156,16 +157,16 @@
 //			}
 //		}
 //	}
-//}
-//
-////-------------------------------------------------------------------------------------------
-//// Definition of partial specialization for LocalInformationPolicy:NoLocalInformation.
-////-------------------------------------------------------------------------------------------
-//template <LogMode log_level, bool track_index_case>
-//void Infector<log_level, track_index_case, NoLocalInformation>::Execute(
-//    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
-//    shared_ptr<const Calendar> calendar)
-//{
+}
+
+//-------------------------------------------------------------------------------------------
+// Definition of partial specialization for LocalInformationPolicy:NoLocalInformation.
+//-------------------------------------------------------------------------------------------
+template <LogMode log_level, bool track_index_case>
+void Infector<log_level, track_index_case, NoLocalInformation>::Execute(
+    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
+    shared_ptr<const Calendar> calendar)
+{
 //
 //	// check if the cluster has infected members and sort
 //	bool infectious_cases;
@@ -222,16 +223,16 @@
 //			}
 //		}
 //	}
-//}
-//
-////-------------------------------------------------------------------------------------------
-//// Definition of partial specialization for LogMode::Contacts and NoLocalInformation policy.
-////-------------------------------------------------------------------------------------------
-//template <bool track_index_case>
-//void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
-//    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
-//    shared_ptr<const Calendar> calendar)
-//{
+}
+
+//-------------------------------------------------------------------------------------------
+// Definition of partial specialization for LogMode::Contacts and NoLocalInformation policy.
+//-------------------------------------------------------------------------------------------
+template <bool track_index_case>
+void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
+    Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
+    shared_ptr<const Calendar> calendar)
+{
 //	cluster.UpdateMemberPresence();
 //
 //	// set up some stuff
@@ -283,25 +284,24 @@
 //			}
 //		}
 //	}
-//}
-//
-////--------------------------------------------------------------------------
-//// All explicit instantiations.
-////--------------------------------------------------------------------------
-//template class Infector<LogMode::None, false, NoLocalInformation>;
-//template class Infector<LogMode::None, false, LocalDiscussion>;
-//template class Infector<LogMode::None, true, NoLocalInformation>;
-//template class Infector<LogMode::None, true, LocalDiscussion>;
-//
-//template class Infector<LogMode::Transmissions, false, NoLocalInformation>;
-//template class Infector<LogMode::Transmissions, false, LocalDiscussion>;
-//template class Infector<LogMode::Transmissions, true, NoLocalInformation>;
-//template class Infector<LogMode::Transmissions, true, LocalDiscussion>;
-//
-//template class Infector<LogMode::Contacts, false, NoLocalInformation>;
-//template class Infector<LogMode::Contacts, false, LocalDiscussion>;
-//template class Infector<LogMode::Contacts, true, NoLocalInformation>;
-//template class Infector<LogMode::Contacts, true, LocalDiscussion>;
-//
-//
-//} // end_of_namespace
+}
+
+//--------------------------------------------------------------------------
+// All explicit instantiations.
+//--------------------------------------------------------------------------
+template class Infector<LogMode::None, false, NoLocalInformation>;
+template class Infector<LogMode::None, false, LocalDiscussion>;
+template class Infector<LogMode::None, true, NoLocalInformation>;
+template class Infector<LogMode::None, true, LocalDiscussion>;
+
+template class Infector<LogMode::Transmissions, false, NoLocalInformation>;
+template class Infector<LogMode::Transmissions, false, LocalDiscussion>;
+template class Infector<LogMode::Transmissions, true, NoLocalInformation>;
+template class Infector<LogMode::Transmissions, true, LocalDiscussion>;
+
+template class Infector<LogMode::Contacts, false, NoLocalInformation>;
+template class Infector<LogMode::Contacts, false, LocalDiscussion>;
+template class Infector<LogMode::Contacts, true, NoLocalInformation>;
+template class Infector<LogMode::Contacts, true, LocalDiscussion>;
+
+} // end_of_namespace
