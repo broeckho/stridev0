@@ -42,3 +42,4 @@ class Belief
 };
 
 } // end_of_namespace
+

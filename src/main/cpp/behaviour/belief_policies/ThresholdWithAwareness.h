@@ -71,7 +71,7 @@
 //};
 //
 //} // end of namespace
-
+//
 //#pragma once
 ///*
 // *  This is free software: you can redistribute it and/or modify it
@@ -162,8 +162,8 @@
 //    const Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>* p);
 //
 //} // end of namespace
-
-
+//
+//
 //#include "ThresholdWithAwarenessData.h"
 //#include "pop/Person.h"
 //
@@ -199,4 +199,4 @@
 //    const Person<Vaccination<ThresholdWithAwareness<true, true>>, ThresholdWithAwareness<true, true>>* p);
 //
 //} // end of namespace stride
-
+//

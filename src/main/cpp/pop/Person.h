@@ -36,21 +36,26 @@ class Person
 public:
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id, unsigned int work_id,
-		   unsigned int primary_community_id, unsigned int secondary_community_id, unsigned int start_infectiousness,
-		   unsigned int start_symptomatic, unsigned int time_infectious, unsigned int time_symptomatic,
-		   double risk_averseness = 0, const boost::property_tree::ptree& pt_belief = boost::property_tree::ptree())
-		: m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
-		  m_work_id(work_id), m_primary_community_id(primary_community_id), m_secondary_community_id(secondary_community_id),
-		  m_at_household(true), m_at_school(true), m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
-		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-		  m_is_participant(false), m_at_home_due_to_illness(false), m_pt_belief(pt_belief), m_belief(nullptr)
-	{}
+	       unsigned int primary_community_id, unsigned int secondary_community_id,
+	       unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
+	       unsigned int time_symptomatic, double risk_averseness = 0, Belief* bp)
+	    : m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
+	      m_work_id(work_id), m_primary_community_id(primary_community_id),
+	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
+	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
+	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
+	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief(bp)
+	{
+	}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }
 
 	/// Get the age.
 	double GetAge() const { return m_age; }
+
+        ///
+        Belief* GetBelief() { return m_belief; }
 
 	/// Get cluster ID of cluster_type
 	unsigned int GetClusterId(ClusterType cluster_type) const;
@@ -63,17 +68,7 @@ public:
 
 //	/// Return person's health status.
 //	const Health& GetHealth() const { return m_health; }
-//
-//	/// Return person's belief status.
-//	boost::property_tree::ptree GetBeliefData() const { return m_belief_pt; }
-//
-//        /// Set person's belief status.
-//        void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief_pt = pt; }
-//
-//    Belief* GetBelief() { return m_belief; }
-//
-//    void SetBelief(Belief* belief) { m_belief = belief; }
-//
+
 //	/// Get the id.
 //	unsigned int GetId() const { return m_id; }
 //
@@ -114,7 +109,6 @@ private:
 	bool m_is_participant;         ///< Is participating in the social contact study
 	bool m_at_home_due_to_illness; ///< Is person present home due to illness?
 
-	boost::property_tree::ptree  m_pt_belief; 	///<
 	Belief* m_belief;							///<
 };
 

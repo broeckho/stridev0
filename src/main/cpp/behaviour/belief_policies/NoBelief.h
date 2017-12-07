@@ -62,4 +62,29 @@
 //{
 //};
 //}
-
+//
+//<<<<<<< HEAD
+//=======
+//#include "behaviour/belief_data/Nothing.h"
+//#include "core/Health.h"
+//
+//namespace stride {
+//
+//class Person;
+//
+//class NoBelief : public Belief
+//{
+//public:
+//	using Data = Nothing;
+//
+//	static void Initialize(Data& belief_data, double risk_averseness) {}
+//
+//	static void Update(Data& belief_data, Health& health_data) {}
+//
+//	static void Update(const Person* p) {}
+//
+//	static bool HasAdopted(const Data& belief_data) { return false; }
+//};
+//
+//} // end of namespace
+//>>>>>>> f9782152335ce404da1e8624ebb514c3c2a13164
