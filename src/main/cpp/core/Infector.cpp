@@ -110,14 +110,14 @@ void Infector<log_level, track_index_case, local_information_policy>::Execute(
     Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
     shared_ptr<const Calendar> calendar)
 {
-//	cluster.UpdateMemberPresence();
-//
-//	// set up some stuff
-//	auto logger = spdlog::get("contact_logger");
-//	const auto c_type = cluster.m_cluster_type;
-//	const auto& c_members = cluster.m_members;
-//	const auto transmission_rate = disease_profile.GetTransmissionRate();
-//
+	cluster.UpdateMemberPresence();
+
+	// set up some stuff
+	auto logger = spdlog::get("contact_logger");
+	const auto c_type = cluster.m_cluster_type;
+	const auto& c_members = cluster.m_members;
+	const auto transmission_rate = disease_profile.GetTransmissionRate();
+
 //	// check all contacts
 //	for (size_t i_person1 = 0; i_person1 < c_members.size(); i_person1++) {
 //		// check if member is present today
@@ -167,22 +167,22 @@ void Infector<log_level, track_index_case, NoLocalInformation>::Execute(
     Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
     shared_ptr<const Calendar> calendar)
 {
-//
-//	// check if the cluster has infected members and sort
-//	bool infectious_cases;
-//	size_t num_cases;
-//	tie(infectious_cases, num_cases) = cluster.SortMembers();
-//
-//	if (infectious_cases) {
-//		cluster.UpdateMemberPresence();
-//
-//		// set up some stuff
-//		auto logger = spdlog::get("contact_logger");
-//		const auto c_type = cluster.m_cluster_type;
-//		const auto c_immune = cluster.m_index_immune;
-//		const auto& c_members = cluster.m_members;
-//		const auto transmission_rate = disease_profile.GetTransmissionRate();
-//
+
+	// check if the cluster has infected members and sort
+	bool infectious_cases;
+	size_t num_cases;
+	tie(infectious_cases, num_cases) = cluster.SortMembers();
+
+	if (infectious_cases) {
+		cluster.UpdateMemberPresence();
+
+		// set up some stuff
+		auto logger = spdlog::get("contact_logger");
+		const auto c_type = cluster.m_cluster_type;
+		const auto c_immune = cluster.m_index_immune;
+		const auto& c_members = cluster.m_members;
+		const auto transmission_rate = disease_profile.GetTransmissionRate();
+
 //		// match infectious and susceptible members, skip last part (immune members)
 //		for (size_t i_infected = 0; i_infected < num_cases; i_infected++) {
 //			// check if member is present today
@@ -222,7 +222,7 @@ void Infector<log_level, track_index_case, NoLocalInformation>::Execute(
 //				}
 //			}
 //		}
-//	}
+	}
 }
 
 //-------------------------------------------------------------------------------------------
@@ -233,14 +233,14 @@ void Infector<LogMode::Contacts, track_index_case, NoLocalInformation>::Execute(
     Cluster& cluster, DiseaseProfile disease_profile, RngHandler& contact_handler,
     shared_ptr<const Calendar> calendar)
 {
-//	cluster.UpdateMemberPresence();
-//
-//	// set up some stuff
-//	auto logger = spdlog::get("contact_logger");
-//	const auto c_type = cluster.m_cluster_type;
-//	const auto& c_members = cluster.m_members;
-//	const auto transmission_rate = disease_profile.GetTransmissionRate();
-//
+	cluster.UpdateMemberPresence();
+
+	// set up some stuff
+	auto logger = spdlog::get("contact_logger");
+	const auto c_type = cluster.m_cluster_type;
+	const auto& c_members = cluster.m_members;
+	const auto transmission_rate = disease_profile.GetTransmissionRate();
+
 //	// check all contacts
 //	for (size_t i_person1 = 0; i_person1 < c_members.size(); i_person1++) {
 //		// check if member is present today
