@@ -100,6 +100,10 @@ std::shared_ptr<Simulator> SimulatorBuilder::Build(const boost::property_tree::p
 	sim->m_log_level = IsLogMode(l) ? ToLogMode(l)
 			: throw runtime_error(string(__func__) + "> Invalid input for LogMode.");
 
+	/// Set correct information policies
+	const string loc_info_policy = pt_config.get<string>("run.local_information_policy", "NoLocalInformation");
+	sim->m_local_information_policy = loc_info_policy; //TODO make this enum class like LogMode
+
 	// Build population.
 	Random rng(pt_config.get<double>("run.rng_seed"));
 	//		sim->m_population = PopulationBuilder::Build(pt_config, pt_disease, rng);

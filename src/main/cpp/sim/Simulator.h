@@ -63,6 +63,9 @@ private:
 	boost::property_tree::ptree m_pt_config; ///< Configuration property tree
 
 private:
+	std::string m_local_information_policy;	///<
+
+private:
 	unsigned int m_num_threads;            ///< The number of (OpenMP) threads.
 	std::vector<RngHandler> m_rng_handler; ///< Pointer to the RngHandlers.
 	LogMode m_log_level;                   ///< Specifies logging mode.
