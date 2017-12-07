@@ -21,7 +21,8 @@ public:
 
     ///
     void Set(const boost::property_tree::ptree& pt) { m_pt = pt;}
-private:
+
+protected:
     boost::property_tree::ptree  m_pt;			///<
 };
 

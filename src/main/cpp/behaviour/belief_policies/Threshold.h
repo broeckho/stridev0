@@ -14,12 +14,13 @@
  *  Copyright 2017, Willem L, Kuylen E, Stijven S & Broeckhove J
  */
 
+#include "belief.h"
 #include "behaviour/belief_data/ThresholdData.h"
 
 namespace stride {
 
 template <bool threshold_infected, bool threshold_adopted>
-class Threshold
+class Threshold : public Belief
 {
 public:
 	using Data = ThresholdData;

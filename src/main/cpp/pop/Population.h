@@ -19,9 +19,14 @@
  * Header file for the core Population class
  */
 
-#include <vector>
 
 #include "pop/Person.h"
+#include "util/SegmentedVector.h"
+
+#include <boost/property_tree/ptree.hpp>
+#include <cassert>
+#include <vector>
+
 
 namespace stride {
 
@@ -42,7 +47,10 @@ public:
 		return total;
 	}
 
-	double GetFractionInfected() const { return GetInfectedCount() / this->size(); }
+	double GetFractionInfected() const
+	{
+	        return GetInfectedCount() / this->size();
+	}
 
 	template <typename BeliefPolicy>
 	unsigned int GetAdoptedCount() const
@@ -57,6 +65,31 @@ public:
 		}
 
 		return total;
+	}
+
+	template <typename BeliefPolicy>
+	void SetUpBeliefsContainer()
+	{
+	        m_beliefs_container = static_cast<void*>( new SegmentedVector<BeliefPolicy>);
+	}
+
+	template <typename BeliefPolicy>
+	void CreatePerson(unsigned int id, double age, unsigned int household_id, unsigned int school_id,
+	        unsigned int work_id, unsigned int primary_community_id, unsigned int secondary_community_id,
+	        unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
+	        unsigned int time_symptomatic, double risk_averseness = 0,
+	        boost::property_tree::ptree belief_pt = boost::property_tree::ptree())
+	{
+	        static SegmentedVector<BeliefPolicy> beliefs_container;
+	        const BeliefPolicy b(belief_pt);
+
+	        assert( this->size() == beliefs_container.size() && "Person and Beliefs container sizes not equal!");
+	        BeliefPolicy* bp = beliefs_container.emplace_back(b);
+	        this->emplace_back(Person(person_id, age, household_id, school_id, work_id,
+                                                primary_community_id, secondary_community_id,
+                                                start_infectiousness, start_symptomatic, time_infectious,
+                                                time_symptomatic, risk_averseness, bp));
+	        assert( this->size() == beliefs_container.size() && "Person and Beliefs container sizes not equal!");
 	}
 };
 

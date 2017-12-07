@@ -115,12 +115,7 @@ public:
 			const auto time_symptomatic = Sample(rng, distrib_time_symptomatic);
 
 			const auto values = StringUtils::Split(line, ",");
-			auto risk_averseness = 0.0;
-
-			if (values.size() > 6) {
-				risk_averseness = StringUtils::FromString<double>(values[6]);
-			}
-
+			const auto risk_averseness = (values.size() <= 6) ? 0.0 : StringUtils::FromString<double>(values[6]);
 			unsigned int age = StringUtils::FromString<unsigned int>(values[0]);
 			unsigned int household_id = StringUtils::FromString<unsigned int>(values[1]);
 			unsigned int school_id = StringUtils::FromString<unsigned int>(values[2]);
@@ -128,11 +123,10 @@ public:
 			unsigned int primary_community_id = StringUtils::FromString<unsigned int>(values[4]);
 			unsigned int secondary_community_id = StringUtils::FromString<unsigned int>(values[5]);
 
-			population.emplace_back(Person(person_id, age, household_id, school_id, work_id,
-							    primary_community_id, secondary_community_id,
-							    start_infectiousness, start_symptomatic, time_infectious,
-							    time_symptomatic, risk_averseness));
-
+			population.CreatePerson(person_id, age, household_id, school_id, work_id,
+						primary_community_id, secondary_community_id,
+						start_infectiousness, start_symptomatic, time_infectious,
+						time_symptomatic, risk_averseness);
 			++person_id;
 		}
 
@@ -153,8 +147,7 @@ public:
 		if (log_level == "Contacts") {
 			const unsigned int num_participants = pt_config.get<double>("run.num_participants_survey");
 
-			// use a while-loop to obtain 'num_participant' unique participants (default sampling is with
-			// replacement)
+			// Obtain 'num_participant' unique participants (default sampling is with replacement)
 			// A for loop will not do because we might draw the same person twice.
 			unsigned int num_samples = 0;
 			while (num_samples < num_participants) {

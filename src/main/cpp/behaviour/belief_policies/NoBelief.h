@@ -25,7 +25,7 @@ namespace stride {
 
 class Person;
 
-class NoBelief
+class NoBelief : public Belief
 {
 public:
 	using Data = Nothing;
