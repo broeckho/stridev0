@@ -21,20 +21,12 @@
 #include "SimulatorBuilder.h"
 
 #include "core/ClusterType.h"
+#include "immunity/Vaccinator.h"
+#include "pop/PopulationBuilder.h"
 #include "util/InstallDirs.h"
 
 #include <boost/property_tree/xml_parser.hpp>
 #include <spdlog/spdlog.h>
-
-//#include "calendar/Calendar.h"
-//#include "core/RngHandler.h"
-//#include "immunity/Vaccinator.h"
-
-#include "pop/PopulationBuilder.h"
-//#include "util/Random.h"
-
-//#include <stdexcept>
-//#include <string>
 
 namespace stride {
 
@@ -112,8 +104,8 @@ std::shared_ptr<Simulator> SimulatorBuilder::Build(const boost::property_tree::p
 	InitializeClusters(sim);
 
 	// Initialize population immunity
-	//		Vaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
-	//		Vaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
+	Vaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
+	Vaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
 
 	// Initialize disease profile.
 	sim->m_disease_profile.Initialize(pt_config, pt_disease);
