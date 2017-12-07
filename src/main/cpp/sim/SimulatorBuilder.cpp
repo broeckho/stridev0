@@ -111,7 +111,7 @@ std::shared_ptr<Simulator> SimulatorBuilder::Build(const boost::property_tree::p
 	// Initialize clusters.
 	InitializeClusters(sim);
 
-	//		// Initialize population immunity
+	// Initialize population immunity
 	//		Vaccinator::Apply("immunity", sim, pt_config, pt_disease, rng);
 	//		Vaccinator::Apply("vaccine", sim, pt_config, pt_disease, rng);
 
