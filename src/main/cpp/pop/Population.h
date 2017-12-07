@@ -19,7 +19,6 @@
  * Header file for the core Population class
  */
 
-
 #include "behaviour/belief_policies/NoBelief.h"
 #include "pop/Person.h"
 #include "util/SegmentedVector.h"
@@ -27,7 +26,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <cassert>
 #include <vector>
-
 
 namespace stride {
 
@@ -58,8 +56,7 @@ public:
 		unsigned int total{0U};
 		for (const auto& p : *this) {
 			auto belief = p.GetBelief();
-			// TODO ask belief ptr whether person has adopted a belief
-			bool adopted = false;
+			bool adopted = belief->HasAdopted();
 			if (adopted) {
 				total++;
 			}

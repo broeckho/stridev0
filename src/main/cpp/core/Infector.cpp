@@ -134,7 +134,8 @@ void Infector<log_level, track_index_case, local_information_policy>::Execute(
 					// check for contact
 					if (contact_handler.HasContact(contact_rate)) {
 						// exchange information about health state & beliefs
-						// TODO local information update
+						p1->Update(p2);
+						p2->Update(p1);
 
 						bool transmission = contact_handler.HasTransmission(transmission_rate);
 						if (transmission) {
