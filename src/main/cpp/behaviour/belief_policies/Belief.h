@@ -1,3 +1,4 @@
+#pragma once
 /*
  *  This is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by
@@ -12,23 +13,32 @@
  *
  *  Copyright 2017, Kuylen E, Willem L, Broeckhove J
  */
-#include "ThresholdData.h"
-#include "pop/Person.h"
+
+/**
+ * @file
+ * Header file for Belief.
+ */
+
+#include <boost/property_tree/ptree.hpp>
 
 namespace stride {
 
-void ThresholdData::Contact(const Person* p)
+/**
+ * Base class for all belief policies.
+ */
+class Belief
 {
-        /*
-	m_num_contacts++;
-	if (p->GetHealth().IsSymptomatic()) {
-		m_num_contacts_infected++;
-	}
-	const auto other_belief_data = p->GetBeliefData();
-	if (BeliefPolicy::HasAdopted(other_belief_data)) {
-		m_num_contacts_adopted++;
-	}
-	*/
-}
+//public:
+//	///
+//    Belief(const boost::property_tree::ptree& pt) : m_pt(pt) {}
+//
+//    ///
+//    boost::property_tree::ptree Get() {return m_pt;}
+//
+//    ///
+//    void Set(const boost::property_tree::ptree& pt) { m_pt = pt;}
+//private:
+//    boost::property_tree::ptree  m_pt;			///<
+};
 
-} // end of namespace
+} // end_of_namespace

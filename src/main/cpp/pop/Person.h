@@ -18,17 +18,14 @@
  * @file
  * Header file for the Person class.
  */
-#include "behaviour/behaviour_policies/NoBehaviour.h"
-#include "behaviour/belief_policies/NoBelief.h"
-#include "behaviour/belief_policies/Threshold.h"
-#include "Belief.h"
+
+#include "behaviour/belief_policies/Belief.h"
 #include "core/Health.h"
 
 #include <boost/property_tree/ptree.hpp>
 
 namespace stride {
 
-/*class Calendar;*/
 enum class ClusterType;
 
 /**
@@ -39,17 +36,15 @@ class Person
 public:
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id, unsigned int work_id,
-	       unsigned int primary_community_id, unsigned int secondary_community_id,
-	       unsigned int start_infectiousness, unsigned int start_symptomatic, unsigned int time_infectious,
-	       unsigned int time_symptomatic, double risk_averseness = 0, boost::property_tree::ptree belief_pt = boost::property_tree::ptree())
-	    : m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
-	      m_work_id(work_id), m_primary_community_id(primary_community_id),
-	      m_secondary_community_id(secondary_community_id), m_at_household(true), m_at_school(true),
-	      m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
-	      m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
-	      m_is_participant(false), m_at_home_due_to_illness(false), m_belief_pt(belief_pt), m_belief(nullptr)
-	{
-	}
+		   unsigned int primary_community_id, unsigned int secondary_community_id, unsigned int start_infectiousness,
+		   unsigned int start_symptomatic, unsigned int time_infectious, unsigned int time_symptomatic,
+		   double risk_averseness = 0, const boost::property_tree::ptree& pt_belief = boost::property_tree::ptree())
+		: m_id(id), m_age(age), m_gender('M'), m_household_id(household_id), m_school_id(school_id),
+		  m_work_id(work_id), m_primary_community_id(primary_community_id), m_secondary_community_id(secondary_community_id),
+		  m_at_household(true), m_at_school(true), m_at_work(true), m_at_primary_community(true), m_at_secondary_community(true),
+		  m_health(start_infectiousness, start_symptomatic, time_infectious, time_symptomatic),
+		  m_is_participant(false), m_at_home_due_to_illness(false), m_pt_belief(pt_belief), m_belief(nullptr)
+	{}
 
 	/// Is this person not equal to the given person?
 	bool operator!=(const Person& p) const { return p.m_id != m_id; }
@@ -66,37 +61,37 @@ public:
 	/// Return person's health status.
 	Health& GetHealth() { return m_health; }
 
-	/// Return person's health status.
-	const Health& GetHealth() const { return m_health; }
+//	/// Return person's health status.
+//	const Health& GetHealth() const { return m_health; }
+//
+//	/// Return person's belief status.
+//	boost::property_tree::ptree GetBeliefData() const { return m_belief_pt; }
+//
+//        /// Set person's belief status.
+//        void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief_pt = pt; }
+//
+//    Belief* GetBelief() { return m_belief; }
+//
+//    void SetBelief(Belief* belief) { m_belief = belief; }
+//
+//	/// Get the id.
+//	unsigned int GetId() const { return m_id; }
+//
+//	/// Check if a person is present today in a given cluster
+//	bool IsInCluster(ClusterType c) const;
+//
+//	/// Does this person participates in the social contact study?
+//	bool IsParticipatingInSurvey() const { return m_is_participant; }
 
-	/// Return person's belief status.
-	boost::property_tree::ptree GetBeliefData() const { return m_belief_pt; }
+/// Participate in social contact study and log person details
+void ParticipateInSurvey() { m_is_participant = true; }
 
-        /// Set person's belief status.
-        void SetBeliefData(const boost::property_tree::ptree& pt) { m_belief_pt = pt; }
-
-    Belief* GetBelief() { return m_belief; }
-
-    void SetBelief(Belief* belief) { m_belief = belief; }
-
-	/// Get the id.
-	unsigned int GetId() const { return m_id; }
-
-	/// Check if a person is present today in a given cluster
-	bool IsInCluster(ClusterType c) const;
-
-	/// Does this person participates in the social contact study?
-	bool IsParticipatingInSurvey() const { return m_is_participant; }
-
-	/// Participate in social contact study and log person details
-	void ParticipateInSurvey() { m_is_participant = true; }
-
-	/// Update the health status and presence in clusters.
-	void Update(bool is_work_off, bool is_school_off, double fraction_infected);
-
-	/// Update belief & behaviour upon meeting another Person
-	void Update(const Person* p);
-
+//	/// Update the health status and presence in clusters.
+//	void Update(bool is_work_off, bool is_school_off, double fraction_infected);
+//
+//	/// Update belief & behaviour upon meeting another Person
+//	void Update(const Person* p);
+//
 private:
 	unsigned int m_id; ///< The id.
 	double m_age;      ///< The age.
@@ -119,9 +114,8 @@ private:
 	bool m_is_participant;         ///< Is participating in the social contact study
 	bool m_at_home_due_to_illness; ///< Is person present home due to illness?
 
-	boost::property_tree::ptree  m_belief_pt;
-
-	Belief* m_belief;
+	boost::property_tree::ptree  m_pt_belief; 	///<
+	Belief* m_belief;							///<
 };
 
 } // end_of_namespace

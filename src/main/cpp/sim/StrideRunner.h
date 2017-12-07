@@ -16,43 +16,38 @@
 
 /**
  * @file
- * Header for the Simulator class.
+ * Header for the StrideRunner class.
  */
 
-#include "output/AdoptedFile.h"
-#include "output/CasesFile.h"
-#include "output/PersonFile.h"
-#include "output/SummaryFile.h"
-#include "sim/SimulatorBuilder.h"
-#include "util/Stopwatch.h"
-#include "util/TimeStamp.h"
+#include "sim/Simulator.h"
 
 #include <boost/property_tree/ptree.hpp>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace stride {
 
-using namespace output;
-using namespace std;
-using namespace std::chrono;
-using namespace util;
-
 /**
- * Run the simulator with config information provided.
+ * Class for setting up & managing a simulation.
  */
-void run_stride(bool track_index_case, const std::string& config_file_name);
+class StrideRunner
+{
+public:
+	/// Constructor
+	StrideRunner() {}
 
-/**
- * Generate output files (at end of simulation).
- */
-void generate_output_files(
-    const string& output_prefix, const vector<unsigned int>& cases, const vector<unsigned int>& adopted,
-    const boost::property_tree::ptree& pt_config,
-    const shared_ptr<Simulator>
-	sim,
-    const unsigned int run_time, const unsigned int total_time);
+	/// Destructor
+	virtual ~StrideRunner() {}
+
+	/// Run the simulator with config information provided.
+	static void Run(bool track_index_case, const std::string&  config_file_name);
+
+private:
+	/// Generate output files (at the end of the simulation).
+	static void GenerateOutputFiles(const std::string& output_prefix, const std::vector<unsigned int>& cases,
+			const std::vector<unsigned int>& adopted, const boost::property_tree::ptree& pt_config,
+			std::shared_ptr<Simulator> sim, const unsigned int run_time, const unsigned int total_time);
+};
 
 } // end_of_namespace

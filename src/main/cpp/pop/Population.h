@@ -35,29 +35,28 @@ public:
 	unsigned int GetInfectedCount() const
 	{
 		unsigned int total{0U};
-		for (const auto& p : *this) {
-			const auto& h = p.GetHealth();
-			total += h.IsInfected() || h.IsRecovered();
-		}
+//		for (const auto& p : *this) {
+//			const auto& h = p.GetHealth();
+//			total += h.IsInfected() || h.IsRecovered();
+//		}
 		return total;
 	}
 
 	double GetFractionInfected() const { return GetInfectedCount() / this->size(); }
 
-	template <typename BeliefPolicy>
 	unsigned int GetAdoptedCount() const
 	{
 		unsigned int total{0U};
-		for (const auto& p : *this) {
-			auto belief_data = p.GetBeliefData();
-			// bool adopted = BeliefPolicy::HasAdopted(belief_data);
-			//if (adopted) {
-			//	total++;
-			//}
-		}
-
+//		for (const auto& p : *this) {
+//			auto belief_data = p.GetBeliefData();
+//			// bool adopted = BeliefPolicy::HasAdopted(belief_data);
+//			//if (adopted) {
+//			//	total++;
+//			//}
+//		}
 		return total;
 	}
+
 };
 
 } // end_of_namespace

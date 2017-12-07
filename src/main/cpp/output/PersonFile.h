@@ -43,12 +43,12 @@ public:
 	/// Print the given cases with corresponding tag.
 	void Print(const std::shared_ptr<const Population> population)
 	{
-		for (const auto& p : *population) {
-			const auto& h = p.GetHealth();
-			m_fstream << p.GetId() << "," << p.GetAge() << "," << h.IsRecovered() << "," << h.IsImmune()
-				  << "," << h.GetStartInfectiousness() << "," << h.GetEndInfectiousness() << ","
-				  << h.GetStartSymptomatic() << "," << h.GetEndSymptomatic() << std::endl;
-		}
+		//for (const auto& p : *population) {
+		//	const auto& h = p.GetHealth();
+		//	m_fstream << p.GetId() << "," << p.GetAge() << "," << h.IsRecovered() << "," << h.IsImmune()
+		//		  << "," << h.GetStartInfectiousness() << "," << h.GetEndInfectiousness() << ","
+		//		  << h.GetStartSymptomatic() << "," << h.GetEndSymptomatic() << std::endl;
+		//}
 	}
 
 private:

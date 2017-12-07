@@ -18,7 +18,7 @@
  * Main program: command line handling.
  */
 
-#include "run_stride.h"
+#include "sim/StrideRunner.h"
 
 #include <exception>
 #include <iostream>
@@ -32,6 +32,7 @@ using namespace TCLAP;
 int main(int argc, char** argv)
 {
 	int exit_status = EXIT_SUCCESS;
+
 	try {
 		// -----------------------------------------------------------------------------------------
 		// Parse command line.
@@ -39,14 +40,13 @@ int main(int argc, char** argv)
 		CmdLine cmd("stride", ' ', "1.0", false);
 		SwitchArg index_case_Arg("r", "r0", "R0 only", cmd, false);
 		ValueArg<string> config_file_Arg("c", "config", "Config File", false, "./config/run_default.xml",
-						 "CONFIGURATION FILE", cmd);
+				"CONFIGURATION FILE", cmd);
 		cmd.parse(argc, argv);
 
 		// -----------------------------------------------------------------------------------------
 		// Run the Stride simulator.
 		// -----------------------------------------------------------------------------------------
-		run_stride(index_case_Arg.getValue(), config_file_Arg.getValue());
-
+		StrideRunner::Run(index_case_Arg.getValue(), config_file_Arg.getValue());
 	} catch (exception& e) {
 		exit_status = EXIT_FAILURE;
 		cerr << "\nEXCEPION THROWN: " << e.what() << endl;
