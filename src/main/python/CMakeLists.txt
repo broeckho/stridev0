@@ -25,19 +25,19 @@ add_subdirectory(examples)
 # Install Python package.
 #================================================================================================
 
-#SET(PYTHON_TO_INSTALL _pythonInstallPyStride)
+SET(PYTHON_TO_INSTALL _pythonInstallPyStride)
 
-#add_custom_target(pythonInstallPyStride ALL
-#				  DEPENDS
-#				  _stride
-#				  ${PYTHON_TO_INSTALL}
-#)
+add_custom_target(pythonInstallPyStride ALL
+				  DEPENDS
+				  _stride
+				  ${PYTHON_TO_INSTALL}
+)
 
-#add_custom_command(OUTPUT _pythonInstallPyStride
-#				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/stride pystride/stride
-#				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/stride.py pystride/stride/stride.py
-#				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/_stride.so pystride/stride/_stride.so
-#)
+add_custom_command(OUTPUT _pythonInstallPyStride
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/stride pystride/stride
+				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/stride.py pystride/stride/stride.py
+				   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/main/cpp/_stride.so pystride/stride/_stride.so
+)
 
 #================================================================================================
 # Copy the Python scripts to the bin folder.
