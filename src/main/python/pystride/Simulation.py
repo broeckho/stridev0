@@ -169,12 +169,11 @@ class Simulation:
         return f
 
     def getWorkingDirectory(self):
-        '''return pystride.workspace'''
-        pass
+        return pystride.workspace
 
     def getOutputDirectory(self):
-        '''return os.path.join(self.getWorkingDirectory(), self.label)'''
-        pass
+        return os.path.join(self.getWorkingDirectory(),
+                            self.getRunConfigParam('output_prefix'))
 
     def _linkData(self):
         '''

@@ -86,10 +86,10 @@ class Fork(Simulation):
         self._runConfig.find('output_prefix').text = self.parent.label + '/' + self.label
         ET.ElementTree(self._runConfig).write(configPath)
 
-        '''
+
                 #if linkData:
             #        self._linkData()
-        '''
+
 
     def __getstate__(self):
         return dict()
