@@ -47,9 +47,11 @@ using namespace boost::property_tree;
 using namespace std;
 using namespace std::chrono;
 
+///
+shared_ptr<Simulator> StrideRunner::m_sim = make_shared<Simulator>();
 
 /// Run the simulator with config information provided.
-void StrideRunner::Run(bool track_index_case, const std::string&  config_file_name)
+void StrideRunner::Run(bool track_index_case, const std::string& config_file_name)
 {
 	// -----------------------------------------------------------------------------------------
 	// Print output to command line.
@@ -136,13 +138,13 @@ void StrideRunner::Run(bool track_index_case, const std::string&  config_file_na
 	Stopwatch<> total_clock("total_clock", true);
 
 	cout << "Building the simulator. " << endl;
-	auto sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
+	m_sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
 	cout << "Done building the simulator. " << endl;
 
 	// -----------------------------------------------------------------------------------------
 	// Check the simulator.
 	// -----------------------------------------------------------------------------------------
-	bool simulator_is_operational = sim->IsOperational();
+	bool simulator_is_operational = m_sim->IsOperational();
 	if (simulator_is_operational) {
 		cout << "Done checking the simulator. " << endl << endl;
 	} else {
@@ -162,13 +164,13 @@ void StrideRunner::Run(bool track_index_case, const std::string&  config_file_na
 			cout << "Simulating day: " << setw(5) << i;
 
 			run_clock.Start();
-			sim->TimeStep();
+			m_sim->TimeStep();
 			run_clock.Stop();
 
 			cout << "     Done, infected count: ";
 
-			cases[i] = sim->GetPopulation()->GetInfectedCount();
-			adopted[i] = sim->GetPopulation()->GetAdoptedCount();
+			cases[i] = m_sim->GetPopulation()->GetInfectedCount();
+			adopted[i] = m_sim->GetPopulation()->GetAdoptedCount();
 
 			cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i];
 			cout << endl;
@@ -177,7 +179,7 @@ void StrideRunner::Run(bool track_index_case, const std::string&  config_file_na
 	// -----------------------------------------------------------------------------------------
 	// Generate output files
 	// -----------------------------------------------------------------------------------------
-	GenerateOutputFiles(output_prefix, cases, adopted, pt_config, sim,
+	GenerateOutputFiles(output_prefix, cases, adopted, pt_config,
 			duration_cast<milliseconds>(run_clock.Get()).count(),
 			duration_cast<milliseconds>(total_clock.Get()).count());
 	}
@@ -194,7 +196,7 @@ void StrideRunner::Run(bool track_index_case, const std::string&  config_file_na
 /// Generate output files (at the end of the simulation).
 void StrideRunner::GenerateOutputFiles(const std::string& output_prefix, const std::vector<unsigned int>& cases,
 		const std::vector<unsigned int>& adopted, const boost::property_tree::ptree& pt_config,
-		std::shared_ptr<Simulator> sim, const unsigned int run_time, const unsigned int total_time)
+		const unsigned int run_time, const unsigned int total_time)
 {
 	// Cases
 	CasesFile cases_file(output_prefix);
@@ -206,13 +208,13 @@ void StrideRunner::GenerateOutputFiles(const std::string& output_prefix, const s
 
 	// Summary
 	SummaryFile summary_file(output_prefix);
-	summary_file.Print(pt_config, sim->GetPopulation()->size(), sim->GetPopulation()->GetInfectedCount(),
-			sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
+	summary_file.Print(pt_config, m_sim->GetPopulation()->size(), m_sim->GetPopulation()->GetInfectedCount(),
+			m_sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
 
 	// Persons
 	if (pt_config.get<double>("run.generate_person_file") == 1) {
 		PersonFile person_file(output_prefix);
-		person_file.Print(sim->GetPopulation());
+		person_file.Print(m_sim->GetPopulation());
 	}
 }
 

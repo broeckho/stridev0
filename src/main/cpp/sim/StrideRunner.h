@@ -41,13 +41,19 @@ public:
 	virtual ~StrideRunner() {}
 
 	/// Run the simulator with config information provided.
-	static void Run(bool track_index_case, const std::string&  config_file_name);
+	static void Run(bool track_index_case, const std::string& config_file_name);
+
+	/// Get the simulator
+	static std::shared_ptr<Simulator> GetSimulator() { return m_sim; }
 
 private:
 	/// Generate output files (at the end of the simulation).
 	static void GenerateOutputFiles(const std::string& output_prefix, const std::vector<unsigned int>& cases,
 			const std::vector<unsigned int>& adopted, const boost::property_tree::ptree& pt_config,
-			std::shared_ptr<Simulator> sim, const unsigned int run_time, const unsigned int total_time);
+			const unsigned int run_time, const unsigned int total_time);
+
+private:
+	static std::shared_ptr<Simulator> 	m_sim;
 };
 
 } // end_of_namespace
