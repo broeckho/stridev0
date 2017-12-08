@@ -44,6 +44,6 @@ add_custom_command(OUTPUT _pythonInstallPyStride
 #================================================================================================
 
 INSTALL(DIRECTORY pystride DESTINATION ${BIN_INSTALL_LOCATION})
-#INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/main/python/pystride/stride DESTINATION ${BIN_INSTALL_LOCATION}/pystride/)
+INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/main/python/pystride/stride DESTINATION ${BIN_INSTALL_LOCATION}/pystride/)
 
 #################################################################################################

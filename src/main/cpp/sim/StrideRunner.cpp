@@ -66,12 +66,12 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 	// -----------------------------------------------------------------------------------------
 	// Check execution environment.
 	// -----------------------------------------------------------------------------------------
-	if (InstallDirs::GetCurrentDir().compare(InstallDirs::GetRootDir()) != 0) {
-		throw runtime_error(string(__func__) + "> Current directory is not install root! Aborting.");
-	}
-	if (InstallDirs::GetDataDir().empty()) {
-		throw runtime_error(string(__func__) + "> Data directory not present! Aborting.");
-	}
+	//if (InstallDirs::GetCurrentDir().compare(InstallDirs::GetRootDir()) != 0) {
+	//	throw runtime_error(string(__func__) + "> Current directory is not install root! Aborting.");
+	//}
+	//if (InstallDirs::GetDataDir().empty()) {
+	///	throw runtime_error(string(__func__) + "> Data directory not present! Aborting.");
+	//}  //TODO adapt to python environment
 
 	// -----------------------------------------------------------------------------------------
 	// Configuration.
