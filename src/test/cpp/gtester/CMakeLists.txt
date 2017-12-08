@@ -24,8 +24,8 @@ set( SRC
 		BatchRuns.cpp
 )
 
-add_executable(${EXEC}   ${SRC} $<TARGET_OBJECTS:libstride> $<TARGET_OBJECTS:trng>)
-target_link_libraries( ${EXEC}    ${LIBS} gtest pthread) 
+add_executable(${EXEC}   ${SRC} )
+target_link_libraries( ${EXEC}    ${LIBS} gtest pthread libstride) 
 install(TARGETS ${EXEC}  DESTINATION   ${BIN_INSTALL_LOCATION})
 
 #============================================================================

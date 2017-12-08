@@ -42,7 +42,7 @@ set( SRC
 	src/yarn5s.cc
 )
 
-add_library( trng OBJECT ${SRC} )
+add_library( trng STATIC ${SRC} )
 #target_compile_options(trng PUBLIC "-flto")
 unset( SRC )	
 
