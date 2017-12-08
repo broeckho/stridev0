@@ -43,7 +43,7 @@ add_subdirectory(examples)
 # Copy the Python scripts to the bin folder.
 #================================================================================================
 
-#INSTALL(DIRECTORY pystride DESTINATION ${BIN_INSTALL_LOCATION})
+INSTALL(DIRECTORY pystride DESTINATION ${BIN_INSTALL_LOCATION})
 #INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/main/python/pystride/stride DESTINATION ${BIN_INSTALL_LOCATION}/pystride/)
 
 #################################################################################################

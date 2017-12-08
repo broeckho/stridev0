@@ -244,17 +244,14 @@ class Simulation:
 
     def runForks(self, *args, **kwargs):
         """ Run all forks but not the root simulation. """
-        '''self._setup()
+        self._setup()
         for fork in self.forks:
-            fork.run(*args, **kwargs)'''
-        pass
+            fork.run(*args, **kwargs)
 
     def runAll(self, *args, **kwargs):
         """ Run root simulation and forks. """
-        '''
         self.run(*args, **kwargs)
-        self.runForks(*args, **kwargs)'''
-        pass
+        self.runForks(*args, **kwargs)
 
     def __getstate__(self):
         return dict()

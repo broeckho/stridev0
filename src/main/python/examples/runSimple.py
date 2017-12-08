@@ -1,9 +1,8 @@
-'''
-from stride.Simulation import Simulation
+from pystride.Simulation import Simulation
 
-# Configure simulation
-simulation = Simulation.fromFile("config/run_python.xml")
+# Load run configuration
+simulation = Simulation()
+simulation.loadRunConfig("config/run_default.xml")
 
-# Run simulation
+# Run the simulation
 simulation.run()
-'''
