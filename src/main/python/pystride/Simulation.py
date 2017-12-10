@@ -52,10 +52,15 @@ class Simulation:
             self._linkData()
 
         os.makedirs(self.getOutputDirectory(), exist_ok=True)
+        # Store disease configuration
+        oldDiseaseFile = self.runConfig.getParameter("disease_config_file")[:-4]
+        diseaseFile = oldDiseaseFile + "_" + self.getLabel() + ".xml"
+        diseasePath = os.path.join(self.getOutputDirectory(), diseaseFile)
+        self.diseaseConfig.toFile(diseasePath)
+        self.runConfig.setParameter("disease_config_file", diseasePath)
         # Store the run configuration
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
         self.runConfig.toFile(configPath)
-        # TODO store disease configuration
 
     def registerCallback(self, callback):
         pass
