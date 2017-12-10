@@ -184,6 +184,9 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 			duration_cast<milliseconds>(total_clock.Get()).count());
 	}
 
+	// Clean up
+	spdlog::drop_all();
+
 	// -----------------------------------------------------------------------------------------
 	// Print final message to command line.
 	// -----------------------------------------------------------------------------------------
