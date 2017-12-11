@@ -19,12 +19,10 @@
  * Header for the SimulatorObserver class.
  */
 
+#include <iostream>
 #include <memory>
 
 namespace stride {
-
-// Forward declaration of class Simulator
-class Simulator;
 
 /**
  *
@@ -36,7 +34,7 @@ public:
 
 	virtual ~SimulatorObserver() {}
 
-	virtual void Update(std::shared_ptr<Simulator> sim, unsigned int timestep) {}
+	virtual void Update(unsigned int timestep) {}
 
 };
 

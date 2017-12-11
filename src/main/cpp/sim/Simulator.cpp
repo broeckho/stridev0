@@ -117,6 +117,8 @@ void Simulator::TimeStep()
 		throw std::runtime_error(std::string(__func__) + "No valid local information policy!");
 	}
 
+	Notify(m_calendar->GetSimulationDay());
+
 	m_calendar->AdvanceDay();
 }
 

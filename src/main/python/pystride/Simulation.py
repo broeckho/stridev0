@@ -11,7 +11,6 @@ class Simulation:
         self.forks = list()
         self.runner = StrideRunner()
         self.observer = SimulationObserver()
-        self.runner.RegisterObserver(self.observer)
         self.runConfig = Config(root="run")
         self.diseaseConfig = Config(root="disease")
         self.timestamp =  strftime("%Y%m%d_%H%M%S", gmtime())
@@ -86,7 +85,9 @@ class Simulation:
 
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
         try:
-            self.runner.Run(trackIndexCase, configPath)
+            self.runner.Setup(trackIndexCase, configPath)
+            self.runner.RegisterObserver(self.observer)
+            self.runner.Run()
         except:
             print("Exception while running the simulator. Closing down.")
             exit(1)

@@ -27,7 +27,6 @@
 #include "sim/SimulatorBuilder.h"
 #include "util/ConfigInfo.h"
 #include "util/InstallDirs.h"
-#include "util/Stopwatch.h"
 #include "util/StringUtils.h"
 #include "util/TimeStamp.h"
 #include "util/TimeToString.h"
@@ -48,25 +47,36 @@ using namespace std;
 using namespace std::chrono;
 
 ///
+bool StrideRunner::m_operational = false;
+///
+std::string StrideRunner::m_output_prefix = "";
+///
+boost::property_tree::ptree StrideRunner::m_pt_config =
+		boost::property_tree::ptree();
+///
+Stopwatch<> StrideRunner::m_total_clock = Stopwatch<>("total_clock");
+///
 shared_ptr<Simulator> StrideRunner::m_sim = make_shared<Simulator>();
 
 /// Register observer
-void StrideRunner::RegisterObserver(std::shared_ptr<SimulatorObserver>& observer) {
+void StrideRunner::RegisterObserver(
+		std::shared_ptr<SimulatorObserver>& observer) {
 	m_sim->Register(observer);
 }
 
-/// Run the simulator with config information provided.
-void StrideRunner::Run(bool track_index_case, const std::string& config_file_name)
-{
+///
+void StrideRunner::Setup(bool track_index_case,
+		const std::string& config_file_name) {
 	// -----------------------------------------------------------------------------------------
 	// Print output to command line.
 	// -----------------------------------------------------------------------------------------
-	cout << "\n*************************************************************" << endl;
+	cout << "\n*************************************************************"
+			<< endl;
 	cout << "Starting up at:      " << TimeStamp().ToString() << endl;
-	cout << "Executing:           " << InstallDirs::GetExecPath().string() << endl;
-	cout << "Current directory:   " << InstallDirs::GetCurrentDir().string() << endl;
-	cout << "Install directory:   " << InstallDirs::GetRootDir().string() << endl;
-	cout << "Data    directory:   " << InstallDirs::GetDataDir().string() << endl;
+	//	cout << "Executing:           " << InstallDirs::GetExecPath().string() << endl;
+	//	cout << "Current directory:   " << InstallDirs::GetCurrentDir().string() << endl;
+	//	cout << "Install directory:   " << InstallDirs::GetRootDir().string() << endl;
+	//	cout << "Data    directory:   " << InstallDirs::GetDataDir().string() << endl;
 
 	// -----------------------------------------------------------------------------------------
 	// Check execution environment.
@@ -75,20 +85,21 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 	//	throw runtime_error(string(__func__) + "> Current directory is not install root! Aborting.");
 	//}
 	//if (InstallDirs::GetDataDir().empty()) {
-	///	throw runtime_error(string(__func__) + "> Data directory not present! Aborting.");
+	//	throw runtime_error(string(__func__) + "> Data directory not present! Aborting.");
 	//}  //TODO adapt to python environment
 
 	// -----------------------------------------------------------------------------------------
 	// Configuration.
 	// -----------------------------------------------------------------------------------------
-	ptree pt_config;
 	const auto file_path = canonical(system_complete(config_file_name));
 
 	if (!is_regular_file(file_path)) {
-		throw runtime_error(string(__func__) + ">Config file " + file_path.string() +
-				" not present. Aborting.");
+		throw runtime_error(
+				string(__func__) + ">Config file " + file_path.string()
+						+ " not present. Aborting.");
 	}
-	read_xml(file_path.string(), pt_config);
+
+	read_xml(file_path.string(), m_pt_config);
 	cout << "Configuration file:  " << file_path.string() << endl;
 
 	// -----------------------------------------------------------------------------------------
@@ -96,7 +107,7 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 	// -----------------------------------------------------------------------------------------
 	unsigned int num_threads;
 
-	#pragma omp parallel
+#pragma omp parallel
 	{
 		num_threads = omp_get_num_threads();
 	}
@@ -109,23 +120,25 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 	// -----------------------------------------------------------------------------------------
 	// Set output path prefix.
 	// -----------------------------------------------------------------------------------------
-	auto output_prefix = pt_config.get<string>("run.output_prefix", "");
-	if (output_prefix.length() == 0) {
-		output_prefix = TimeStamp().ToTag();
+	m_output_prefix = m_pt_config.get < string > ("run.output_prefix", "");
+	if (m_output_prefix.length() == 0) {
+		m_output_prefix = TimeStamp().ToTag();
 	}
-	cout << "Project output tag:  " << output_prefix << endl << endl;
+	cout << "Project output tag:  " << m_output_prefix << endl << endl;
 
 	// -----------------------------------------------------------------------------------------
 	// Additional run configurations.
 	// -----------------------------------------------------------------------------------------
-	if (pt_config.get_optional<bool>("run.num_participants_survey") == false) {
-		pt_config.put("run.num_participants_survey", 1);
+	if (m_pt_config.get_optional<bool>("run.num_participants_survey")
+			== false) {
+		m_pt_config.put("run.num_participants_survey", 1);
 	}
 
 	// -----------------------------------------------------------------------------------------
 	// Track index case setting.
 	// -----------------------------------------------------------------------------------------
-	cout << "Setting for track_index_case:  " << boolalpha << track_index_case << endl;
+	cout << "Setting for track_index_case:  " << boolalpha << track_index_case
+			<< endl;
 
 	// -----------------------------------------------------------------------------------------
 	// Create logger
@@ -133,41 +146,46 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 	// General contacts:  [CNT] <person1ID> <person1AGE> <person2AGE>  <at_home> <at_work> <at_school> <at_other>
 	// -----------------------------------------------------------------------------------------
 	spdlog::set_async_mode(1048576);
-	auto file_logger = spdlog::rotating_logger_mt("contact_logger", output_prefix + "_logfile",
-			std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max());
+	auto file_logger = spdlog::rotating_logger_mt("contact_logger",
+			m_output_prefix + "_logfile",
+			std::numeric_limits < size_t > ::max(),
+			std::numeric_limits < size_t > ::max());
 	file_logger->set_pattern("%v"); // Remove meta data from log => time-stamp of logging
 
 	// ------------------------------------------------------------------------------
 	// Create the simulator.
 	//------------------------------------------------------------------------------
-	Stopwatch<> total_clock("total_clock", true);
-
+	m_total_clock.Start();
 	cout << "Building the simulator. " << endl;
-	m_sim = SimulatorBuilder::Build(pt_config, num_threads, track_index_case);
+	m_sim = SimulatorBuilder::Build(m_pt_config, num_threads, track_index_case);
 	cout << "Done building the simulator. " << endl;
 
 	// -----------------------------------------------------------------------------------------
 	// Check the simulator.
 	// -----------------------------------------------------------------------------------------
-	bool simulator_is_operational = m_sim->IsOperational();
-	if (simulator_is_operational) {
+	m_operational = m_sim->IsOperational();
+	if (m_operational) {
 		cout << "Done checking the simulator. " << endl << endl;
 	} else {
 		file_logger->info("[ERROR] Invalid configuration");
-		cout << "Invalid configuration => terminate without output" << endl << endl;
+		cout << "Invalid configuration => terminate without output" << endl
+				<< endl;
 	}
+}
 
+/// Run the simulator with config information provided.
+void StrideRunner::Run() {
 	// -----------------------------------------------------------------------------------------
 	// Run the simulation (if operational).
 	// -----------------------------------------------------------------------------------------
 	Stopwatch<> run_clock("run_clock");
-	if (simulator_is_operational) {
-		const unsigned int num_days = pt_config.get<unsigned int>("run.num_days");
+	if (m_operational) {
+		const unsigned int num_days = m_pt_config.get<unsigned int>(
+				"run.num_days");
 		vector<unsigned int> cases(num_days);
 		vector<unsigned int> adopted(num_days);
 		for (unsigned int i = 0; i < num_days; i++) {
 			cout << "Simulating day: " << setw(5) << i;
-
 			run_clock.Start();
 			m_sim->TimeStep();
 			run_clock.Stop();
@@ -177,16 +195,17 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 			cases[i] = m_sim->GetPopulation()->GetInfectedCount();
 			adopted[i] = m_sim->GetPopulation()->GetAdoptedCount();
 
-			cout << setw(7) << cases[i] << "     Adopters count: " << setw(7) << adopted[i];
+			cout << setw(7) << cases[i] << "     Adopters count: " << setw(7)
+					<< adopted[i];
 			cout << endl;
 		}
 
-	// -----------------------------------------------------------------------------------------
-	// Generate output files
-	// -----------------------------------------------------------------------------------------
-	GenerateOutputFiles(output_prefix, cases, adopted, pt_config,
-			duration_cast<milliseconds>(run_clock.Get()).count(),
-			duration_cast<milliseconds>(total_clock.Get()).count());
+		// -----------------------------------------------------------------------------------------
+		// Generate output files
+		// -----------------------------------------------------------------------------------------
+		GenerateOutputFiles(m_output_prefix, cases, adopted, m_pt_config,
+				duration_cast < milliseconds > (run_clock.Get()).count(),
+				duration_cast < milliseconds > (m_total_clock.Get()).count());
 	}
 
 	// Clean up
@@ -197,29 +216,32 @@ void StrideRunner::Run(bool track_index_case, const std::string& config_file_nam
 	// -----------------------------------------------------------------------------------------
 	cout << endl << endl;
 	cout << "  run_time: " << run_clock.ToString() << "  -- total time: "
-			<< total_clock.ToString() << endl << endl;
+			<< m_total_clock.ToString() << endl << endl;
 	cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
 }
 
 /// Generate output files (at the end of the simulation).
-void StrideRunner::GenerateOutputFiles(const std::string& output_prefix, const std::vector<unsigned int>& cases,
-		const std::vector<unsigned int>& adopted, const boost::property_tree::ptree& pt_config,
-		const unsigned int run_time, const unsigned int total_time)
-{
-	// Cases
+void StrideRunner::GenerateOutputFiles(const std::string& output_prefix,
+		const std::vector<unsigned int>& cases,
+		const std::vector<unsigned int>& adopted,
+		const boost::property_tree::ptree& pt_config,
+		const unsigned int run_time, const unsigned int total_time) {
+// Cases
 	CasesFile cases_file(output_prefix);
 	cases_file.Print(cases);
 
-	// Adopted
+// Adopted
 	AdoptedFile adopted_file(output_prefix);
 	adopted_file.Print(adopted);
 
-	// Summary
+// Summary
 	SummaryFile summary_file(output_prefix);
-	summary_file.Print(pt_config, m_sim->GetPopulation()->size(), m_sim->GetPopulation()->GetInfectedCount(),
-			m_sim->GetDiseaseProfile().GetTransmissionRate(), run_time, total_time);
+	summary_file.Print(pt_config, m_sim->GetPopulation()->size(),
+			m_sim->GetPopulation()->GetInfectedCount(),
+			m_sim->GetDiseaseProfile().GetTransmissionRate(), run_time,
+			total_time);
 
-	// Persons
+// Persons
 	if (pt_config.get<double>("run.generate_person_file") == 1) {
 		PersonFile person_file(output_prefix);
 		person_file.Print(m_sim->GetPopulation());

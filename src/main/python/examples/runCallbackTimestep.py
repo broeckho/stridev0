@@ -1,19 +1,22 @@
 '''
-from stride.Simulation import Simulation
-
 def vaccinate(simulation, timestep):
 	print("Vaccinating everyone who is not yet infected")
 	for person in simulation.population:
 		if person.GetHealth().IsSusceptible():
 			person.GetHealth().SetImmune()
 
+'''
+
+from pystride.Simulation import Simulation
+
+def vaccinate(simulator, timestep):
+    print("Vaccinating everyone who is not yet infected")
 
 # Build simulation
-simulation = Simulation.fromFile("config/run_python.xml")
+simulation = Simulation()
+simulation.loadRunConfig("config/run_default.xml")
 
-# Register "vaccinate" callback at 20th timestep
-simulation.registerCallback(vaccinate, [20])
+# Register the "vaccinate" callback
+simulation.registerCallback(vaccinate)
 
 simulation.run()
-
-'''

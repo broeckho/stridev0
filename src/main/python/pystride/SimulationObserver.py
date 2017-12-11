@@ -9,8 +9,8 @@ class SimulationObserver(SimulatorObserver):
     def RegisterCallback(self, callback):
         self.callbacks.append(callback)
 
-    def Update(self, simulator, timestep):
-        print "CALLBACK"
+    def Update(self, timestep):
+        print("CALLBACK")
 
 
 '''

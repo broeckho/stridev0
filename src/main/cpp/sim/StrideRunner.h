@@ -21,6 +21,7 @@
 
 #include "sim/Simulator.h"
 #include "sim/SimulatorObserver.h"
+#include "util/Stopwatch.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <memory>
@@ -44,8 +45,11 @@ public:
 	/// Register observer
 	static void RegisterObserver(std::shared_ptr<SimulatorObserver>& observer);
 
+	///
+	static void Setup(bool track_index_case, const std::string& config_file_name);
+
 	/// Run the simulator with config information provided.
-	static void Run(bool track_index_case, const std::string& config_file_name);
+	static void Run();
 
 	/// Get the simulator
 	static std::shared_ptr<Simulator> GetSimulator() { return m_sim; }
@@ -57,6 +61,11 @@ private:
 			const unsigned int run_time, const unsigned int total_time);
 
 private:
+	static bool 							m_operational;
+	static std::string					m_output_prefix;
+	static boost::property_tree::ptree   m_pt_config;
+	static util::Stopwatch<>				m_total_clock;
+
 	static std::shared_ptr<Simulator> 	m_sim;
 };
 

@@ -19,6 +19,7 @@
  * Interface/Implementation of Subject.
  */
 
+#include <algorithm>
 #include <memory>
 
 namespace stride {
@@ -30,6 +31,7 @@ namespace util {
  * Despite the shared_ptrs in the Register/Unregister, the Subject takes no ownership
  * of the observer object and only stores a weak_ptr.
  */
+// TODO reinstate the weak ptrs
 template <typename E, typename U>
 class Subject
 {
@@ -45,7 +47,7 @@ public:
 	void Notify(const E&);
 
 private:
-	std::vector<std::weak_ptr<U> > m_observers;
+	std::vector<std::shared_ptr<U> > m_observers;
 };
 
 template<typename E, typename U>
@@ -57,7 +59,7 @@ void Subject<E, U>::Register(const std::shared_ptr<U>& u)
 template <typename E, typename U>
 void Subject<E, U>::Unregister(const std::shared_ptr<U>& u)
 {
-	m_observers.erase(u);
+	m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), u), m_observers.end());
 }
 
 template <typename E, typename U>
@@ -69,12 +71,13 @@ void Subject<E, U>::UnregisterAll()
 template <typename E, typename U>
 void Subject<E, U>::Notify(const E& e) {
 	for (const auto& o : m_observers) {
-		const auto spt = o.lock();
-		if (spt) {
-			o->Update();
-		} else {
-			m_observers.erase(o);
-		}
+		//const auto spt = o.lock();
+		//if (spt) {
+			//spt->Update(e);
+		//} else {
+		//	m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), o), m_observers.end());
+		//}
+		o->Update(e);
 	}
 }
 
