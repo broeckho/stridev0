@@ -34,6 +34,11 @@ enum class ClusterType;
 class Person
 {
 public:
+
+	///
+	Person(): m_health(0, 0, 0, 0)
+	{}
+
 	/// Constructor: set the person data.
 	Person(unsigned int id, double age, unsigned int household_id, unsigned int school_id, unsigned int work_id,
 	       unsigned int primary_community_id, unsigned int secondary_community_id,

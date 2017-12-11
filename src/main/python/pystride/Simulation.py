@@ -86,6 +86,7 @@ class Simulation:
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
         try:
             self.runner.Setup(trackIndexCase, configPath)
+            self.observer.SetSimulator(self.runner.GetSimulator())
             self.runner.RegisterObserver(self.observer)
             self.runner.Run()
         except:

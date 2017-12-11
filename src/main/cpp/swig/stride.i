@@ -14,6 +14,8 @@
   }
 }
 
+%include "./health.i";
+%include "./population.i";
 %include "./simulator.i";
 %include "./simulatorobserver.i";
 %include "./striderunner.i";

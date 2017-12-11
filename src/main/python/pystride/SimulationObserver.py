@@ -1,27 +1,20 @@
-from pystride.stride.stride import SimulatorObserver
-
+from pystride.stride.stride import SimulatorObserver, Simulator, Population
 
 class SimulationObserver(SimulatorObserver):
     def __init__(self):
         super().__init__()
         self.callbacks = list()
+        self.simulator = None
 
-    def RegisterCallback(self, callback):
-        self.callbacks.append(callback)
+    def SetSimulator(self, simulator):
+        self.simulator = simulator
 
-    def Update(self, timestep):
-        print("CALLBACK")
-
-
-'''
     def RegisterCallback(self, callback):
         self.callbacks.append(callback)
 
     def Update(self, timestep):
         for c in self.callbacks:
-            print("CALLBACK")
             try:
                 c(self.simulator, timestep)
             except Exception as e:
                 print(e)
-'''

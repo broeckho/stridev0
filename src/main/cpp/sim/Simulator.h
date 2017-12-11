@@ -42,7 +42,7 @@ public:
 	Simulator();
 
 	/// Get the population.
-	const std::shared_ptr<const Population> GetPopulation() const { return m_population; }
+	std::shared_ptr<Population> GetPopulation() { return m_population; }
 
 	/// Get the disease profile.
 	const DiseaseProfile GetDiseaseProfile() const { return m_disease_profile; }
