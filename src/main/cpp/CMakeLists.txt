@@ -66,6 +66,7 @@ set_target_properties(libstride PROPERTIES PREFIX "")
 
 set(SWIG_IFACE
 	swig/simulator.i
+	swig/simulatorobserver.i
 	swig/striderunner.i
 	swig/stride.i
 )

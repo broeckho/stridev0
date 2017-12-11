@@ -14,5 +14,6 @@
   }
 }
 
-%include "./simulator.i"
-%include "./striderunner.i"
+%include "./simulator.i";
+%include "./simulatorobserver.i";
+%include "./striderunner.i";
