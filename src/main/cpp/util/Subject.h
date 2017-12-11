@@ -19,75 +19,64 @@
  * Interface/Implementation of Subject.
  */
 
-#include <functional>
-#include <map>
 #include <memory>
 
-namespace Stride {
-namespace Util {
+namespace stride {
+namespace util {
 
 /**
  * Template for Subject/Observer (or Publish/Subscribe). Offers flexibility
- * in defining event types and having customized callbacks. Despite the
- * shared_ptrs in the Register/Unregister, the Subject takes no ownership
+ * in defining event types.
+ * Despite the shared_ptrs in the Register/Unregister, the Subject takes no ownership
  * of the observer object and only stores a weak_ptr.
  */
-template <typename E>
+template <typename E, typename U>
 class Subject
 {
 public:
-	using EventType = E;
-	using CallbackType = std::function<void(const EventType&)>;
-
-public:
 	virtual ~Subject() { UnregisterAll(); }
 
-	template <typename U>
-	void Register(const std::shared_ptr<U>&, CallbackType);
+	void Register(const std::shared_ptr<U>&);
 
-	template <typename U>
 	void Unregister(const std::shared_ptr<U>&);
 
 	void UnregisterAll();
 
-	void Notify(const EventType&);
+	void Notify(const E&);
 
 private:
-	std::map<std::weak_ptr<const void>, CallbackType, std::owner_less<std::weak_ptr<const void>>> m_observers;
+	std::vector<std::weak_ptr<U> > m_observers;
 };
 
-template <typename E>
-template <typename U>
-void Subject<E>::Register(const std::shared_ptr<U>& u, CallbackType f)
+template<typename E, typename U>
+void Subject<E, U>::Register(const std::shared_ptr<U>& u)
 {
-	m_observers.insert(make_pair(std::static_pointer_cast<const void>(u), f));
+	m_observers.push_back(u);
 }
 
-template <typename E>
-template <typename U>
-void Subject<E>::Unregister(const std::shared_ptr<U>& u)
+template <typename E, typename U>
+void Subject<E, U>::Unregister(const std::shared_ptr<U>& u)
 {
-	m_observers.erase(std::static_pointer_cast<const void>(u));
+	m_observers.erase(u);
 }
 
-template <typename E>
-void Subject<E>::UnregisterAll()
+template <typename E, typename U>
+void Subject<E, U>::UnregisterAll()
 {
 	m_observers.clear();
 }
 
-template <typename E>
-void Subject<E>::Notify(const EventType& e)
-{
+template <typename E, typename U>
+void Subject<E, U>::Notify(const E& e) {
 	for (const auto& o : m_observers) {
-		const auto spt = o.first.lock();
+		const auto spt = o.lock();
 		if (spt) {
-			(o.second)(e);
+			o->Update();
 		} else {
-			m_observers.erase(o.first);
+			m_observers.erase(o);
 		}
 	}
 }
 
-} // end of namespace
-} // end of namespace
+} // end_of_namespace
+} // end_of_namespace

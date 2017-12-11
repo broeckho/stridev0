@@ -25,6 +25,7 @@
 #include "core/LogMode.h"
 #include "core/RngHandler.h"
 #include "pop/Population.h"
+#include "util/Subject.h"
 
 #include <boost/property_tree/ptree.hpp>
 
