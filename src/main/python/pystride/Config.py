@@ -2,12 +2,14 @@ import os
 import xml.etree.ElementTree as ET
 
 class Config:
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, root=None):
         if filename != None:
             if os.path.isfile(filename):
                 self._etree = ET.parse(filename).getroot()
             else:
                 print("Configuration file " + filename + " could not be found")
+        else:
+            self._etree = ET.Element(root)
 
     def getParameter(self, name: str):
         if self._etree != None:
@@ -22,7 +24,7 @@ class Config:
             else:
                 newElems = name.split("/")
                 root = self._etree
-                for elem in NewElems:
+                for elem in newElems:
                     if root.find(elem) != None:
                         root = elem
                     else:

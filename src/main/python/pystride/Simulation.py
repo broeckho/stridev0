@@ -10,13 +10,17 @@ class Simulation:
         self.forks = list()
         self.runner = StrideRunner()
         # TODO observer
-        self.runConfig = None
-        self.diseaseConfig = None
+        self.runConfig = Config(root="run")
+        self.diseaseConfig = Config(root="disease")
         self.timestamp =  strftime("%Y%m%d_%H%M%S", gmtime())
 
     def loadRunConfig(self, filename: str):
         self.runConfig = Config(filename)
         self.diseaseConfig = Config(self.runConfig.getParameter("disease_config_file"))
+
+    def loadDiseaseConfig(self, filename: str):
+        self.diseaseConfig = Config(filename)
+        self.runConfig.setParameter("disease_config_file", filename)
 
     def getLabel(self):
         label = self.runConfig.getParameter('output_prefix')
