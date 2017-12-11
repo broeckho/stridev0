@@ -1,18 +1,16 @@
-'''
-from stride.Simulation import Simulation
+from pystride.Simulation import Simulation
 
-# The callback function.
-def printInfected(simulation, timestep):
-	print("Amount infected at timestep {}: {}".format(
-		timestep, simulation.population.GetInfectedCount()))
+# The callback function
+def printInfected(simulator, timestep):
+    if (timestep % 2)  == 0:
+        print("Amount infected at timestep {}: {}".format(
+            timestep, simulator.GetPopulation().GetInfectedCount()))
 
 # Build simulation
-simulation = Simulation.fromFile("config/run_python.xml")
+simulation = Simulation()
+simulation.loadRunConfig("config/run_default.xml")
 
-# Register "printInfected" callback every timestep (interval = 1)
-simulation.registerCallback(printInfected, 1)
+# Register callback
+simulation.registerCallback(printInfected)
 
 simulation.run()
-
-
-'''
