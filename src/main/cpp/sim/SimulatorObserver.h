@@ -19,12 +19,16 @@
  * Header for the SimulatorObserver class.
  */
 
-#include "sim/Simulator.h"
-
 #include <memory>
 
 namespace stride {
 
+// Forward declaration of class Simulator
+class Simulator;
+
+/**
+ *
+ */
 class SimulatorObserver
 {
 public:

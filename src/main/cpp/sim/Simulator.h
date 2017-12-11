@@ -25,6 +25,7 @@
 #include "core/LogMode.h"
 #include "core/RngHandler.h"
 #include "pop/Population.h"
+#include "sim/SimulatorObserver.h"
 #include "util/Subject.h"
 
 #include <boost/property_tree/ptree.hpp>
@@ -34,7 +35,7 @@ namespace stride {
 /**
  * Main class that contains and direct the virtual world.
  */
-class Simulator
+class Simulator: public util::Subject<unsigned int, SimulatorObserver>
 {
 public:
 	/// Default constructor for empty Simulator.

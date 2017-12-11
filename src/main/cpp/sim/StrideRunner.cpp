@@ -50,6 +50,11 @@ using namespace std::chrono;
 ///
 shared_ptr<Simulator> StrideRunner::m_sim = make_shared<Simulator>();
 
+/// Register observer
+void StrideRunner::RegisterObserver(std::shared_ptr<SimulatorObserver>& observer) {
+	m_sim->Register(observer);
+}
+
 /// Run the simulator with config information provided.
 void StrideRunner::Run(bool track_index_case, const std::string& config_file_name)
 {

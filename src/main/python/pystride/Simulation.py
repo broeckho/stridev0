@@ -4,12 +4,14 @@ from time import gmtime, strftime
 import pystride
 from pystride.stride.stride import StrideRunner
 from .Config import Config
+from .SimulationObserver import SimulationObserver
 
 class Simulation:
     def __init__(self):
         self.forks = list()
         self.runner = StrideRunner()
-        # TODO observer
+        self.observer = SimulationObserver()
+        self.runner.RegisterObserver(self.observer)
         self.runConfig = Config(root="run")
         self.diseaseConfig = Config(root="disease")
         self.timestamp =  strftime("%Y%m%d_%H%M%S", gmtime())
@@ -67,7 +69,8 @@ class Simulation:
         self.runConfig.toFile(configPath)
 
     def registerCallback(self, callback):
-        pass
+        """ Registers a callback to the simulation. """
+        self.observer.RegisterCallback(callback)
 
     def fork(self, name: str):
         """

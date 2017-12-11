@@ -8,6 +8,7 @@
 %include <std_shared_ptr.i>
 
 %shared_ptr(stride::Simulator)
+%shared_ptr(stride::SimulatorObserver)
 
 %feature("director") stride::SimulatorObserver;
 %include "sim/SimulatorObserver.h";

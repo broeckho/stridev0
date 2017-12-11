@@ -20,6 +20,7 @@
  */
 
 #include "sim/Simulator.h"
+#include "sim/SimulatorObserver.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <memory>
@@ -39,6 +40,9 @@ public:
 
 	/// Destructor
 	virtual ~StrideRunner() {}
+
+	/// Register observer
+	static void RegisterObserver(std::shared_ptr<SimulatorObserver>& observer);
 
 	/// Run the simulator with config information provided.
 	static void Run(bool track_index_case, const std::string& config_file_name);
