@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 		// -----------------------------------------------------------------------------------------
 		// Run the Stride simulator.
 		// -----------------------------------------------------------------------------------------
-		StrideRunner::Setup(index_case_Arg.getValue(), config_file_Arg.getValue());
+		StrideRunner::Setup(index_case_Arg.getValue(), config_file_Arg.getValue(), true);
 		StrideRunner::Run();
 	} catch (exception& e) {
 		exit_status = EXIT_FAILURE;

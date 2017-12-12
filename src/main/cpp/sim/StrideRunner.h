@@ -48,7 +48,7 @@ public:
 
 	///
 	static void Setup(bool track_index_case,
-			const std::string& config_file_name);
+			const std::string& config_file_name, bool use_install_dirs = false);
 
 	/// Run the simulator with config information provided.
 	static void Run();

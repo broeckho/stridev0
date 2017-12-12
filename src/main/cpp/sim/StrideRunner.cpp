@@ -68,27 +68,31 @@ void StrideRunner::RegisterObserver(
 
 ///
 void StrideRunner::Setup(bool track_index_case,
-		const std::string& config_file_name) {
+		const std::string& config_file_name, bool use_install_dirs) {
 	// -----------------------------------------------------------------------------------------
 	// Print output to command line.
 	// -----------------------------------------------------------------------------------------
 	cout << "\n*************************************************************"
 			<< endl;
 	cout << "Starting up at:      " << TimeStamp().ToString() << endl;
-	//	cout << "Executing:           " << InstallDirs::GetExecPath().string() << endl;
-	//	cout << "Current directory:   " << InstallDirs::GetCurrentDir().string() << endl;
-	//	cout << "Install directory:   " << InstallDirs::GetRootDir().string() << endl;
-	//	cout << "Data    directory:   " << InstallDirs::GetDataDir().string() << endl;
 
-	// -----------------------------------------------------------------------------------------
-	// Check execution environment.
-	// -----------------------------------------------------------------------------------------
-	//if (InstallDirs::GetCurrentDir().compare(InstallDirs::GetRootDir()) != 0) {
-	//	throw runtime_error(string(__func__) + "> Current directory is not install root! Aborting.");
-	//}
-	//if (InstallDirs::GetDataDir().empty()) {
-	//	throw runtime_error(string(__func__) + "> Data directory not present! Aborting.");
-	//}  //TODO adapt to python environment
+	if (use_install_dirs) {
+		cout << "Executing:           " << InstallDirs::GetExecPath().string() << endl;
+		cout << "Current directory:   " << InstallDirs::GetCurrentDir().string() << endl;
+		cout << "Install directory:   " << InstallDirs::GetRootDir().string() << endl;
+		cout << "Data    directory:   " << InstallDirs::GetDataDir().string() << endl;
+
+		// -----------------------------------------------------------------------------------------
+		// Check execution environment.
+		// -----------------------------------------------------------------------------------------
+		if (InstallDirs::GetCurrentDir().compare(InstallDirs::GetRootDir()) != 0) {
+			throw runtime_error(string(__func__) + "> Current directory is not install root! Aborting.");
+		}
+		if (InstallDirs::GetDataDir().empty()) {
+			throw runtime_error(string(__func__) + "> Data directory not present! Aborting.");
+		}
+	}
+
 
 	// -----------------------------------------------------------------------------------------
 	// Configuration.
