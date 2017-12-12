@@ -55,7 +55,7 @@ set(MAIN_SRC
 # Build the Stride library.
 #============================================================================
 
-add_library(libstride STATIC ${LIB_SRC})
+add_library(libstride ${LIB_SRC})
 target_link_libraries(libstride ${LIBS})
 target_compile_options(libstride PUBLIC "-fPIC")
 set_target_properties(libstride PROPERTIES PREFIX "")
