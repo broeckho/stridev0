@@ -10,7 +10,7 @@ class Simulation:
     def __init__(self):
         self.forks = list()
         self.runner = StrideRunner()
-        self.observer = SimulationObserver()
+        self.observer = SimulationObserver(self.runner)
         self.runConfig = Config(root="run")
         self.diseaseConfig = Config(root="disease")
         self.timestamp =  strftime("%Y%m%d_%H%M%S", gmtime())
@@ -86,7 +86,6 @@ class Simulation:
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
         try:
             self.runner.Setup(trackIndexCase, configPath)
-            self.observer.SetSimulator(self.runner.GetSimulator())
             self.runner.RegisterObserver(self.observer)
             self.runner.Run()
         except:
@@ -103,9 +102,6 @@ class Simulation:
         """ Run the root simulation and all forks. """
         self.run(*args, **kwargs)
         self.runForks(*args, **kwargs)
-
-    def stop(self):
-        pass
 
     def __getstate__(self):
         return dict()

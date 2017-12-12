@@ -20,13 +20,13 @@
 #================================================================================================
 
 SET(PYTHON_EXAMPLES
-	runBatch.py
 	runCallbackInterval.py
 	runCallbackTimestep.py
-	runFancy.py
+	runExperiments.py
 	runManualConfig.py
 	runRepeat.py
 	runSimple.py
+	runStopOnCallback.py
 )
 
 #================================================================================================

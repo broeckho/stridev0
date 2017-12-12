@@ -1,9 +1,9 @@
 from pystride.Simulation import Simulation
 
-def vaccinate(simulator, timestep):
+def vaccinate(sim, timestep):
     if timestep == 20:
         print("Vaccinating everyone who is not yet infected")
-        pop = simulator.GetPopulation()
+        pop = sim.GetSimulator().GetPopulation()
         for pIndex in range(pop.size()):
             if pop[pIndex].GetHealth().IsSusceptible():
                 pop[pIndex].GetHealth().SetImmune()

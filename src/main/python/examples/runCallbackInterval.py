@@ -1,10 +1,10 @@
 from pystride.Simulation import Simulation
 
 # The callback function
-def printInfected(simulator, timestep):
+def printInfected(sim, timestep):
     if (timestep % 2)  == 0:
         print("Amount infected at timestep {}: {}".format(
-            timestep, simulator.GetPopulation().GetInfectedCount()))
+            timestep, sim.GetSimulator().GetPopulation().GetInfectedCount()))
 
 # Build simulation
 simulation = Simulation()

@@ -33,40 +33,50 @@ namespace stride {
 /**
  * Class for setting up & managing a simulation.
  */
-class StrideRunner
-{
+class StrideRunner {
 public:
 	/// Constructor
-	StrideRunner() {}
+	StrideRunner() {
+	}
 
 	/// Destructor
-	virtual ~StrideRunner() {}
+	virtual ~StrideRunner() {
+	}
 
 	/// Register observer
 	static void RegisterObserver(std::shared_ptr<SimulatorObserver>& observer);
 
 	///
-	static void Setup(bool track_index_case, const std::string& config_file_name);
+	static void Setup(bool track_index_case,
+			const std::string& config_file_name);
 
 	/// Run the simulator with config information provided.
 	static void Run();
 
+	///
+	static void Stop();
+
 	/// Get the simulator
-	static std::shared_ptr<Simulator> GetSimulator() { return m_sim; }
+	static std::shared_ptr<Simulator> GetSimulator() {
+		return m_sim;
+	}
 
 private:
 	/// Generate output files (at the end of the simulation).
-	static void GenerateOutputFiles(const std::string& output_prefix, const std::vector<unsigned int>& cases,
-			const std::vector<unsigned int>& adopted, const boost::property_tree::ptree& pt_config,
+	static void GenerateOutputFiles(const std::string& output_prefix,
+			const std::vector<unsigned int>& cases,
+			const std::vector<unsigned int>& adopted,
+			const boost::property_tree::ptree& pt_config,
 			const unsigned int run_time, const unsigned int total_time);
 
 private:
-	static bool 							m_operational;
-	static std::string					m_output_prefix;
-	static boost::property_tree::ptree   m_pt_config;
-	static util::Stopwatch<>				m_total_clock;
+	static bool m_is_running;
+	static bool m_operational;
+	static std::string m_output_prefix;
+	static boost::property_tree::ptree m_pt_config;
+	static util::Stopwatch<> m_total_clock;
 
-	static std::shared_ptr<Simulator> 	m_sim;
+	static std::shared_ptr<Simulator> m_sim;
 };
 
 } // end_of_namespace

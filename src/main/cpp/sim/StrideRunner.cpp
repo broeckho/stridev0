@@ -47,6 +47,8 @@ using namespace std;
 using namespace std::chrono;
 
 ///
+bool StrideRunner::m_is_running = false;
+///
 bool StrideRunner::m_operational = false;
 ///
 std::string StrideRunner::m_output_prefix = "";
@@ -180,11 +182,17 @@ void StrideRunner::Run() {
 	// -----------------------------------------------------------------------------------------
 	Stopwatch<> run_clock("run_clock");
 	if (m_operational) {
+		m_is_running = true;
 		const unsigned int num_days = m_pt_config.get<unsigned int>(
 				"run.num_days");
 		vector<unsigned int> cases(num_days);
 		vector<unsigned int> adopted(num_days);
 		for (unsigned int i = 0; i < num_days; i++) {
+			// Check if still running
+			if (!m_is_running) {
+				break;
+			}
+
 			cout << "Simulating day: " << setw(5) << i;
 			run_clock.Start();
 			m_sim->TimeStep();
@@ -206,6 +214,8 @@ void StrideRunner::Run() {
 		GenerateOutputFiles(m_output_prefix, cases, adopted, m_pt_config,
 				duration_cast < milliseconds > (run_clock.Get()).count(),
 				duration_cast < milliseconds > (m_total_clock.Get()).count());
+
+		m_is_running = false;
 	}
 
 	// Clean up
@@ -218,6 +228,10 @@ void StrideRunner::Run() {
 	cout << "  run_time: " << run_clock.ToString() << "  -- total time: "
 			<< m_total_clock.ToString() << endl << endl;
 	cout << "Exiting at:         " << TimeStamp().ToString() << endl << endl;
+}
+
+void StrideRunner::Stop() {
+	m_is_running = false;
 }
 
 /// Generate output files (at the end of the simulation).
