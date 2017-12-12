@@ -20,6 +20,7 @@
 
 #include "SummaryFile.h"
 
+#include <boost/filesystem.hpp>
 #include <omp.h>
 
 namespace stride {
@@ -33,7 +34,9 @@ SummaryFile::~SummaryFile() { m_fstream.close(); }
 
 void SummaryFile::Initialize(const string& file)
 {
-	m_fstream.open((file + "_summary.csv").c_str());
+	boost::filesystem::path pathname(file);
+	pathname /= "summary.csv";
+	m_fstream.open(pathname.string());
 
 	// add header
 	m_fstream << "pop_file,num_days,pop_size,seeding_rate,R0,transmission_rate,immunity_rate,num_threads,rng_seed,"

@@ -20,6 +20,8 @@
 
 #include "PersonFile.h"
 
+#include <boost/filesystem.hpp>
+
 namespace stride {
 namespace output {
 
@@ -31,7 +33,9 @@ PersonFile::~PersonFile() { m_fstream.close(); }
 
 void PersonFile::Initialize(const string& file)
 {
-	m_fstream.open((file + "_person.csv").c_str());
+	boost::filesystem::path pathname(file);
+	pathname /= "person.csv";
+	m_fstream.open(pathname.string());
 
 	// add header
 	m_fstream << "id,age,is_recovered,is_immune,start_infectiousness,"

@@ -20,8 +20,8 @@
 
 #include "CasesFile.h"
 
+#include <boost/filesystem.hpp>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -34,7 +34,11 @@ CasesFile::CasesFile(const std::string& file) { Initialize(file); }
 
 CasesFile::~CasesFile() { m_fstream.close(); }
 
-void CasesFile::Initialize(const std::string& file) { m_fstream.open((file + "_cases.csv").c_str()); }
+void CasesFile::Initialize(const std::string& file) {
+	boost::filesystem::path pathname(file);
+	pathname /= "cases.csv";
+	m_fstream.open(pathname.string());
+}
 
 void CasesFile::Print(const vector<unsigned int>& cases)
 {

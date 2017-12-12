@@ -1,5 +1,5 @@
 import os
-from time import gmtime, strftime
+from time import localtime, strftime
 
 import pystride
 from pystride.stride.stride import StrideRunner
@@ -13,7 +13,7 @@ class Simulation:
         self.observer = SimulationObserver(self.runner)
         self.runConfig = Config(root="run")
         self.diseaseConfig = Config(root="disease")
-        self.timestamp =  strftime("%Y%m%d_%H%M%S", gmtime())
+        self.timestamp =  strftime("%Y%m%d_%H%M%S", localtime())
 
     def loadRunConfig(self, filename: str):
         self.runConfig = Config(filename)
@@ -64,6 +64,7 @@ class Simulation:
         self.diseaseConfig.toFile(diseasePath)
         self.runConfig.setParameter("disease_config_file", diseasePath)
         # Store the run configuration
+        self.runConfig.setParameter("output_prefix", self.getLabel())
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
         self.runConfig.toFile(configPath)
 

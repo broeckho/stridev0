@@ -15,6 +15,8 @@
 
 #include "AdoptedFile.h"
 
+#include <boost/filesystem.hpp>
+
 namespace stride {
 namespace output {
 
@@ -32,7 +34,11 @@ void AdoptedFile::Print(const vector<unsigned int>& adopters)
 	m_fstream << adopters[adopters.size() - 1] << std::endl;
 }
 
-void AdoptedFile::Initialize(const string& file) { m_fstream.open((file + "_adopted.csv").c_str()); }
+void AdoptedFile::Initialize(const string& file) {
+	boost::filesystem::path pathname(file);
+	pathname /= "adopted.csv";
+	m_fstream.open(pathname.string());
+}
 
 } // end of namespace
 } // end of namespace

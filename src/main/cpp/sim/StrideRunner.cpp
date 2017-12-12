@@ -148,8 +148,10 @@ void StrideRunner::Setup(bool track_index_case,
 	// General contacts:  [CNT] <person1ID> <person1AGE> <person2AGE>  <at_home> <at_work> <at_school> <at_other>
 	// -----------------------------------------------------------------------------------------
 	spdlog::set_async_mode(1048576);
+	boost::filesystem::path logfile_path = m_output_prefix;
+	logfile_path /= "logfile";
 	auto file_logger = spdlog::rotating_logger_mt("contact_logger",
-			m_output_prefix + "_logfile",
+			logfile_path.string(),
 			std::numeric_limits < size_t > ::max(),
 			std::numeric_limits < size_t > ::max());
 	file_logger->set_pattern("%v"); // Remove meta data from log => time-stamp of logging
