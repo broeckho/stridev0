@@ -27,13 +27,13 @@ namespace output {
 
 using namespace std;
 
-PersonFile::PersonFile(const std::string& file) { Initialize(file); }
+PersonFile::PersonFile(const std::string& output_dir) { Initialize(output_dir); }
 
 PersonFile::~PersonFile() { m_fstream.close(); }
 
-void PersonFile::Initialize(const string& file)
+void PersonFile::Initialize(const string& output_dir)
 {
-	boost::filesystem::path pathname(file);
+	boost::filesystem::path pathname(output_dir);
 	pathname /= "person.csv";
 	m_fstream.open(pathname.c_str());
 

@@ -33,7 +33,7 @@ class SummaryFile
 {
 public:
 	/// Constructor: initialize.
-	SummaryFile(const std::string& file = "stride_summary");
+	SummaryFile(const std::string& output_dir = "output");
 
 	/// Destructor: close the file stream.
 	~SummaryFile();
@@ -44,7 +44,7 @@ public:
 
 private:
 	/// Generate file name and open the file stream.
-	void Initialize(const std::string& file);
+	void Initialize(const std::string& output_dir);
 
 private:
 	std::ofstream m_fstream; ///< The file stream.

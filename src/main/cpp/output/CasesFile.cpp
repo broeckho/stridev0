@@ -30,12 +30,12 @@ namespace output {
 
 using namespace std;
 
-CasesFile::CasesFile(const std::string& file) { Initialize(file); }
+CasesFile::CasesFile(const std::string& output_dir) { Initialize(output_dir); }
 
 CasesFile::~CasesFile() { m_fstream.close(); }
 
-void CasesFile::Initialize(const std::string& file) {
-	boost::filesystem::path pathname(file);
+void CasesFile::Initialize(const std::string& output_dir) {
+	boost::filesystem::path pathname(output_dir);
 	pathname /= "cases.csv";
 	m_fstream.open(pathname.c_str());
 }

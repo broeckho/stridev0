@@ -25,7 +25,7 @@ class AdoptedFile
 {
 public:
 	/// Constructor
-	AdoptedFile(const std::string& file = "stride_adopted");
+	AdoptedFile(const std::string& output_dir = "output");
 
 	/// Destructor
 	~AdoptedFile();
@@ -35,7 +35,7 @@ public:
 
 private:
 	/// Generate file name and open the file stream.
-	void Initialize(const std::string& file);
+	void Initialize(const std::string& output_dir);
 
 private:
 	std::ofstream m_fstream; ///< The file stream.

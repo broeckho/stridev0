@@ -28,13 +28,13 @@ namespace output {
 
 using namespace std;
 
-SummaryFile::SummaryFile(const string& file) { Initialize(file); }
+SummaryFile::SummaryFile(const string& output_dir) { Initialize(output_dir); }
 
 SummaryFile::~SummaryFile() { m_fstream.close(); }
 
-void SummaryFile::Initialize(const string& file)
+void SummaryFile::Initialize(const string& output_dir)
 {
-	boost::filesystem::path pathname(file);
+	boost::filesystem::path pathname(output_dir);
 	pathname /= "summary.csv";
 	m_fstream.open(pathname.c_str());
 
