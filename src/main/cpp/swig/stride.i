@@ -3,6 +3,10 @@
 // for handling errors.
 %include <exception.i>
 
+%{
+#include <iostream>
+%}
+
 %exception {
   try {
     $action
@@ -16,6 +20,6 @@
 
 %include "./health.i";
 %include "./population.i";
-%include "./simulator.i";
 %include "./simulatorobserver.i";
+%include "./simulator.i";
 %include "./striderunner.i";

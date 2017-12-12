@@ -3,8 +3,11 @@
 // headers for generated file
 %{
 #include "pop/Person.h"
+#include "pop/Population.h"
 #include <vector>
 #include <memory>
+
+using namespace stride;
 %}
 
 %include <std_vector.i>

@@ -10,6 +10,7 @@ namespace stride { namespace util {} }
 
 %include "util/Subject.h"
 
+%ignore stride::util::Subject<unsigned int, SimulatorObserver>;
 %template(SubjectBaseClass) stride::util::Subject<unsigned int, SimulatorObserver>;
 
 %include <std_shared_ptr.i>
