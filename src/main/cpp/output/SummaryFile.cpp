@@ -36,7 +36,7 @@ void SummaryFile::Initialize(const string& file)
 {
 	boost::filesystem::path pathname(file);
 	pathname /= "summary.csv";
-	m_fstream.open(pathname.string());
+	m_fstream.open(pathname.c_str());
 
 	// add header
 	m_fstream << "pop_file,num_days,pop_size,seeding_rate,R0,transmission_rate,immunity_rate,num_threads,rng_seed,"

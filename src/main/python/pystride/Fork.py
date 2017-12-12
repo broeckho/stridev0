@@ -21,27 +21,27 @@ class Fork(Simulation):
     def getWorkingDirectory(self):
         return os.path.join(pystride.workspace, self.parent.getLabel())
 
+    def _setup(self, linkData=True):
+        """ """
+        if linkData:
+            self._linkData()
+
+        os.makedirs(self.getOutputDirectory(), exist_ok=True)
+        # Store disease configuration
+        oldDiseaseFile = self.runConfig.getParameter("disease_config_file")[:-4]
+        diseaseFile = oldDiseaseFile + "_" + self.getLabel() + ".xml"
+        diseasePath = os.path.join(self.getOutputDirectory(), diseaseFile)
+        self.diseaseConfig.toFile(diseasePath)
+        self.runConfig.setParameter("disease_config_file", diseasePath)
+
+        configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
+        oldLabel = self.getLabel()
+        self.runConfig.setParameter("output_prefix", self.getOutputDirectory())
+        self.runConfig.toFile(configPath)
+        self.runConfig.setParameter('output_prefix', oldLabel)
+
     def __getstate__(self):
         return dict()
 
     def __setstate__(self, state):
         pass
-
-'''
-    def _setup(self, linkData=True):
-        """" Only write changed parameters """
-        os.makedirs(self.getOutputDirectory(), exist_ok=True)
-
-        # Store disease configuration
-        origDiseasePath = self.getRunConfigParam("disease_config_file")
-        origDiseasePath = origDiseasePath[:-4] # remove .xml
-        diseasePath = origDiseasePath + "_" + self.label + ".xml"
-        ET.ElementTree(self._diseaseConfig).write(diseasePath)
-        self.setRunConfigParam("disease_config_file", diseasePath)
-
-        configPath = os.path.join(self.getOutputDirectory(), self.label + ".xml")
-        # only store last part of label (previous dirs already made)
-        self._runConfig.find('output_prefix').text = self.parent.label + '/' + self.label
-        ET.ElementTree(self._runConfig).write(configPath)
-
-'''

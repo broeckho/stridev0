@@ -18,6 +18,7 @@ class Simulation:
     def loadRunConfig(self, filename: str):
         self.runConfig = Config(filename)
         self.diseaseConfig = Config(self.runConfig.getParameter("disease_config_file"))
+        self.runConfig.setParameter('output_prefix', self.getLabel())
 
     def loadDiseaseConfig(self, filename: str):
         self.diseaseConfig = Config(filename)
@@ -64,7 +65,6 @@ class Simulation:
         self.diseaseConfig.toFile(diseasePath)
         self.runConfig.setParameter("disease_config_file", diseasePath)
         # Store the run configuration
-        self.runConfig.setParameter("output_prefix", self.getLabel())
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
         self.runConfig.toFile(configPath)
 

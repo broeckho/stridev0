@@ -35,7 +35,7 @@ void PersonFile::Initialize(const string& file)
 {
 	boost::filesystem::path pathname(file);
 	pathname /= "person.csv";
-	m_fstream.open(pathname.string());
+	m_fstream.open(pathname.c_str());
 
 	// add header
 	m_fstream << "id,age,is_recovered,is_immune,start_infectiousness,"

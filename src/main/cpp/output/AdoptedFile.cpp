@@ -37,7 +37,7 @@ void AdoptedFile::Print(const vector<unsigned int>& adopters)
 void AdoptedFile::Initialize(const string& file) {
 	boost::filesystem::path pathname(file);
 	pathname /= "adopted.csv";
-	m_fstream.open(pathname.string());
+	m_fstream.open(pathname.c_str());
 }
 
 } // end of namespace
