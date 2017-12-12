@@ -66,7 +66,10 @@ class Simulation:
         self.runConfig.setParameter("disease_config_file", diseasePath)
         # Store the run configuration
         configPath = os.path.join(self.getOutputDirectory(), self.getLabel() + ".xml")
+        oldLabel = self.getLabel()
+        self.runConfig.setParameter("output_prefix", self.getOutputDirectory())
         self.runConfig.toFile(configPath)
+        self.runConfig.setParameter('output_prefix', oldLabel)
 
     def registerCallback(self, callback):
         """ Registers a callback to the simulation. """

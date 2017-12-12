@@ -3,10 +3,8 @@ import itertools
 import pystride
 from pystride.Simulation import Simulation
 
-'''
 # Set the workspace (default = .)
-stride.workspace = "simulations"
-'''
+pystride.workspace = "simulations"
 
 # Configure simulation
 simulation = Simulation()

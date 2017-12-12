@@ -2,9 +2,7 @@ import pystride
 
 from pystride.Simulation import Simulation
 
-'''
-stride.workspace = "simulations"
-'''
+pystride.workspace = "simulations"
 
 def checkFinished(sim, timestep):
     pop = sim.GetSimulator().GetPopulation()
