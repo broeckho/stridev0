@@ -26,14 +26,10 @@ namespace stride {
  */
 class LocalDiscussion
 {
-//public:
-//	static void Update(Person* p1, Person* p2)
-//	{
-//		if (RNG::GetInstance().NextDouble() < 1.0) {
-//			p1->Update(p2);
-//			p2->Update(p1);
-//		}
-//	}
+public:
+	static void Update(Person* p1, Person* p2)
+	{
+	}
 };
 
 } // end_of_namespace

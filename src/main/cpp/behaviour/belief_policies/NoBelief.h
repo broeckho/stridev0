@@ -21,24 +21,14 @@
 
 #include "behaviour/belief_policies/Belief.h"
 
-//#include "core/Health.h"
-
 namespace stride {
-//
-//class Person;
-//
-class NoBelief: public Belief
-{
-public:
-	NoBelief(const boost::property_tree::ptree& pt): Belief(pt) {}
 
-//	static void Initialize(Data& belief_data, double risk_averseness) {}
-//
-//	static void Update(Data& belief_data, Health& health_data) {}
-//
-//	static void Update(const Person* p) {}
-//
-//	static bool HasAdopted(const Data& belief_data) { return false; }
+class NoBelief: public Belief {
+public:
+	NoBelief(const boost::property_tree::ptree& pt) :
+			Belief(pt) {
+	}
+
 };
 
 } // end_of_namespace
